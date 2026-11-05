@@ -5,164 +5,198 @@
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <title>Ahsan Ansari</title>
   <meta name="description" content="Ahsan Ansari works in product at YouTube in San Francisco, and builds side projects and takes photographs." />
-  <meta name="theme-color" content="#0b0b0a" />
-  <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><circle cx='50' cy='50' r='40' fill='%23ff6b4a'/></svg>" />
+  <meta name="theme-color" content="#0e0c0b" />
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><rect width='100' height='100' fill='%23ff4d2e'/><text x='50' y='72' font-family='Arial Black,Arial' font-weight='900' font-size='58' text-anchor='middle' fill='%230e0c0b'>A</text></svg>" />
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-  <link href="https://fonts.googleapis.com/css2?family=Instrument+Serif:ital@0;1&family=Inter:wght@400;500;600&family=JetBrains+Mono:wght@400&display=swap" rel="stylesheet" />
+  <link href="https://fonts.googleapis.com/css2?family=Anton&family=Newsreader:ital,opsz,wght@0,6..72,400;0,6..72,500;1,6..72,400&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet" />
   <link rel="stylesheet" href="styles.css" />
 </head>
 <body>
-  <div class="glow" aria-hidden="true"></div>
   <div class="grain" aria-hidden="true"></div>
 
-  <header class="topbar">
-    <a href="#" class="mark" aria-label="Home">
-      <span class="dot"></span>
-      <span>Ahsan Ansari</span>
+  <!-- Header: logo / console / menu, each in its own ruled cell -->
+  <header class="head">
+    <a href="#top" class="head__logo" aria-label="Ahsan Ansari, home">
+      <span>AA</span>
     </a>
-    <nav>
-      <a href="#projects">Projects</a>
-      <a href="#photography">Photography</a>
+    <div class="head__console mono" aria-hidden="true">
+      <span class="blink">●</span>
+      <span id="console">San Francisco — --:-- PT</span>
+    </div>
+    <nav class="head__menu mono">
+      <a href="#about">About</a>
+      <a href="#work">Work</a>
+      <a href="#photos">Photos</a>
       <a href="#contact">Contact</a>
     </nav>
   </header>
 
-  <main>
+  <main id="top">
     <!-- Hero -->
-    <section class="hero reveal">
-      <p class="eyebrow">
-        <span class="status"><span class="pulse"></span>Product @ YouTube</span>
-      </p>
-      <h1>
-        Product by day.<br />
-        <em>Builder</em> and<br />
-        photographer by night.
+    <section class="hero">
+      <div class="field">
+        <canvas id="field" aria-hidden="true"></canvas>
+        <p class="field__hint mono" aria-hidden="true">Move your cursor ↗</p>
+      </div>
+
+      <div class="strip mono" aria-hidden="true">
+        <span>◂</span>
+        <span>37.77° N</span><span>122.42° W</span>
+        <span class="hide-sm">Product</span><span class="hide-sm">Builder</span><span class="hide-sm">Photographer</span>
+        <span>Est. 2026</span>
+        <span>▸</span>
+      </div>
+
+      <h1 class="title" id="title">
+        <span class="title__word">Ahsan</span>
+        <svg class="title__star" viewBox="0 0 48 48" aria-hidden="true"><path d="M24 0c1.2 13.2 10.8 22.8 24 24-13.2 1.2-22.8 10.8-24 24C22.8 34.8 13.2 25.2 0 24 13.2 22.8 22.8 13.2 24 0z"/></svg>
+        <span class="title__word">Ansari</span>
       </h1>
-      <p class="lede">
-        I'm <strong>Ahsan Ansari</strong>. I work on product at
-        <strong>YouTube</strong> in San Francisco. Outside work I build small,
-        careful apps (mostly tools for learning and reciting the Quran) and
-        take photographs.
-      </p>
-      <div class="meta">
-        <div>
-          <span class="label">Currently</span>
-          <span>Product, YouTube</span>
-        </div>
-        <div>
-          <span class="label">Based in</span>
-          <span>San Francisco, CA</span>
-        </div>
-        <div>
-          <span class="label">Local time</span>
-          <span class="mono" id="clock">--:--</span>
-        </div>
+
+      <div class="strip mono" aria-hidden="true">
+        <span>◂</span>
+        <span>Product by day</span>
+        <span class="hide-sm">⁂</span>
+        <span>Builder &amp; photographer by night</span>
+        <span>▸</span>
       </div>
     </section>
 
-    <!-- Projects -->
-    <section id="projects" class="section reveal">
-      <div class="section-head">
-        <h2>Side projects</h2>
-        <a class="count mono link" href="https://github.com/ansari342" target="_blank" rel="noopener">github.com/ansari342 ↗</a>
+    <!-- About -->
+    <section id="about" class="sec about reveal">
+      <h2 class="sec__label mono">(01) About</h2>
+      <div class="about__body">
+        <p class="about__lead">
+          I work on product at <strong>YouTube</strong> in San Francisco.
+          After hours I build small, careful apps, mostly tools for learning
+          and reciting the Quran, and I go looking for <em>good light</em> with
+          a camera.
+        </p>
+        <dl class="facts">
+          <div><dt class="mono">Currently</dt><dd>Product, YouTube</dd></div>
+          <div><dt class="mono">Based in</dt><dd>San Francisco, CA</dd></div>
+          <div><dt class="mono">Building</dt><dd>Rattil, a caption studio</dd></div>
+          <div><dt class="mono">Off hours</dt><dd>Photography</dd></div>
+        </dl>
       </div>
-      <ul class="list">
+    </section>
+
+    <!-- Work -->
+    <section id="work" class="sec work reveal">
+      <div class="sec__head">
+        <h2 class="sec__label mono">(02) Side projects</h2>
+        <a class="sec__link mono" href="https://github.com/ansari342" target="_blank" rel="noopener">github.com/ansari342 ↗</a>
+      </div>
+      <ol class="projects">
         <li>
           <a href="https://ansari342.github.io/Ansit/website/" target="_blank" rel="noopener">
-            <span class="year mono">iOS</span>
-            <span class="title">Aya
-              <span class="desc">A calm Quran memorization app. It highlights each word as it's recited and loops verses or ranges, with a choice of a dozen reciters.</span>
-            </span>
-            <span class="arrow" aria-hidden="true">↗</span>
+            <span class="p__num mono">01</span>
+            <span class="p__name">Aya</span>
+            <span class="p__desc">A calm Quran memorization app for iOS. It highlights each word as it's recited and loops verses or ranges, with a choice of a dozen reciters.</span>
+            <span class="p__tags mono">iOS · Expo · TypeScript</span>
           </a>
         </li>
         <li>
           <a href="https://github.com/ansari342/Captions-App" target="_blank" rel="noopener">
-            <span class="year mono">In design</span>
-            <span class="title">Rattil
-              <span class="desc">Turns a Quran recitation clip into a captioned video for Shorts, Reels and TikTok, with Arabic synced word by word and an English translation.</span>
-            </span>
-            <span class="arrow" aria-hidden="true">↗</span>
+            <span class="p__num mono">02</span>
+            <span class="p__name">Rattil</span>
+            <span class="p__desc">Turns a Quran recitation clip into a captioned video for Shorts, Reels and TikTok, with Arabic synced word by word and an English translation.</span>
+            <span class="p__tags mono">In design · iOS</span>
           </a>
         </li>
         <li>
           <a href="https://fermi-sigma.vercel.app" target="_blank" rel="noopener">
-            <span class="year mono">Web</span>
-            <span class="title">Fermi
-              <span class="desc">Physics, compiled. A physics model and simulation engine.</span>
-            </span>
-            <span class="arrow" aria-hidden="true">↗</span>
+            <span class="p__num mono">03</span>
+            <span class="p__name">Fermi</span>
+            <span class="p__desc">Physics, compiled. A physics model and simulation engine.</span>
+            <span class="p__tags mono">Web · Simulation</span>
           </a>
         </li>
         <li>
           <a href="https://github.com/ansari342/quran-recitation-app" target="_blank" rel="noopener">
-            <span class="year mono">Mobile</span>
-            <span class="title">Quran Recitation
-              <span class="desc">A dark-and-gold recitation player built with Expo Router and NativeWind. It plays verse ranges with the Arabic text and translation in sync.</span>
-            </span>
-            <span class="arrow" aria-hidden="true">↗</span>
+            <span class="p__num mono">04</span>
+            <span class="p__name">Recite</span>
+            <span class="p__desc">A dark-and-gold Quran recitation player that plays verse ranges with the Arabic text and translation in sync.</span>
+            <span class="p__tags mono">Expo Router · NativeWind</span>
           </a>
         </li>
-      </ul>
+      </ol>
     </section>
 
     <!-- Photography -->
-    <section id="photography" class="section reveal">
-      <div class="section-head">
-        <h2>Photography</h2>
-        <a class="count mono link" href="https://aaansari.myportfolio.com" target="_blank" rel="noopener">aaansari.myportfolio.com ↗</a>
+    <section id="photos" class="sec photos reveal">
+      <div class="sec__head">
+        <h2 class="sec__label mono">(03) Photography</h2>
+        <a class="sec__link mono" href="https://aaansari.myportfolio.com" target="_blank" rel="noopener">aaansari.myportfolio.com ↗</a>
       </div>
       <!--
-        To show your photos here, put the image files in a /photos folder and
-        replace each <span class="ph"></span> with:
-        <img src="photos/01.jpg" alt="Describe the photo" loading="lazy" />
+        To show real photos, put the files in a /photos folder and replace each
+        <span class="frame__img ..."></span> with:
+        <img class="frame__img" src="photos/01.jpg" alt="Describe the photo" loading="lazy" />
       -->
-      <a class="gallery" href="https://aaansari.myportfolio.com" target="_blank" rel="noopener" aria-label="View the photography portfolio">
-        <figure class="tile t1"><span class="ph"></span></figure>
-        <figure class="tile t2"><span class="ph"></span></figure>
-        <figure class="tile t3"><span class="ph"></span></figure>
-        <figure class="tile t4"><span class="ph"></span></figure>
-        <figure class="tile t5"><span class="ph"></span></figure>
-        <span class="gallery-cta">View the full portfolio <span aria-hidden="true">↗</span></span>
-      </a>
+      <div class="frames" tabindex="0" aria-label="Photography, scroll sideways">
+        <a class="frame" href="https://aaansari.myportfolio.com" target="_blank" rel="noopener">
+          <span class="frame__img g1"></span>
+          <span class="frame__cap mono"><span>Frame 01</span><span>#001</span></span>
+        </a>
+        <a class="frame tall" href="https://aaansari.myportfolio.com" target="_blank" rel="noopener">
+          <span class="frame__img g2"></span>
+          <span class="frame__cap mono"><span>Frame 02</span><span>#002</span></span>
+        </a>
+        <a class="frame" href="https://aaansari.myportfolio.com" target="_blank" rel="noopener">
+          <span class="frame__img g3"></span>
+          <span class="frame__cap mono"><span>Frame 03</span><span>#003</span></span>
+        </a>
+        <a class="frame tall" href="https://aaansari.myportfolio.com" target="_blank" rel="noopener">
+          <span class="frame__img g4"></span>
+          <span class="frame__cap mono"><span>Frame 04</span><span>#004</span></span>
+        </a>
+        <a class="frame" href="https://aaansari.myportfolio.com" target="_blank" rel="noopener">
+          <span class="frame__img g5"></span>
+          <span class="frame__cap mono"><span>Frame 05</span><span>#005</span></span>
+        </a>
+        <a class="frame frame--more" href="https://aaansari.myportfolio.com" target="_blank" rel="noopener">
+          <span class="more__text">See all<br />photos</span>
+          <span class="more__arrow" aria-hidden="true">↗</span>
+        </a>
+      </div>
     </section>
 
     <!-- Experience -->
-    <section id="experience" class="section reveal">
-      <div class="section-head">
-        <h2>Experience</h2>
-        <span class="count mono">From LinkedIn</span>
-      </div>
-      <ul class="list plain">
+    <section class="sec exp reveal">
+      <h2 class="sec__label mono">(04) Experience</h2>
+      <ul class="exp__list">
         <li>
-          <div class="row">
-            <span class="year mono">Now</span>
-            <span class="title">Product, YouTube
-              <span class="desc">San Francisco, CA</span>
-            </span>
-          </div>
+          <span class="mono">Now</span>
+          <span class="exp__role">Product, YouTube</span>
+          <span class="mono exp__where">San Francisco</span>
         </li>
       </ul>
     </section>
 
     <!-- Contact -->
-    <section id="contact" class="section contact reveal">
-      <h2 class="big">
-        Say hello, or<br /><em>share a good photo.</em>
-      </h2>
-      <ul class="socials">
+    <section id="contact" class="cta">
+      <div class="strip mono" aria-hidden="true">
+        <span>◂</span><span>(05) Contact</span><span class="hide-sm">Open to good ideas</span><span>▸</span>
+      </div>
+      <a class="cta__big" href="https://www.linkedin.com/" target="_blank" rel="noopener">
+        <span class="cta__line"><span>Say</span></span>
+        <span class="cta__line cta__line--b"><span>Hello</span><span class="cta__arrow" aria-hidden="true">↗</span></span>
+      </a>
+      <ul class="cta__links mono">
         <li><a href="https://github.com/ansari342" target="_blank" rel="noopener">GitHub</a></li>
-        <!-- TODO: replace with your LinkedIn profile URL -->
+        <!-- TODO: replace with your LinkedIn profile URL (also used by the big "Say hello" link above) -->
         <li><a href="https://www.linkedin.com/" target="_blank" rel="noopener">LinkedIn</a></li>
         <li><a href="https://aaansari.myportfolio.com" target="_blank" rel="noopener">Photography</a></li>
       </ul>
     </section>
   </main>
 
-  <footer class="footer">
+  <footer class="foot mono">
     <span>© <span id="year"></span> Ahsan Ansari</span>
-    <span class="mono">San Francisco</span>
+    <span class="hide-sm">Made in San Francisco</span>
+    <a href="#top">Back to top ↑</a>
   </footer>
 
   <script src="script.js"></script>
