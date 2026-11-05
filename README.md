@@ -1,11 +1,11 @@
-# Personal website (placeholder)
+# Ahsan Ansari — personal website
 
-A minimal, editorial-style placeholder for a personal site. Plain HTML, CSS and JS: no build step.
+A minimal, dark, editorial-style personal site. Plain HTML, CSS and JS: no build step.
 
 - Serif display type (Instrument Serif) paired with Inter
-- Light and dark themes (follows the system setting, with a manual toggle)
-- Lists for work and writing that highlight the hovered row and dim the rest
-- Fade-in on scroll, film grain overlay, local clock
+- Dark theme with a warm accent glow
+- Side projects (from GitHub), a photography grid, experience and contact links
+- Fade-in on scroll, film grain overlay, San Francisco local time
 - Responsive, and respects `prefers-reduced-motion`
 
 ## Run locally
@@ -17,7 +17,11 @@ python3 -m http.server 8000
 
 ## Customize
 
-Everything lives in `index.html`. Search for `Your Name`, `Somewhere, Earth`, `hello@example.com` and the `href="#"` links, and swap in your own details. Colors are defined as CSS variables at the top of `styles.css`.
+All content lives in `index.html`.
+
+- **Photos:** add images to a `photos/` folder and replace each `<span class="ph"></span>` in the Photography section with an `<img>` (see the comment there).
+- **LinkedIn:** replace the placeholder `https://www.linkedin.com/` link with your profile URL.
+- **Experience:** add earlier roles as extra `<li>` rows. Colors are defined as CSS variables at the top of `styles.css`.
 
 ## Deploy
 

@@ -1,21 +1,12 @@
-// Theme toggle
-const root = document.documentElement;
-const prefersDark = window.matchMedia("(prefers-color-scheme: dark)");
-
-document.querySelector(".theme-toggle").addEventListener("click", () => {
-  const current = root.dataset.theme || (prefersDark.matches ? "dark" : "light");
-  const next = current === "dark" ? "light" : "dark";
-  root.dataset.theme = next;
-  try { localStorage.setItem("theme", next); } catch (_) {}
-});
-
-// Local clock
+// Local time in San Francisco
 const clock = document.getElementById("clock");
 const tick = () => {
-  clock.textContent = new Date().toLocaleTimeString([], {
-    hour: "2-digit",
-    minute: "2-digit",
-  });
+  clock.textContent =
+    new Date().toLocaleTimeString("en-US", {
+      hour: "numeric",
+      minute: "2-digit",
+      timeZone: "America/Los_Angeles",
+    }) + " PT";
 };
 tick();
 setInterval(tick, 15_000);
