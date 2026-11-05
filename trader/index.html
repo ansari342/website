@@ -1,0 +1,176 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <meta name="robots" content="noindex" />
+  <title>Trading Lab</title>
+  <meta name="theme-color" content="#0e0c0b" />
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><rect width='100' height='100' fill='%23ff4d2e'/><text x='50' y='72' font-family='Arial Black,Arial' font-weight='900' font-size='58' text-anchor='middle' fill='%230e0c0b'>A</text></svg>" />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Anton&family=Newsreader:ital,opsz,wght@0,6..72,400;0,6..72,500;1,6..72,400&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="trader.css" />
+</head>
+<body>
+  <header class="head">
+    <a href="/" class="head__logo" aria-label="Back to the main site">AA</a>
+    <div class="head__console mono"><span class="blink">●</span><span id="who">Trading lab</span></div>
+    <nav class="head__menu mono" aria-label="Mode">
+      <button class="tab is-active" data-mode="sim" aria-pressed="true">Simulation</button>
+      <button class="tab" data-mode="live" aria-pressed="false">Live <span class="lock">🔒</span></button>
+      <button class="tab" id="signout">Sign out</button>
+    </nav>
+  </header>
+
+  <section class="intro">
+    <p class="mono label">(Private) Halal trading lab · Mode 1: Simulation</p>
+    <h1 class="title">Trading lab</h1>
+    <p class="lede">
+      Test long-only, cash-only strategies on shariah-screened funds using real price history.
+      No margin, no short selling, no options, no interest.
+      <em>Nothing here is a promise of profit.</em> A strategy that worked in the past can stop working.
+    </p>
+  </section>
+
+  <!-- Mode 1: Simulation -->
+  <div id="sim" class="layout">
+    <form id="controls" class="panel" autocomplete="off">
+      <fieldset>
+        <legend class="mono">01 · Strategy</legend>
+        <div id="strategies" class="strategies"></div>
+      </fieldset>
+
+      <fieldset>
+        <legend class="mono">02 · What it can trade</legend>
+        <div id="universe" class="chips"></div>
+        <p class="hint" id="universe-hint"></p>
+      </fieldset>
+
+      <fieldset>
+        <legend class="mono">03 · Money &amp; period</legend>
+        <div class="row2">
+          <label>Starting amount ($)<input type="number" id="capital" min="100" step="100" value="10000" /></label>
+          <label>Period
+            <select id="period">
+              <option value="all">Since 2020</option>
+              <option value="5">Last 5 years</option>
+              <option value="3">Last 3 years</option>
+              <option value="1">Last year</option>
+            </select>
+          </label>
+        </div>
+        <div class="row2">
+          <label>Trading cost per fill (bps)<input type="number" id="slippage" min="0" max="100" step="1" value="5" /></label>
+          <label>Purification rate (%)<input type="number" id="purify" min="0" max="20" step="0.5" value="3" /></label>
+        </div>
+      </fieldset>
+
+      <fieldset>
+        <legend class="mono">04 · Strategy settings</legend>
+        <div id="fields" class="fields"></div>
+        <button type="button" class="link mono" id="reset">Reset to defaults</button>
+      </fieldset>
+
+      <fieldset>
+        <legend class="mono">05 · Market</legend>
+        <div class="seg" role="radiogroup" aria-label="Market data">
+          <label><input type="radio" name="source" value="auto" checked /><span>Real history</span></label>
+          <label><input type="radio" name="source" value="random" /><span>Random market</span></label>
+        </div>
+        <label class="seed" id="seed-wrap" hidden>Random seed<input type="number" id="seed" value="1" min="1" step="1" /></label>
+        <p class="hint">A random market has no real patterns. If a strategy "wins" there, that's luck. Use it to check that the real results aren't luck too.</p>
+      </fieldset>
+
+      <div class="actions">
+        <button type="submit" class="btn btn--primary" id="run">Run simulation</button>
+        <button type="button" class="btn" id="compare">Compare all</button>
+      </div>
+    </form>
+
+    <main class="results" aria-live="polite">
+      <p class="status mono" id="status">Loading…</p>
+
+      <div class="kpis" id="kpis"></div>
+
+      <section class="card">
+        <header class="card__head">
+          <h2 class="mono">Growth of your money</h2>
+          <div class="legend mono" id="legend"></div>
+          <div class="replay">
+            <button type="button" class="btn btn--small" id="replay">▶ Watch it grow</button>
+            <select id="speed" class="mono" aria-label="Replay speed">
+              <option value="1">1×</option>
+              <option value="2" selected>2×</option>
+              <option value="4">4×</option>
+            </select>
+          </div>
+        </header>
+        <div class="ticker" id="ticker" hidden>
+          <span class="mono" id="ticker-date"></span>
+          <span class="ticker__value" id="ticker-value"></span>
+        </div>
+        <div id="equity-chart"></div>
+        <h3 class="mono sub">Drop from the previous high</h3>
+        <div id="dd-chart"></div>
+      </section>
+
+      <div class="grid2">
+        <section class="card">
+          <header class="card__head"><h2 class="mono">The odds</h2></header>
+          <div id="odds-text" class="odds"></div>
+          <div id="hist-chart"></div>
+          <p class="hint">2,000 simulated years, each stitched together from random 20-day stretches of this strategy's own history. Coral bars are years that made money; gray bars lost money.</p>
+        </section>
+        <section class="card">
+          <header class="card__head"><h2 class="mono">Halal check</h2></header>
+          <ul class="checks" id="checks"></ul>
+          <div class="purify" id="purify-box"></div>
+        </section>
+      </div>
+
+      <section class="card" id="explain"></section>
+
+      <section class="card" id="compare-card" hidden>
+        <header class="card__head"><h2 class="mono">Strategies side by side</h2><span class="mono muted" id="compare-note"></span></header>
+        <div class="table-wrap"><table class="table" id="compare-table"></table></div>
+      </section>
+
+      <section class="card">
+        <header class="card__head"><h2 class="mono">Trades</h2><span class="mono muted" id="trade-count"></span></header>
+        <div class="table-wrap"><table class="table" id="trades"></table></div>
+        <button type="button" class="link mono" id="more-trades" hidden>Show all trades</button>
+      </section>
+
+      <section class="card notes">
+        <header class="card__head"><h2 class="mono">Lab notes: ideas tested and rejected</h2></header>
+        <p><b>Gap Fill</b> (buy funds that open sharply lower, sell the same day). It won about 58–62% of trades, but its average result was slightly negative after a 0.05% trading cost. Kept in the list above so you can see why a high win rate alone isn't enough.</p>
+        <p><b>Overnight hold</b> (buy at the close, sell at the next open). The raw data shows unusually strong overnight gains in these funds, but the effect disappears once realistic costs are added, and it is much weaker in the second half of the data. That pattern usually comes from the gap between buying and selling prices in thinly traded funds, so it's very unlikely to be capturable with real orders.</p>
+        <p><b>Turn of the month</b> (hold over the last and first days of each month). It was positive, but too weak (about 2–4% a year) to justify the trading.</p>
+      </section>
+    </main>
+  </div>
+
+  <!-- Mode 2: Live (not built yet) -->
+  <section id="live" class="live" hidden>
+    <div class="card">
+      <h2 class="title title--sm">Live mode</h2>
+      <p class="lede">Not built yet. This is where real money will go in, once the simulation has earned your trust. The plan:</p>
+      <ol class="plan">
+        <li>Connect a brokerage account through its API, as a <b>cash account</b>: no margin, no borrowing.</li>
+        <li>Turn off interest on uninvested cash (cash sweep). If the broker can't, donate any interest received.</li>
+        <li>Run one tested strategy with a small amount first, and compare live results with the simulation every week.</li>
+        <li>Hard limits: a maximum amount invested, a maximum daily loss, and a kill switch that sells everything and stops trading.</li>
+        <li>Recheck Shariah screening every quarter, and track dividends for purification.</li>
+      </ol>
+    </div>
+  </section>
+
+  <footer class="foot mono">
+    <span>Educational simulation. Not financial advice, and not a religious ruling. Past results don't predict future returns.</span>
+    <a href="/">Back to the main site ↑</a>
+  </footer>
+
+  <script type="module" src="app.js"></script>
+</body>
+</html>

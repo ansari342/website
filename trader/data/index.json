@@ -1,0 +1,80 @@
+{
+ "AAPL": {
+  "name": "Apple Inc.",
+  "from": "2019-01-02",
+  "to": "2026-11-05",
+  "bars": 1973
+ },
+ "ADBE": {
+  "name": "Adobe Inc.",
+  "from": "2019-01-02",
+  "to": "2026-11-05",
+  "bars": 1973
+ },
+ "ASML": {
+  "name": "ASML Holding N.V.",
+  "from": "2019-01-02",
+  "to": "2026-11-05",
+  "bars": 1973
+ },
+ "HLAL": {
+  "name": "Wahed FTSE USA Shariah ETF",
+  "from": "2019-07-16",
+  "to": "2026-11-05",
+  "bars": 1839
+ },
+ "MSFT": {
+  "name": "Microsoft Corporation",
+  "from": "2019-01-02",
+  "to": "2026-11-05",
+  "bars": 1973
+ },
+ "NVDA": {
+  "name": "NVIDIA Corporation",
+  "from": "2019-01-02",
+  "to": "2026-11-05",
+  "bars": 1973
+ },
+ "SPRE": {
+  "name": "SP Funds S&P Global REIT Sharia ETF",
+  "from": "2020-12-30",
+  "to": "2026-11-05",
+  "bars": 1470
+ },
+ "SPSK": {
+  "name": "SP Funds Dow Jones Global Sukuk ETF",
+  "from": "2019-12-31",
+  "to": "2026-11-05",
+  "bars": 1722
+ },
+ "SPTE": {
+  "name": "SP Funds S&P Global Technology ETF",
+  "from": "2023-12-01",
+  "to": "2026-11-05",
+  "bars": 735
+ },
+ "SPUS": {
+  "name": "SP Funds S&P 500 Sharia Industry Exclusions ETF",
+  "from": "2019-12-18",
+  "to": "2026-11-05",
+  "bars": 1730
+ },
+ "SPWO": {
+  "name": "SP Funds S&P World ETF",
+  "from": "2023-12-20",
+  "to": "2026-11-05",
+  "bars": 722
+ },
+ "TSM": {
+  "name": "Taiwan Semiconductor Manufacturing Company Limited",
+  "from": "2019-01-02",
+  "to": "2026-11-05",
+  "bars": 1973
+ },
+ "UMMA": {
+  "name": "Wahed Dow Jones Islamic World ETF",
+  "from": "2022-01-07",
+  "to": "2026-11-05",
+  "bars": 1212
+ }
+}
