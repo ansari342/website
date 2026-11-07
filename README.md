@@ -30,40 +30,24 @@ Works as-is on GitHub Pages, Netlify, Vercel or Cloudflare Pages. For GitHub Pag
 
 ## Trading tab
 
-The **Trading** tab in the site header opens `/trading/`. Anyone not signed in,
-and anyone who signs in with a Google account other than ansari342@gmail.com,
-sees a "Coming soon" page. Signing in with ansari342@gmail.com opens the
-private trading lab: a halal (long-only, cash-only) strategy simulator.
+The **Trading** tab in the site header opens `/trading/`. Visitors see a
+"Coming soon" page with a passcode box. The right passcode opens the private
+trading lab (a halal, long-only, cash-only strategy simulator) and keeps that
+browser unlocked for 30 days. **Lock** in the lab's header locks it again.
 
-### One-time setup (about 3 minutes)
-
-1. Go to [Google Cloud Console → Credentials](https://console.cloud.google.com/apis/credentials)
-   (any Google account works; no billing needed). If asked, create a project and
-   fill in the OAuth consent screen with just an app name and your email.
-2. Click **Create credentials → OAuth client ID**, choose **Web application**, and
-   under **Authorized JavaScript origins** add your site's address, for example
-   `https://website-one-umber-15.vercel.app` (and your custom domain, if any).
-3. Copy the client ID (it ends in `.apps.googleusercontent.com`). In Vercel →
-   Project → Settings → **Environment Variables**, add `GOOGLE_CLIENT_ID` with
-   that value, then redeploy.
-
-The site's client ID is already built into `lib/google.js`, so this step is
-done. Set `GOOGLE_CLIENT_ID` only if you ever replace it with a different one.
-
-Optional settings:
-- `SESSION_SECRET` (a long random string): keeps you signed in for 7 days
-  instead of about an hour. Without it, the page signs you back in automatically
-  with Google's one-tap prompt.
-- `ALLOWED_EMAILS`: a comma-separated list that replaces the built-in allowed
-  account.
+The passcode is `12345` by default. Because this repository is public, anyone
+reading the code can see that default, so change it: in Vercel → Project →
+Settings → Environment Variables, add `TRADING_PASSCODE` with a code of your
+choice and redeploy. Changing the passcode locks every browser that used the
+old one.
 
 ### How it fits together
 
 | Path | What it does |
 |---|---|
-| `middleware.js` | Sends anyone who isn't the allowed account from `/trading/*` to the Coming soon page |
-| `api/auth.js` | Verifies the Google sign-in; the allowed account gets a cookie, others get "coming soon" |
-| `lib/google.js` | The allowed account and the Google token check |
+| `middleware.js` | Sends anyone who hasn't entered the passcode from `/trading/*` to the Coming soon page |
+| `api/unlock.js` | Checks the passcode and sets the 30-day unlock cookie |
+| `lib/session.js` | The passcode and the signed unlock cookie |
 | `api/prices.js` | Fresh daily prices from Yahoo Finance (signed-in only) |
 | `trading/lib/` | Backtest engine, strategies, statistics, charts |
 | `trading/data/` | Saved price history, used when live prices are unavailable |

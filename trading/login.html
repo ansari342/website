@@ -24,72 +24,42 @@
     <h1>Coming<br /><span>soon</span></h1>
     <p class="lede" id="lede">Something is being built here. Check back soon.</p>
 
-    <section class="signin" id="signin" hidden>
-      <p class="mono muted">Have access?</p>
-      <div id="google-button" class="google"></div>
-    </section>
+    <form class="signin" id="unlock" autocomplete="off">
+      <label class="mono muted" for="code">Have a passcode?</label>
+      <div class="row">
+        <input id="code" name="code" type="password" inputmode="numeric" autocomplete="current-password" placeholder="Passcode" required />
+        <button type="submit" class="mono">Enter</button>
+      </div>
+    </form>
     <p id="message" class="message mono" role="status"></p>
   </main>
 
   <script>
+    const form = document.getElementById("unlock");
     const msg = document.getElementById("message");
-    const say = (t) => { msg.textContent = t; };
-    const remember = (v) => { try { v ? localStorage.setItem("trading:member", "1") : localStorage.removeItem("trading:member"); } catch (_) {} };
-    const isMember = () => { try { return localStorage.getItem("trading:member") === "1"; } catch (_) { return false; } };
-
-    async function onCredential(resp) {
-      say("Checking…");
+    form.addEventListener("submit", async (e) => {
+      e.preventDefault();
+      const btn = form.querySelector("button");
+      btn.disabled = true;
+      msg.textContent = "Checking…";
       try {
-        const res = await fetch("/api/auth", {
+        const res = await fetch("/api/unlock", {
           method: "POST",
           headers: { "content-type": "application/json" },
           credentials: "same-origin",
-          body: JSON.stringify({ credential: resp.credential }),
+          body: JSON.stringify({ code: document.getElementById("code").value }),
         });
-        const body = await res.json().catch(() => ({}));
-        if (res.ok && body.allowed) {
-          remember(true);
-          say("Opening…");
+        if (res.ok) {
+          msg.textContent = "Opening…";
           location.href = "/trading/";
-        } else if (res.ok) {
-          // Any other Google account: it's simply not open yet.
-          remember(false);
-          say("");
-          document.getElementById("signin").hidden = true;
-          document.getElementById("lede").textContent = "Thanks for your interest. Trading is coming soon.";
-        } else {
-          say(body.error || "Sign-in didn't work. Try again.");
+          return;
         }
+        msg.textContent = res.status === 401 ? "That passcode didn't work." : "Something went wrong. Try again.";
       } catch (_) {
-        say("Couldn't reach the server. Try again.");
+        msg.textContent = "Couldn't reach the server. Try again.";
       }
-    }
-
-    async function start() {
-      let clientId = null;
-      try {
-        const res = await fetch("/api/config", { cache: "no-store" });
-        if (res.ok) clientId = (await res.json()).googleClientId;
-      } catch (_) {}
-      if (!clientId) return; // Not set up yet: just "Coming soon".
-      const s = document.createElement("script");
-      s.src = "https://accounts.google.com/gsi/client";
-      s.async = true;
-      s.onload = () => {
-        google.accounts.id.initialize({ client_id: clientId, callback: onCredential, auto_select: isMember(), cancel_on_tap_outside: true });
-        document.getElementById("signin").hidden = false;
-        google.accounts.id.renderButton(document.getElementById("google-button"), {
-          theme: "filled_black",
-          size: "medium",
-          shape: "pill",
-          text: "signin_with",
-        });
-        // Returning members are signed back in automatically.
-        if (isMember()) google.accounts.id.prompt();
-      };
-      document.head.appendChild(s);
-    }
-    start();
+      btn.disabled = false;
+    });
   </script>
 </body>
 </html>

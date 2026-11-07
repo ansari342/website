@@ -1,8 +1,8 @@
-// Vercel Routing Middleware: keeps the trading lab private.
-// Only an allowed Google account gets in. Everyone else is sent to the
-// "Coming soon" page (or gets a 401 from the price API).
+// Vercel Routing Middleware: keeps the trading lab behind a passcode.
+// Anyone without the unlock cookie is sent to the "Coming soon" page, where
+// the passcode can be entered (or gets a 401 from the price API).
 
-import { readSession, getCookie } from "./lib/session.js";
+import { isUnlocked, getCookie } from "./lib/session.js";
 
 export const config = {
   matcher: ["/trading", "/trading/:path*", "/api/prices"],
@@ -16,14 +16,9 @@ const PUBLIC = ["/trading/login.html", "/trading/login", "/trading/login.css"];
 export default async function middleware(request) {
   const url = new URL(request.url);
   if (PUBLIC.includes(url.pathname)) return next();
-
-  if (await readSession(getCookie(request))) return next();
-
+  if (await isUnlocked(getCookie(request))) return next();
   if (url.pathname.startsWith("/api/")) {
-    return new Response(JSON.stringify({ error: "Sign in required" }), {
-      status: 401,
-      headers: { "content-type": "application/json" },
-    });
+    return new Response(JSON.stringify({ error: "Passcode required" }), { status: 401, headers: { "content-type": "application/json" } });
   }
   return Response.redirect(new URL("/trading/login.html", url), 302);
 }

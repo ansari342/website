@@ -426,7 +426,7 @@ $("#signout").addEventListener("click", async () => {
 });
 fetch("/api/me", { credentials: "same-origin" })
   .then((r) => (r.ok ? r.json() : null))
-  .then((me) => { $("#who").textContent = me ? `Trading lab · ${me.email}` : "Trading lab · local preview"; })
+  .then((me) => { $("#who").textContent = me ? "Trading lab · Unlocked" : "Trading lab · local preview"; })
   .catch(() => { $("#who").textContent = "Trading lab · local preview"; });
 
 renderControls();
