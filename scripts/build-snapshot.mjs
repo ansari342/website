@@ -9,8 +9,8 @@ if (!src) throw new Error("Pass the folder that holds the downloaded Yahoo JSON 
 const index = {};
 for (const f of readdirSync(src).filter((f) => f.endsWith(".json"))) {
   const s = normalizeYahoo(JSON.parse(readFileSync(join(src, f), "utf8")));
-  writeFileSync(new URL(`../trader/data/${s.symbol}.json`, import.meta.url), JSON.stringify(s));
+  writeFileSync(new URL(`../trading/data/${s.symbol}.json`, import.meta.url), JSON.stringify(s));
   index[s.symbol] = { name: s.name, from: s.d[0], to: s.d.at(-1), bars: s.d.length };
 }
-writeFileSync(new URL("../trader/data/index.json", import.meta.url), JSON.stringify(index, null, 1));
+writeFileSync(new URL("../trading/data/index.json", import.meta.url), JSON.stringify(index, null, 1));
 console.log(index);

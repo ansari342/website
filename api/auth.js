@@ -1,25 +1,15 @@
 // POST /api/auth  { credential: <Google ID token> }
-// Verifies the Google sign-in token, checks the account is on the allow list
-// (ALLOWED_EMAILS) and sets a signed session cookie.
+// Checks the Google sign-in. An allowed account gets a session cookie and
+// { allowed: true }. Any other Google account gets { allowed: false } and the
+// page shows "Coming soon".
 
-import { createRemoteJWKSet, jwtVerify } from "jose";
-import { createSession, sessionCookie, allowedEmails, isAllowed } from "../lib/session.js";
+import { verifyGoogleToken, isAllowed } from "../lib/google.js";
+import { createSession, sessionCookie, GOOGLE_MAX_AGE } from "../lib/session.js";
 
 export const config = { runtime: "edge" };
 
-const GOOGLE_KEYS = createRemoteJWKSet(new URL("https://www.googleapis.com/oauth2/v3/certs"));
-
 const json = (body, status = 200, headers = {}) =>
-  new Response(JSON.stringify(body), { status, headers: { "content-type": "application/json", ...headers } });
-
-export async function verifyGoogleToken(credential, clientId, keys = GOOGLE_KEYS) {
-  const { payload } = await jwtVerify(credential, keys, {
-    issuer: ["https://accounts.google.com", "accounts.google.com"],
-    audience: clientId,
-  });
-  if (!payload.email || payload.email_verified !== true) throw new Error("Email not verified");
-  return payload.email;
-}
+  new Response(JSON.stringify(body), { status, headers: { "content-type": "application/json", "cache-control": "no-store", ...headers } });
 
 export default async function handler(request) {
   if (request.method !== "POST") return json({ error: "Method not allowed" }, 405);
@@ -28,8 +18,8 @@ export default async function handler(request) {
   const origin = request.headers.get("origin");
   if (origin && new URL(origin).host !== new URL(request.url).host) return json({ error: "Bad origin" }, 403);
 
-  const { GOOGLE_CLIENT_ID, SESSION_SECRET, ALLOWED_EMAILS } = process.env;
-  if (!GOOGLE_CLIENT_ID || !SESSION_SECRET || !ALLOWED_EMAILS) return json({ error: "Sign-in is not configured" }, 500);
+  const { GOOGLE_CLIENT_ID, SESSION_SECRET } = process.env;
+  if (!GOOGLE_CLIENT_ID) return json({ error: "Sign-in is not configured" }, 500);
 
   let credential;
   try {
@@ -37,7 +27,6 @@ export default async function handler(request) {
   } catch (_) {
     return json({ error: "Bad request" }, 400);
   }
-  if (!credential) return json({ error: "Missing credential" }, 400);
 
   let email;
   try {
@@ -45,10 +34,10 @@ export default async function handler(request) {
   } catch (_) {
     return json({ error: "Google sign-in could not be verified" }, 401);
   }
-  if (!isAllowed(email, allowedEmails(ALLOWED_EMAILS))) {
-    return json({ error: "This Google account doesn't have access" }, 403);
-  }
+  if (!isAllowed(email)) return json({ allowed: false });
 
-  const token = await createSession(email.toLowerCase(), SESSION_SECRET);
-  return json({ ok: true, email }, 200, { "set-cookie": sessionCookie(token) });
+  const cookie = SESSION_SECRET && SESSION_SECRET.length >= 32
+    ? sessionCookie(await createSession(email, SESSION_SECRET))
+    : sessionCookie(credential, GOOGLE_MAX_AGE);
+  return json({ allowed: true }, 200, { "set-cookie": cookie });
 }

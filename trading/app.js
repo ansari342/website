@@ -422,7 +422,7 @@ document.querySelectorAll(".tab[data-mode]").forEach((tab) =>
 );
 $("#signout").addEventListener("click", async () => {
   try { await fetch("/api/logout", { method: "POST", credentials: "same-origin" }); } catch (_) {}
-  location.href = "/trader/login.html";
+  location.href = "/trading/login.html";
 });
 fetch("/api/me", { credentials: "same-origin" })
   .then((r) => (r.ok ? r.json() : null))

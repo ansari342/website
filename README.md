@@ -28,38 +28,45 @@ All content lives in `index.html`.
 
 Works as-is on GitHub Pages, Netlify, Vercel or Cloudflare Pages. For GitHub Pages, go to Settings → Pages and pick this branch with the root folder.
 
-## Trading lab (private)
+## Trading tab
 
-`/trader/` is a private, halal (long-only, cash-only) trading simulator. It is
-gated behind Google sign-in and only lets in the email addresses you allow.
+The **Trading** tab in the site header opens `/trading/`. Anyone not signed in,
+and anyone who signs in with a Google account other than ansari342@gmail.com,
+sees a "Coming soon" page. Signing in with ansari342@gmail.com opens the
+private trading lab: a halal (long-only, cash-only) strategy simulator.
 
-- **Mode 1: Simulation** (built). Backtests strategies on real daily prices for
-  shariah-screened ETFs, with charts, win rates, odds and a halal checklist.
-- **Mode 2: Live** (not built yet).
+### One-time setup (about 3 minutes)
 
-### One-time setup on Vercel
+1. Go to [Google Cloud Console → Credentials](https://console.cloud.google.com/apis/credentials)
+   (any Google account works; no billing needed). If asked, create a project and
+   fill in the OAuth consent screen with just an app name and your email.
+2. Click **Create credentials → OAuth client ID**, choose **Web application**, and
+   under **Authorized JavaScript origins** add your site's address, for example
+   `https://website-one-umber-15.vercel.app` (and your custom domain, if any).
+3. Copy the client ID (it ends in `.apps.googleusercontent.com`). In Vercel →
+   Project → Settings → **Environment Variables**, add `GOOGLE_CLIENT_ID` with
+   that value, then redeploy.
 
-1. In [Google Cloud Console](https://console.cloud.google.com/apis/credentials),
-   create an **OAuth client ID** of type *Web application*. Under **Authorized
-   JavaScript origins** add your site's address, for example
-   `https://your-site.vercel.app` (add your custom domain too, if you have one).
-2. In Vercel → Project → Settings → **Environment Variables**, add:
-   - `GOOGLE_CLIENT_ID`: the client ID from step 1
-   - `ALLOWED_EMAILS`: the Gmail address(es) allowed in, comma-separated
-   - `SESSION_SECRET`: a long random string, for example the output of `openssl rand -hex 32`
-3. Redeploy. Visiting `/trader/` now redirects to the sign-in page.
+That's it. Until `GOOGLE_CLIENT_ID` is set, the tab shows "Coming soon" to
+everyone, including you.
 
-Until these are set, the lab stays locked for everyone (it fails closed).
+Optional settings:
+- `SESSION_SECRET` (a long random string): keeps you signed in for 7 days
+  instead of about an hour. Without it, the page signs you back in automatically
+  with Google's one-tap prompt.
+- `ALLOWED_EMAILS`: a comma-separated list that replaces the built-in allowed
+  account.
 
 ### How it fits together
 
 | Path | What it does |
 |---|---|
-| `middleware.js` | Redirects anyone without a valid session away from `/trader/*` and `/api/prices` |
-| `api/auth.js` | Verifies the Google sign-in token and the allow list, then sets a signed cookie |
-| `api/prices.js` | Fresh daily prices from Yahoo Finance (signed-in users only) |
-| `trader/lib/` | Backtest engine, strategies, statistics, charts |
-| `trader/data/` | Saved price history, used when live prices are unavailable |
+| `middleware.js` | Sends anyone who isn't the allowed account from `/trading/*` to the Coming soon page |
+| `api/auth.js` | Verifies the Google sign-in; the allowed account gets a cookie, others get "coming soon" |
+| `lib/google.js` | The allowed account and the Google token check |
+| `api/prices.js` | Fresh daily prices from Yahoo Finance (signed-in only) |
+| `trading/lib/` | Backtest engine, strategies, statistics, charts |
+| `trading/data/` | Saved price history, used when live prices are unavailable |
 
 Refresh the saved prices by downloading Yahoo chart JSON files into a folder and
 running `node scripts/build-snapshot.mjs <folder>`. Run the tests with `npm test`.

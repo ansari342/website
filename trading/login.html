@@ -3,8 +3,8 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <meta name="robots" content="noindex" />
-  <title>Sign in · Trading Lab</title>
+  <title>Trading · Coming soon</title>
+  <meta name="description" content="Trading by Ahsan Ansari. Coming soon." />
   <meta name="theme-color" content="#0e0c0b" />
   <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><rect width='100' height='100' fill='%23ff4d2e'/><text x='50' y='72' font-family='Arial Black,Arial' font-weight='900' font-size='58' text-anchor='middle' fill='%230e0c0b'>A</text></svg>" />
   <link rel="preconnect" href="https://fonts.googleapis.com" />
@@ -15,23 +15,30 @@
 <body>
   <header class="head">
     <a href="/" class="head__logo" aria-label="Back to the main site">AA</a>
-    <span class="head__console mono">Trading lab · Private</span>
+    <span class="head__console mono">Trading</span>
+    <a href="/" class="head__back mono">← Main site</a>
   </header>
 
   <main class="login">
-    <p class="mono label">(Private) Trading lab</p>
-    <h1>Sign in</h1>
-    <p class="lede">This area is private. Sign in with an approved Google account to continue.</p>
-    <div id="google-button" class="google"></div>
+    <p class="mono label">(Trading)</p>
+    <h1>Coming<br /><span>soon</span></h1>
+    <p class="lede" id="lede">Something is being built here. Check back soon.</p>
+
+    <section class="signin" id="signin" hidden>
+      <p class="mono muted">Have access?</p>
+      <div id="google-button" class="google"></div>
+    </section>
     <p id="message" class="message mono" role="status"></p>
   </main>
 
   <script>
     const msg = document.getElementById("message");
     const say = (t) => { msg.textContent = t; };
+    const remember = (v) => { try { v ? localStorage.setItem("trading:member", "1") : localStorage.removeItem("trading:member"); } catch (_) {} };
+    const isMember = () => { try { return localStorage.getItem("trading:member") === "1"; } catch (_) { return false; } };
 
     async function onCredential(resp) {
-      say("Checking your account…");
+      say("Checking…");
       try {
         const res = await fetch("/api/auth", {
           method: "POST",
@@ -40,11 +47,18 @@
           body: JSON.stringify({ credential: resp.credential }),
         });
         const body = await res.json().catch(() => ({}));
-        if (res.ok) {
-          say("Signed in. Opening the lab…");
-          location.href = "/trader/";
+        if (res.ok && body.allowed) {
+          remember(true);
+          say("Opening…");
+          location.href = "/trading/";
+        } else if (res.ok) {
+          // Any other Google account: it's simply not open yet.
+          remember(false);
+          say("");
+          document.getElementById("signin").hidden = true;
+          document.getElementById("lede").textContent = "Thanks for your interest. Trading is coming soon.";
         } else {
-          say(body.error || "Sign-in failed.");
+          say(body.error || "Sign-in didn't work. Try again.");
         }
       } catch (_) {
         say("Couldn't reach the server. Try again.");
@@ -57,24 +71,22 @@
         const res = await fetch("/api/config", { cache: "no-store" });
         if (res.ok) clientId = (await res.json()).googleClientId;
       } catch (_) {}
-      if (!clientId) {
-        say("Sign-in isn't set up on this server yet.");
-        return;
-      }
+      if (!clientId) return; // Not set up yet: just "Coming soon".
       const s = document.createElement("script");
       s.src = "https://accounts.google.com/gsi/client";
       s.async = true;
       s.onload = () => {
-        google.accounts.id.initialize({ client_id: clientId, callback: onCredential, auto_select: false });
+        google.accounts.id.initialize({ client_id: clientId, callback: onCredential, auto_select: isMember(), cancel_on_tap_outside: true });
+        document.getElementById("signin").hidden = false;
         google.accounts.id.renderButton(document.getElementById("google-button"), {
           theme: "filled_black",
-          size: "large",
+          size: "medium",
           shape: "pill",
           text: "signin_with",
-          width: 280,
         });
+        // Returning members are signed back in automatically.
+        if (isMember()) google.accounts.id.prompt();
       };
-      s.onerror = () => say("Couldn't load Google sign-in.");
       document.head.appendChild(s);
     }
     start();

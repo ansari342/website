@@ -94,6 +94,8 @@ ol, ul { list-style: none; }
   transition: background 0.25s, color 0.25s;
 }
 .head__menu a:hover { background: var(--fg); color: var(--bg); }
+.head__menu a.head__trading { color: var(--accent); }
+.head__menu a.head__trading:hover { background: var(--accent); color: var(--on-accent); }
 
 /* ---------- Hero ---------- */
 .hero {
@@ -403,7 +405,7 @@ ol, ul { list-style: none; }
   .head { grid-template-columns: auto 1fr; }
   .head__menu { justify-content: flex-end; }
   .head__menu a { padding: 0 12px; }
-  .head__menu a:first-child { display: none; }
+  .head__menu a:first-child, .head__menu a:nth-child(3) { display: none; }
   .field { min-height: 46svh; }
   .cta__links { grid-template-columns: 1fr; }
   .cta__links li + li { border-left: 0; border-top: 1px solid var(--rule); }

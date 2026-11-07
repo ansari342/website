@@ -34,3 +34,9 @@ h1 { margin: 0; font: 400 clamp(72px, 16vw, 140px)/0.85 "Anton", Impact, sans-se
 .lede { color: var(--muted); margin: 24px 0 36px; }
 .google { min-height: 44px; }
 .message { margin-top: 20px; color: var(--muted); min-height: 1.4em; }
+.head__back { margin-left: auto; display: flex; align-items: center; padding: 0 20px; border-left: 1px solid var(--rule); color: var(--muted); }
+.head__back:hover { color: var(--accent); }
+h1 span { color: var(--accent); }
+.muted { color: var(--muted); }
+.signin { margin-top: 48px; padding-top: 20px; border-top: 1px solid var(--rule); display: grid; gap: 12px; }
+.signin[hidden] { display: none; }

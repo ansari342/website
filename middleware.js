@@ -1,29 +1,24 @@
 // Vercel Routing Middleware: keeps the trading lab private.
-// Anyone without a valid session cookie for an allowed Google account is sent
-// to the sign-in page (pages) or gets a 401 (API calls). It fails closed: if
-// the server isn't configured, nobody gets in.
+// Only an allowed Google account gets in. Everyone else is sent to the
+// "Coming soon" page (or gets a 401 from the price API). It fails closed: if
+// GOOGLE_CLIENT_ID isn't set, nobody gets in.
 
-import { readSession, getCookie, allowedEmails } from "./lib/session.js";
+import { readSession, getCookie } from "./lib/session.js";
 
 export const config = {
-  matcher: ["/trader", "/trader/:path*", "/api/prices"],
+  matcher: ["/trading", "/trading/:path*", "/api/prices"],
 };
 
 // Equivalent of next() from @vercel/functions: let the request continue.
 const next = () => new Response(null, { headers: { "x-middleware-next": "1" } });
 
-const PUBLIC = ["/trader/login.html", "/trader/login", "/trader/login.css"];
+const PUBLIC = ["/trading/login.html", "/trading/login", "/trading/login.css"];
 
 export default async function middleware(request) {
   const url = new URL(request.url);
   if (PUBLIC.includes(url.pathname)) return next();
 
-  const email = await readSession(
-    getCookie(request),
-    process.env.SESSION_SECRET,
-    allowedEmails(process.env.ALLOWED_EMAILS)
-  );
-  if (email) return next();
+  if (await readSession(getCookie(request))) return next();
 
   if (url.pathname.startsWith("/api/")) {
     return new Response(JSON.stringify({ error: "Sign in required" }), {
@@ -31,6 +26,5 @@ export default async function middleware(request) {
       headers: { "content-type": "application/json" },
     });
   }
-  const login = new URL("/trader/login.html", url);
-  return Response.redirect(login, 302);
+  return Response.redirect(new URL("/trading/login.html", url), 302);
 }

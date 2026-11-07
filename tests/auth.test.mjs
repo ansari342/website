@@ -1,79 +1,115 @@
-import { test } from "node:test";
+import { test, before } from "node:test";
 import assert from "node:assert/strict";
 import { SignJWT, generateKeyPair, exportJWK, createLocalJWKSet } from "jose";
-import { createSession, readSession, allowedEmails, getCookie } from "../lib/session.js";
+import { setGoogleKeys, verifyGoogleToken, allowedList, isAllowed, DEFAULT_ALLOWED } from "../lib/google.js";
+import { createSession, readSession, getCookie } from "../lib/session.js";
 import middleware from "../middleware.js";
-import { verifyGoogleToken } from "../api/auth.js";
+import auth from "../api/auth.js";
 
+const CLIENT = "client-123.apps.googleusercontent.com";
 const SECRET = "x".repeat(40);
-const ALLOWED = allowedEmails("Owner@Example.com, second@example.com");
+let privateKey;
+let otherKey;
 
-test("a fresh session for an allowed email is accepted", async () => {
-  const t = await createSession("owner@example.com", SECRET);
-  assert.equal(await readSession(t, SECRET, ALLOWED), "owner@example.com");
+before(async () => {
+  const pair = await generateKeyPair("RS256");
+  privateKey = pair.privateKey;
+  otherKey = (await generateKeyPair("RS256")).privateKey;
+  const jwk = { ...(await exportJWK(pair.publicKey)), kid: "k1", alg: "RS256" };
+  setGoogleKeys(createLocalJWKSet({ keys: [jwk] }));
 });
 
-test("tampered, expired, wrongly signed or disallowed sessions are rejected", async () => {
-  const t = await createSession("owner@example.com", SECRET);
-  const [p, s] = t.split(".");
-  const forged = Buffer.from(JSON.stringify({ e: "owner@example.com", x: 9999999999 })).toString("base64url");
-  assert.equal(await readSession(`${forged}.${s}`, SECRET, ALLOWED), null);
-  assert.equal(await readSession(t, "y".repeat(40), ALLOWED), null);
-  assert.equal(await readSession(t, SECRET, ALLOWED, Date.now() + 8 * 864e5), null);
-  assert.equal(await readSession(await createSession("stranger@example.com", SECRET), SECRET, ALLOWED), null);
-  assert.equal(await readSession(`${p}`, SECRET, ALLOWED), null);
-  assert.equal(await readSession("", SECRET, ALLOWED), null);
-});
+const googleToken = (claims = {}, key = privateKey, exp = "5m") =>
+  new SignJWT({ iss: "https://accounts.google.com", aud: CLIENT, email: "ansari342@gmail.com", email_verified: true, ...claims })
+    .setProtectedHeader({ alg: "RS256", kid: "k1" })
+    .setIssuedAt()
+    .setExpirationTime(exp)
+    .sign(key);
 
-test("a short or missing secret never validates", async () => {
-  const t = await createSession("owner@example.com", SECRET);
-  assert.equal(await readSession(t, "", ALLOWED), null);
-  await assert.rejects(createSession("owner@example.com", "short"));
-});
-
+const env = (vars) => {
+  for (const k of ["GOOGLE_CLIENT_ID", "SESSION_SECRET", "ALLOWED_EMAILS"]) delete process.env[k];
+  Object.assign(process.env, vars);
+};
 const req = (path, cookie) => new Request(`https://site.test${path}`, { headers: cookie ? { cookie } : {} });
 
-test("middleware redirects signed-out visitors and 401s the API", async () => {
-  process.env.SESSION_SECRET = SECRET;
-  process.env.ALLOWED_EMAILS = "owner@example.com";
-  const page = await middleware(req("/trader/"));
+test("only ansari342@gmail.com is allowed by default", () => {
+  env({});
+  assert.deepEqual(DEFAULT_ALLOWED, ["ansari342@gmail.com"]);
+  assert.ok(isAllowed("Ansari342@Gmail.com"));
+  assert.ok(!isAllowed("someone@gmail.com"));
+  assert.deepEqual(allowedList("a@x.com, B@y.com"), ["a@x.com", "b@y.com"]);
+});
+
+test("Google tokens are checked for signature, audience, issuer, expiry and verified email", async () => {
+  assert.equal(await verifyGoogleToken(await googleToken(), CLIENT), "ansari342@gmail.com");
+  await assert.rejects(verifyGoogleToken(await googleToken({ aud: "other-client" }), CLIENT));
+  await assert.rejects(verifyGoogleToken(await googleToken({ iss: "https://evil.test" }), CLIENT));
+  await assert.rejects(verifyGoogleToken(await googleToken({ email_verified: false }), CLIENT));
+  await assert.rejects(verifyGoogleToken(await googleToken({}, otherKey), CLIENT));
+  await assert.rejects(verifyGoogleToken(await googleToken({}, privateKey, "-1m"), CLIENT));
+});
+
+test("a session is valid only for the allowed account", async () => {
+  env({ GOOGLE_CLIENT_ID: CLIENT });
+  assert.equal(await readSession(await googleToken()), "ansari342@gmail.com");
+  assert.equal(await readSession(await googleToken({ email: "someone@gmail.com" })), null);
+  assert.equal(await readSession("garbage"), null);
+  assert.equal(await readSession(""), null);
+});
+
+test("signed 7-day sessions work only when SESSION_SECRET is set, and can't be forged", async () => {
+  env({ GOOGLE_CLIENT_ID: CLIENT, SESSION_SECRET: SECRET });
+  const t = await createSession("ansari342@gmail.com", SECRET);
+  assert.equal(await readSession(t), "ansari342@gmail.com");
+  const [, , sig] = t.split(".");
+  const forged = Buffer.from(JSON.stringify({ e: "ansari342@gmail.com", x: 9999999999 })).toString("base64url");
+  assert.equal(await readSession(`s.${forged}.${sig}`), null);
+  assert.equal(await readSession(t, { now: Date.now() + 8 * 864e5 }), null);
+  env({ GOOGLE_CLIENT_ID: CLIENT });
+  assert.equal(await readSession(t), null);
+});
+
+test("signed-out visitors are sent to the Coming soon page; the API returns 401", async () => {
+  env({ GOOGLE_CLIENT_ID: CLIENT });
+  const page = await middleware(req("/trading/"));
   assert.equal(page.status, 302);
-  assert.equal(page.headers.get("location"), "https://site.test/trader/login.html");
-  const api = await middleware(req("/api/prices?symbols=SPUS"));
-  assert.equal(api.status, 401);
-  const data = await middleware(req("/trader/data/SPUS.json"));
-  assert.equal(data.status, 302);
+  assert.equal(page.headers.get("location"), "https://site.test/trading/login.html");
+  assert.equal((await middleware(req("/trading/data/SPUS.json"))).status, 302);
+  assert.equal((await middleware(req("/api/prices?symbols=SPUS"))).status, 401);
+  assert.equal((await middleware(req("/trading/login.html"))).headers.get("x-middleware-next"), "1");
 });
 
-test("middleware lets the login page through and a valid session in", async () => {
-  process.env.SESSION_SECRET = SECRET;
-  process.env.ALLOWED_EMAILS = "owner@example.com";
-  assert.equal((await middleware(req("/trader/login.html"))).headers.get("x-middleware-next"), "1");
-  const cookie = `other=1; lab_session=${await createSession("owner@example.com", SECRET)}`;
-  assert.equal(getCookie(req("/", cookie)), cookie.split("lab_session=")[1]);
-  assert.equal((await middleware(req("/trader/", cookie))).headers.get("x-middleware-next"), "1");
+test("the allowed account gets in; any other Google account does not", async () => {
+  env({ GOOGLE_CLIENT_ID: CLIENT });
+  const mine = `x=1; lab_session=${await googleToken()}`;
+  assert.equal(getCookie(req("/", mine)).split(".").length, 3);
+  assert.equal((await middleware(req("/trading/", mine))).headers.get("x-middleware-next"), "1");
+  const theirs = `lab_session=${await googleToken({ email: "someone@gmail.com" })}`;
+  assert.equal((await middleware(req("/trading/", theirs))).status, 302);
 });
 
-test("middleware fails closed when the server isn't configured", async () => {
-  const cookie = `lab_session=${await createSession("owner@example.com", SECRET)}`;
-  delete process.env.SESSION_SECRET;
-  assert.equal((await middleware(req("/trader/", cookie))).status, 302);
-  process.env.SESSION_SECRET = SECRET;
-  delete process.env.ALLOWED_EMAILS;
-  assert.equal((await middleware(req("/trader/", cookie))).status, 302);
+test("it fails closed when GOOGLE_CLIENT_ID isn't set", async () => {
+  const cookie = `lab_session=${await googleToken()}`;
+  env({});
+  assert.equal((await middleware(req("/trading/", cookie))).status, 302);
 });
 
-test("Google ID tokens are checked for signature, audience, issuer and verified email", async () => {
-  const { publicKey, privateKey } = await generateKeyPair("RS256");
-  const jwk = { ...(await exportJWK(publicKey)), kid: "k1", alg: "RS256" };
-  const keys = createLocalJWKSet({ keys: [jwk] });
-  const sign = (claims, key = privateKey) =>
-    new SignJWT(claims).setProtectedHeader({ alg: "RS256", kid: "k1" }).setIssuedAt().setExpirationTime("5m").sign(key);
-  const good = { iss: "https://accounts.google.com", aud: "client-123", email: "owner@example.com", email_verified: true };
-  assert.equal(await verifyGoogleToken(await sign(good), "client-123", keys), "owner@example.com");
-  await assert.rejects(verifyGoogleToken(await sign({ ...good, aud: "someone-else" }), "client-123", keys));
-  await assert.rejects(verifyGoogleToken(await sign({ ...good, iss: "https://evil.test" }), "client-123", keys));
-  await assert.rejects(verifyGoogleToken(await sign({ ...good, email_verified: false }), "client-123", keys));
-  const other = await generateKeyPair("RS256");
-  await assert.rejects(verifyGoogleToken(await sign(good, other.privateKey), "client-123", keys));
+const post = (body, headers = {}) =>
+  new Request("https://site.test/api/auth", { method: "POST", headers: { "content-type": "application/json", origin: "https://site.test", ...headers }, body: JSON.stringify(body) });
+
+test("sign-in: allowed account gets a cookie, others get 'coming soon' and no cookie", async () => {
+  env({ GOOGLE_CLIENT_ID: CLIENT });
+  const ok = await auth(post({ credential: await googleToken() }));
+  assert.deepEqual(await ok.json(), { allowed: true });
+  assert.match(ok.headers.get("set-cookie"), /^lab_session=.+; Path=\/; HttpOnly; Secure; SameSite=Lax; Max-Age=3600$/);
+
+  const other = await auth(post({ credential: await googleToken({ email: "someone@gmail.com" }) }));
+  assert.equal(other.status, 200);
+  assert.deepEqual(await other.json(), { allowed: false });
+  assert.equal(other.headers.get("set-cookie"), null);
+
+  assert.equal((await auth(post({ credential: await googleToken({}, otherKey) }))).status, 401);
+  assert.equal((await auth(post({ credential: await googleToken() }, { origin: "https://evil.test" }))).status, 403);
+  env({});
+  assert.equal((await auth(post({ credential: await googleToken() }))).status, 500);
 });

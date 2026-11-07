@@ -1,13 +1,13 @@
 import { test } from "node:test";
 import assert from "node:assert/strict";
 import { readFileSync } from "node:fs";
-import { runBacktest } from "../trader/lib/engine.js";
-import { STRATEGIES, dipBuyer } from "../trader/lib/strategies.js";
-import { summarize, wilson, bootstrapYears } from "../trader/lib/stats.js";
-import { sma, rsi } from "../trader/lib/indicators.js";
-import { randomMarket } from "../trader/lib/data.js";
+import { runBacktest } from "../trading/lib/engine.js";
+import { STRATEGIES, dipBuyer } from "../trading/lib/strategies.js";
+import { summarize, wilson, bootstrapYears } from "../trading/lib/stats.js";
+import { sma, rsi } from "../trading/lib/indicators.js";
+import { randomMarket } from "../trading/lib/data.js";
 
-const load = (s) => JSON.parse(readFileSync(new URL(`../trader/data/${s}.json`, import.meta.url)));
+const load = (s) => JSON.parse(readFileSync(new URL(`../trading/data/${s}.json`, import.meta.url)));
 const series = Object.fromEntries(["SPUS", "HLAL", "UMMA", "SPSK"].map((s) => [s, load(s)]));
 
 // A tiny hand-made market.
