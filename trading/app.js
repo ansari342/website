@@ -416,8 +416,8 @@ document.querySelectorAll(".tab[data-mode]").forEach((tab) =>
       t.classList.toggle("is-active", t === tab);
       t.setAttribute("aria-pressed", String(t === tab));
     });
-    $("#sim").hidden = mode !== "sim";
-    $("#live").hidden = mode !== "live";
+    for (const id of ["sim", "day", "live"]) $(`#${id}`).hidden = mode !== id;
+    document.dispatchEvent(new CustomEvent("mode", { detail: mode }));
   })
 );
 $("#signout").addEventListener("click", async () => {

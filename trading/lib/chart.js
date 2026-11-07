@@ -191,8 +191,9 @@ export class LineChart {
 }
 
 export class Histogram {
-  constructor(container, { height = 200, label } = {}) {
+  constructor(container, { height = 200, label, unit = "simulated years" } = {}) {
     Object.assign(this, setup(container, height));
+    this.unit = unit;
     this.canvas.setAttribute("role", "img");
     if (label) this.canvas.setAttribute("aria-label", label);
     this.bins = [];
@@ -280,7 +281,7 @@ export class Histogram {
     this.draw();
     const b = this.bins[i];
     const pct = (x) => `${x >= 0 ? "+" : ""}${(x * 100).toFixed(0)}%`;
-    this.tip.innerHTML = `<div class="chart__tip-date">${pct(b.from)} to ${pct(b.to)}</div><div class="chart__tip-row">${((b.n / this.total) * 100).toFixed(1)}% of simulated years</div>`;
+    this.tip.innerHTML = `<div class="chart__tip-date">${pct(b.from)} to ${pct(b.to)}</div><div class="chart__tip-row">${((b.n / this.total) * 100).toFixed(1)}% of ${this.unit}</div>`;
     this.tip.hidden = false;
     const x = pad.l + i * bw;
     const tw = this.tip.offsetWidth;

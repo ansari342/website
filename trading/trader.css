@@ -21,6 +21,7 @@
 }
 
 *, *::before, *::after { box-sizing: border-box; }
+[hidden] { display: none !important; }
 html { background: var(--bg); }
 body {
   margin: 0;
@@ -240,6 +241,17 @@ input:focus-visible, select:focus-visible, button:focus-visible, .chip:focus-wit
 .notes p { max-width: 80ch; color: var(--muted); font-size: 15px; }
 .notes p + p { margin-top: 10px; }
 .notes b { color: var(--fg); font-weight: 500; }
+
+/* ---------- Day trades ---------- */
+.verdict-box { padding: 16px 18px; border: 1px solid var(--rule); border-left: 3px solid var(--warn); background: rgba(242, 184, 75, 0.06); font-size: 17px; }
+.verdict-box.good { border-left-color: var(--good); background: rgba(62, 207, 142, 0.06); }
+.verdict-box b { font-weight: 500; }
+.weights { display: grid; gap: 6px; font-size: 14px; }
+.weights .w { display: grid; grid-template-columns: minmax(0, 1.3fr) 1fr; gap: 10px; align-items: center; }
+.weights .bar { position: relative; height: 10px; background: var(--grid); }
+.weights .bar i { position: absolute; top: 0; bottom: 0; background: var(--series-1); border-radius: 2px; }
+.weights .bar::after { content: ""; position: absolute; left: 50%; top: -3px; bottom: -3px; width: 1px; background: var(--muted); }
+.calbar { display: inline-block; height: 8px; background: var(--series-2); border-radius: 2px; vertical-align: middle; margin-right: 6px; }
 
 /* ---------- Live ---------- */
 .live { padding: 32px var(--pad) 64px; }

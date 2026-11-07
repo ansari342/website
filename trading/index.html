@@ -18,6 +18,7 @@
     <div class="head__console mono"><span class="blink">●</span><span id="who">Trading lab</span></div>
     <nav class="head__menu mono" aria-label="Mode">
       <button class="tab is-active" data-mode="sim" aria-pressed="true">Simulation</button>
+      <button class="tab" data-mode="day" aria-pressed="false">Day trades</button>
       <button class="tab" data-mode="live" aria-pressed="false">Live <span class="lock">🔒</span></button>
       <button class="tab" id="signout">Lock</button>
     </nav>
@@ -151,6 +152,84 @@
     </main>
   </div>
 
+  <!-- Day-trading evaluation -->
+  <div id="day" class="layout" hidden>
+    <form id="day-controls" class="panel" autocomplete="off">
+      <fieldset>
+        <legend class="mono">01 · How it trades</legend>
+        <p class="hint" style="margin-top:0">Every morning, a model estimates each stock's chance of closing above its open. It buys at the open only when that chance clears your bar, and sells at the close. It never holds overnight and never shorts: a likely down day means staying in cash.</p>
+      </fieldset>
+      <fieldset>
+        <legend class="mono">02 · What it can trade</legend>
+        <div id="day-universe" class="chips"></div>
+      </fieldset>
+      <fieldset>
+        <legend class="mono">03 · Evaluation</legend>
+        <div class="row2">
+          <label>Weeks to sample<input type="number" id="day-weeks" min="5" max="260" step="1" value="52" /></label>
+          <label>Random seed<input type="number" id="day-seed" min="1" step="1" value="7" /></label>
+        </div>
+        <p class="hint">Weeks are drawn at random from the last 5 years. The model is retrained each month on the 2 years before, so it never sees the week it's tested on.</p>
+      </fieldset>
+      <fieldset>
+        <legend class="mono">04 · Trading rules</legend>
+        <div class="row2">
+          <label>Trade if chance of a gain ≥ (%)<input type="number" id="day-threshold" min="50" max="80" step="1" value="55" /></label>
+          <label>Max stocks per day<input type="number" id="day-max" min="1" max="10" step="1" value="3" /></label>
+        </div>
+        <div class="row2">
+          <label>Trading cost per fill (bps)<input type="number" id="day-cost" min="0" max="50" step="1" value="5" /></label>
+          <label>Money per week ($)<input type="number" id="day-capital" min="100" step="100" value="10000" /></label>
+        </div>
+      </fieldset>
+      <div class="actions">
+        <button type="submit" class="btn btn--primary" id="day-run">Run evaluation</button>
+      </div>
+    </form>
+
+    <main class="results" aria-live="polite">
+      <p class="status mono" id="day-status">Open this tab to run the evaluation.</p>
+      <div class="verdict-box" id="day-verdict" hidden></div>
+      <div class="kpis" id="day-kpis"></div>
+
+      <section class="card">
+        <header class="card__head">
+          <h2 class="mono">Sampled weeks, back to back</h2>
+          <div class="legend mono" id="day-legend"></div>
+        </header>
+        <div id="day-chart"></div>
+        <h3 class="mono sub">Spread of weekly results</h3>
+        <div id="day-hist"></div>
+        <p class="hint">Coral bars are weeks that made money; gray bars lost money.</p>
+      </section>
+
+      <div class="grid2">
+        <section class="card">
+          <header class="card__head"><h2 class="mono">Does "70% chance" mean 70%?</h2></header>
+          <div class="table-wrap"><table class="table" id="day-cal"></table></div>
+          <p class="hint">Every stock-day in the last 5 years, grouped by the model's predicted chance of a gain after costs. A trustworthy model's "actual" column tracks its "predicted" column.</p>
+        </section>
+        <section class="card">
+          <header class="card__head"><h2 class="mono">What the model leans on</h2></header>
+          <div id="day-weights"></div>
+          <p class="hint">From the most recent monthly refit. Bars to the right push the predicted chance up; bars to the left push it down.</p>
+        </section>
+      </div>
+
+      <section class="card">
+        <header class="card__head"><h2 class="mono">Week by week</h2><span class="mono muted" id="day-count"></span></header>
+        <div class="table-wrap"><table class="table" id="day-weeks-table"></table></div>
+      </section>
+
+      <section class="card notes">
+        <header class="card__head"><h2 class="mono">Lab notes: other day-trade tests</h2></header>
+        <p><b>Intraday momentum</b> (if a stock is up in its first hour, buy for the last half hour). Tested on 2 years of hourly prices for the same 10 stocks and funds, about 1,600 stock-days. It ran the wrong way: after an up first hour, the last half hour averaged −0.045% and rose only 46% of the time. The reverse (buying after a down first hour) averaged +0.012%, far below a round-trip trading cost.</p>
+        <p><b>Gap fill</b> (buy a sharp gap down at the open, sell the same day) is on the Simulation tab. It wins most trades but loses money after costs.</p>
+        <p>For quicker trades that have held up, the closest is <b>Dip Buyer</b> on the Simulation tab: it holds for 3–4 days on average and has won about two thirds of its trades.</p>
+      </section>
+    </main>
+  </div>
+
   <!-- Mode 2: Live (not built yet) -->
   <section id="live" class="live" hidden>
     <div class="card">
@@ -172,5 +251,6 @@
   </footer>
 
   <script type="module" src="app.js"></script>
+  <script type="module" src="day.js"></script>
 </body>
 </html>
