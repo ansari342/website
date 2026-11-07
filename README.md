@@ -47,8 +47,8 @@ private trading lab: a halal (long-only, cash-only) strategy simulator.
    Project → Settings → **Environment Variables**, add `GOOGLE_CLIENT_ID` with
    that value, then redeploy.
 
-That's it. Until `GOOGLE_CLIENT_ID` is set, the tab shows "Coming soon" to
-everyone, including you.
+The site's client ID is already built into `lib/google.js`, so this step is
+done. Set `GOOGLE_CLIENT_ID` only if you ever replace it with a different one.
 
 Optional settings:
 - `SESSION_SECRET` (a long random string): keeps you signed in for 7 days

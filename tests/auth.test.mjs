@@ -1,7 +1,7 @@
 import { test, before } from "node:test";
 import assert from "node:assert/strict";
 import { SignJWT, generateKeyPair, exportJWK, createLocalJWKSet } from "jose";
-import { setGoogleKeys, verifyGoogleToken, allowedList, isAllowed, DEFAULT_ALLOWED } from "../lib/google.js";
+import { setGoogleKeys, verifyGoogleToken, allowedList, isAllowed, DEFAULT_ALLOWED, DEFAULT_CLIENT_ID, clientId } from "../lib/google.js";
 import { createSession, readSession, getCookie } from "../lib/session.js";
 import middleware from "../middleware.js";
 import auth from "../api/auth.js";
@@ -88,10 +88,14 @@ test("the allowed account gets in; any other Google account does not", async () 
   assert.equal((await middleware(req("/trading/", theirs))).status, 302);
 });
 
-test("it fails closed when GOOGLE_CLIENT_ID isn't set", async () => {
-  const cookie = `lab_session=${await googleToken()}`;
+test("without GOOGLE_CLIENT_ID the site's built-in client ID is used", async () => {
   env({});
-  assert.equal((await middleware(req("/trading/", cookie))).status, 302);
+  assert.equal(clientId(), DEFAULT_CLIENT_ID);
+  assert.match(DEFAULT_CLIENT_ID, /^1064382510894-.+\.apps\.googleusercontent\.com$/);
+  // A token issued for some other app is rejected.
+  assert.equal((await middleware(req("/trading/", `lab_session=${await googleToken()}`))).status, 302);
+  const ours = `lab_session=${await googleToken({ aud: DEFAULT_CLIENT_ID })}`;
+  assert.equal((await middleware(req("/trading/", ours))).headers.get("x-middleware-next"), "1");
 });
 
 const post = (body, headers = {}) =>
@@ -111,5 +115,5 @@ test("sign-in: allowed account gets a cookie, others get 'coming soon' and no co
   assert.equal((await auth(post({ credential: await googleToken({}, otherKey) }))).status, 401);
   assert.equal((await auth(post({ credential: await googleToken() }, { origin: "https://evil.test" }))).status, 403);
   env({});
-  assert.equal((await auth(post({ credential: await googleToken() }))).status, 500);
+  assert.equal((await auth(post({ credential: await googleToken() }))).status, 401);
 });

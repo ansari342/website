@@ -1,7 +1,6 @@
 // Vercel Routing Middleware: keeps the trading lab private.
 // Only an allowed Google account gets in. Everyone else is sent to the
-// "Coming soon" page (or gets a 401 from the price API). It fails closed: if
-// GOOGLE_CLIENT_ID isn't set, nobody gets in.
+// "Coming soon" page (or gets a 401 from the price API).
 
 import { readSession, getCookie } from "./lib/session.js";
 

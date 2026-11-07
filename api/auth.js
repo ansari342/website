@@ -3,7 +3,7 @@
 // { allowed: true }. Any other Google account gets { allowed: false } and the
 // page shows "Coming soon".
 
-import { verifyGoogleToken, isAllowed } from "../lib/google.js";
+import { verifyGoogleToken, isAllowed, clientId } from "../lib/google.js";
 import { createSession, sessionCookie, GOOGLE_MAX_AGE } from "../lib/session.js";
 
 export const config = { runtime: "edge" };
@@ -18,8 +18,7 @@ export default async function handler(request) {
   const origin = request.headers.get("origin");
   if (origin && new URL(origin).host !== new URL(request.url).host) return json({ error: "Bad origin" }, 403);
 
-  const { GOOGLE_CLIENT_ID, SESSION_SECRET } = process.env;
-  if (!GOOGLE_CLIENT_ID) return json({ error: "Sign-in is not configured" }, 500);
+  const { SESSION_SECRET } = process.env;
 
   let credential;
   try {
@@ -30,7 +29,7 @@ export default async function handler(request) {
 
   let email;
   try {
-    email = await verifyGoogleToken(credential, GOOGLE_CLIENT_ID);
+    email = await verifyGoogleToken(credential, clientId());
   } catch (_) {
     return json({ error: "Google sign-in could not be verified" }, 401);
   }
