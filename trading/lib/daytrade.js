@@ -1,13 +1,17 @@
-// Probability day trading: each morning, estimate the chance that each stock
-// closes above its open. Buy at the open only when that chance is high enough,
-// sell at the close the same day. Never hold overnight, never short (a likely
-// down day just means staying in cash).
+// Probability trader. Each morning, estimate for every stock the chance that
+// a trade bought at today's open ends with a profit after costs, under the
+// same exits as Dip Buyer: sell at the next open after the close rises above
+// its short average, after a maximum number of days, or at a protective stop.
+// Buy only when that chance clears a high bar (75% by default), holding up to
+// 10 stocks at once. Long only, cash only: no shorting, no borrowing.
 //
 // The model is a logistic regression refit every month on the previous two
-// years only (walk-forward), so every prediction uses only information that
-// was available before that day's open.
+// years. A past trade only becomes a training example once it has finished,
+// so the model never learns from outcomes that were still unknown that day.
 
-import { mulberry32, wilson } from "./stats.js";
+import { mulberry32, wilson, summarize, drawdowns } from "./stats.js";
+import { runBacktest } from "./engine.js";
+import { sma } from "./indicators.js";
 
 export const FEATURES = [
   { key: "gap", label: "Opening gap vs yesterday's close" },
@@ -21,6 +25,8 @@ export const FEATURES = [
   { key: "mon", label: "Monday" },
   { key: "fri", label: "Friday" },
 ];
+
+export const DEFAULTS = { threshold: 0.75, maxPositions: 10, maxHold: 10, stopPct: 0.1, exitLen: 5, costBps: 5 };
 
 // Feature rows for one series. Row i describes day i using only data known at
 // day i's open: earlier closes, plus today's opening price.
@@ -131,89 +137,191 @@ function solve(A, b) {
   return M.map((row, i) => row[n] / row[i]);
 }
 
-// Walk-forward predictions for every symbol and day from `start` on.
-// Returns { days: [{date, picks:[{sym, p, intraday}], all:[...]}], models }
-export function walkForward(series, symbols, { start, end = null, trainDays = 504, costBps = 5, refitEvery = "month" } = {}) {
-  const cost = (2 * costBps) / 10000; // buy and sell
+
+// What happens to a trade bought at day i's open, using the exit rules.
+// Returns null if the trade hadn't finished by the end of the data.
+export function tradeOutcome(s, i, exitAvg, { maxHold, stopPct, costBps }) {
+  const slip = costBps / 10000;
+  const entry = s.o[i] * (1 + slip);
+  const stop = entry * (1 - stopPct);
+  // Dividends are paid on ex-dates after the entry day while still holding at
+  // the close (a stop or an exit at the open comes before that day's dividend).
+  let divs = 0;
+  const done = (px, exit, why) => ({ ret: (px * (1 - slip) + divs) / entry - 1, exit, why });
+  for (let k = i; k < s.c.length; k++) {
+    if (k > i && s.o[k] <= stop) return done(s.o[k], k, "stop (gap)");
+    if (s.l[k] <= stop) return done(Math.min(stop, s.o[k]), k, "stop");
+    if (k > i && s.div && s.div[s.d[k]]) divs += s.div[s.d[k]];
+    const bounce = exitAvg[k] != null && s.c[k] > exitAvg[k];
+    if (bounce || k - i + 1 >= maxHold) {
+      if (k + 1 >= s.c.length) return null;
+      return done(s.o[k + 1], k + 1, bounce ? "bounce" : "time limit");
+    }
+  }
+  return null;
+}
+
+// Walk-forward probabilities for every symbol and day from `start` on.
+export function walkForward(series, symbols, opts = {}) {
+  const o = { ...DEFAULTS, trainDays: 504, ...opts };
+  const { start, end = null } = o;
+  const keys = FEATURES.map((f) => f.key);
+  const vec = (r) => keys.map((k) => r[k]);
   const rows = {};
+  const outcomes = {};
   const idx = {};
   for (const s of symbols) {
-    rows[s] = featureRows(series[s]);
-    idx[s] = new Map(series[s].d.map((d, i) => [d, i]));
+    const ser = series[s];
+    rows[s] = featureRows(ser);
+    const avg = sma(ser.c, o.exitLen);
+    outcomes[s] = ser.c.map((_, i) => (rows[s][i] ? tradeOutcome(ser, i, avg, o) : null));
+    idx[s] = new Map(ser.d.map((d, i) => [d, i]));
   }
   const dateSet = new Set();
   for (const s of symbols) for (const d of series[s].d) if (d >= start && (!end || d <= end)) dateSet.add(d);
   const dates = [...dateSet].sort();
-  const keys = FEATURES.map((f) => f.key);
-  const vec = (r) => keys.map((k) => r[k]);
 
   let model = null;
   let lastFit = null;
   const models = [];
-  const days = [];
+  const probs = new Map(); // date -> Map(sym -> p)
+  const samples = []; // every stock-day: {date, sym, p, outcome}
   for (const date of dates) {
-    const period = refitEvery === "month" ? date.slice(0, 7) : date;
-    if (period !== lastFit) {
-      // Train on the previous `trainDays` calendar-trading days, strictly before today.
-      const fromT = Date.parse(date) - trainDays * 1.45 * 864e5;
+    const month = date.slice(0, 7);
+    if (month !== lastFit) {
+      const fromT = Date.parse(date) - o.trainDays * 1.45 * 864e5;
       const X = [];
       const y = [];
       for (const s of symbols) {
         const ser = series[s];
         for (let i = 0; i < ser.d.length && ser.d[i] < date; i++) {
           const r = rows[s][i];
-          if (!r || Date.parse(ser.d[i]) < fromT) continue;
+          const out = outcomes[s][i];
+          // Only trades that had already finished before today.
+          if (!r || !out || ser.d[out.exit] >= date || Date.parse(ser.d[i]) < fromT) continue;
           X.push(vec(r));
-          y.push(r.intraday > cost ? 1 : 0); // "worth trading": up by more than costs
+          y.push(out.ret > 0 ? 1 : 0);
         }
       }
       if (X.length > 200) {
         model = fitLogistic(X, y, { lambda: 5 });
         models.push({ from: date, n: X.length, weights: model.weights, base: y.reduce((a, b) => a + b, 0) / y.length });
       }
-      lastFit = period;
+      lastFit = month;
     }
     if (!model) continue;
-    const all = [];
+    const m = new Map();
     for (const s of symbols) {
       const i = idx[s].get(date);
-      if (i === undefined) continue;
-      const r = rows[s][i];
-      if (!r) continue;
-      all.push({ sym: s, p: model.predict(vec(r)), intraday: r.intraday });
+      if (i === undefined || !rows[s][i]) continue;
+      const p = model.predict(vec(rows[s][i]));
+      m.set(s, p);
+      samples.push({ date, sym: s, p, outcome: outcomes[s][i] });
     }
-    if (all.length) days.push({ date, all });
+    if (m.size) probs.set(date, m);
   }
-  return { days, models, cost };
+  return { probs, samples, models, dates: [...probs.keys()], opts: o };
 }
 
-// Daily strategy return: equal-weight the top `maxPositions` stocks whose
-// probability clears `threshold`; cash otherwise.
-export function dailyReturns(wf, { threshold = 0.55, maxPositions = 3 } = {}) {
-  return wf.days.map((d) => {
-    const picks = d.all.filter((x) => x.p >= threshold).sort((a, b) => b.p - a.p).slice(0, maxPositions);
-    const r = picks.length ? picks.reduce((a, x) => a + (x.intraday - wf.cost), 0) / maxPositions : 0;
-    // Baseline: day-trade every stock, every day, with no model.
-    const every = d.all.reduce((a, x) => a + (x.intraday - wf.cost), 0) / d.all.length;
-    return { date: d.date, r, trades: picks.map((x) => ({ ...x, net: x.intraday - wf.cost })), every };
-  });
+// Engine strategy: buy at the open when p >= threshold; Dip Buyer exits.
+function exitRules(o) {
+  return {
+    prepare: (s) => ({ exit: sma(s.c, o.exitLen) }),
+    onClose(ctx) {
+      const orders = [];
+      for (const [s] of ctx.positions) {
+        const i = ctx.bar(s);
+        if (i < 0) continue;
+        const avg = ctx.ind[s].exit[i];
+        if (avg != null && ctx.series[s].c[i] > avg) orders.push({ side: "sell", sym: s, reason: "bounce" });
+        else if (ctx.daysHeld(s) >= o.maxHold - 1) orders.push({ side: "sell", sym: s, reason: "time limit" });
+      }
+      return orders;
+    },
+  };
+}
+
+export function probabilityStrategy(wf, opts = {}) {
+  const o = { ...wf.opts, ...opts };
+  return {
+    id: "prob",
+    name: "Probability trader",
+    fields: [],
+    ...exitRules(o),
+    onOpen(ctx) {
+      const m = wf.probs.get(ctx.date);
+      if (!m) return [];
+      const slots = o.maxPositions - ctx.positions.size;
+      if (slots <= 0) return [];
+      return [...m.entries()]
+        .filter(([s, p]) => p >= o.threshold && !ctx.held(s) && ctx.bar(s) >= 0)
+        .sort((a, b) => b[1] - a[1])
+        .slice(0, slots)
+        .map(([s, p]) => ({ side: "buy", sym: s, weight: 1 / o.maxPositions, stopPct: o.stopPct, reason: `${Math.round(p * 100)}% chance` }));
+    },
+  };
+}
+
+// Baseline: same exits and position sizes, but entries picked at random at the
+// same overall rate as the model's.
+export function randomStrategy(wf, rate, opts = {}, seed = 99) {
+  const o = { ...wf.opts, ...opts };
+  const rand = mulberry32(seed);
+  return {
+    id: "random",
+    name: "Random entries",
+    fields: [],
+    ...exitRules(o),
+    onOpen(ctx) {
+      const m = wf.probs.get(ctx.date);
+      if (!m) return [];
+      const slots = o.maxPositions - ctx.positions.size;
+      const picks = [...m.keys()].filter((s) => !ctx.held(s) && ctx.bar(s) >= 0 && rand() < rate);
+      return picks.slice(0, Math.max(0, slots)).map((s) => ({ side: "buy", sym: s, weight: 1 / o.maxPositions, stopPct: o.stopPct, reason: "random" }));
+    },
+  };
 }
 
 const weekKey = (date) => {
   const t = Date.parse(date + "T00:00:00Z");
   const wd = new Date(t).getUTCDay() || 7;
-  return new Date(t - (wd - 1) * 864e5).toISOString().slice(0, 10); // Monday
+  return new Date(t - (wd - 1) * 864e5).toISOString().slice(0, 10);
 };
 
-// Sample `weeks` random weeks and score each one.
-export function evaluateWeeks(series, symbols, daily, { weeks = 52, seed = 7, capital = 10000, threshold = 0.55, maxPositions = 3, costBps = 5, benchmark = "SPUS" } = {}) {
-  const byWeek = new Map();
-  for (const d of daily) {
-    const k = weekKey(d.date);
-    if (!byWeek.has(k)) byWeek.set(k, []);
-    byWeek.get(k).push(d);
-  }
-  const all = [...byWeek.keys()].filter((k) => byWeek.get(k).length >= 3).sort();
+// Weekly returns of an equity curve: change from the previous week's last close.
+function weeklyReturns(dates, equity) {
+  const out = new Map();
+  let prevEnd = null;
+  let cur = null;
+  dates.forEach((d, i) => {
+    const k = weekKey(d);
+    if (cur !== k) {
+      if (cur !== null) prevEnd = equity[i - 1];
+      cur = k;
+    }
+    if (prevEnd !== null) out.set(k, { ret: equity[i] / prevEnd - 1, days: (out.get(k)?.days || 0) + 1 });
+  });
+  return out;
+}
+
+// Full evaluation: run the model, random entries, Dip Buyer and buy-and-hold
+// over the whole period, then score a random sample of weeks.
+export function evaluate(series, symbols, wf, { threshold = 0.75, maxPositions = 10, weeks = 52, seed = 7, capital = 10000, benchmark = "SPUS", dipBuyer = null } = {}) {
+  const o = { ...wf.opts, threshold, maxPositions };
+  const start = wf.dates[0];
+  const run = (strategy) => runBacktest({ series, symbols, strategy, capital, slippageBps: o.costBps, startDate: start, benchmark });
+  const model = run(probabilityStrategy(wf, o));
+  // Match the random baseline's entry rate to the model's.
+  const stockDays = wf.samples.length || 1;
+  const rate = Math.max(model.trades.length / stockDays, 0.002);
+  const random = run(randomStrategy(wf, rate, o, seed + 1000));
+  const dip = dipBuyer ? run({ ...dipBuyer, fields: dipBuyer.fields }) : null;
+
+  const wM = weeklyReturns(model.dates, model.equity);
+  const wR = weeklyReturns(random.dates, random.equity);
+  const wH = weeklyReturns(model.dates, model.benchmark);
+  const wD = dip ? weeklyReturns(dip.dates, dip.equity) : null;
+  const all = [...wM.keys()].filter((k) => wM.get(k).days >= 3);
   const rand = mulberry32(seed);
   const pool = [...all];
   for (let i = pool.length - 1; i > 0; i--) {
@@ -221,97 +329,76 @@ export function evaluateWeeks(series, symbols, daily, { weeks = 52, seed = 7, ca
     [pool[i], pool[j]] = [pool[j], pool[i]];
   }
   const chosen = pool.slice(0, Math.min(weeks, pool.length)).sort();
-  const cost = (2 * costBps) / 10000;
-  const bench = series[benchmark];
-  const bIdx = bench ? new Map(bench.d.map((d, i) => [d, i])) : null;
-  const coin = mulberry32(seed + 99);
-
-  const rows = chosen.map((wk) => {
-    const ds = byWeek.get(wk);
-    let eq = 1;
-    let eqEvery = 1;
-    let eqCoin = 1;
-    const trades = [];
-    for (const d of ds) {
-      eq *= 1 + d.r;
-      eqEvery *= 1 + d.every;
-      // Coin-flip baseline: same number of trades as the model, random stocks.
-      const n = d.trades.length;
-      const pick = [...symbols].sort(() => coin() - 0.5).slice(0, n);
-      const coinR = n ? pick.reduce((a, s) => {
-        const i = series[s].d.indexOf(d.date);
-        return a + (i >= 0 ? series[s].c[i] / series[s].o[i] - 1 - cost : 0);
-      }, 0) / maxPositions : 0;
-      eqCoin *= 1 + coinR;
-      trades.push(...d.trades.map((t) => ({ ...t, date: d.date })));
-    }
-    let hold = null;
-    if (bIdx) {
-      const i0 = bIdx.get(ds[0].date);
-      const i1 = bIdx.get(ds.at(-1).date);
-      if (i0 !== undefined && i1 !== undefined) hold = bench.c[i1] / bench.o[i0] - 1;
-    }
+  const tradesIn = (k) => model.trades.filter((t) => weekKey(t.entryDate) === k);
+  const rows = chosen.map((k) => {
+    const t = tradesIn(k);
     return {
-      week: wk,
-      ret: eq - 1,
-      pnl: (eq - 1) * capital,
-      every: eqEvery - 1,
-      coin: eqCoin - 1,
-      hold,
-      trades: trades.length,
-      wins: trades.filter((t) => t.net > 0).length,
+      week: k,
+      ret: wM.get(k).ret,
+      pnl: wM.get(k).ret * capital,
+      random: wR.get(k)?.ret ?? 0,
+      dip: wD?.get(k)?.ret ?? null,
+      hold: wH.get(k)?.ret ?? null,
+      opened: t.length,
+      won: t.filter((x) => x.pnl > 0).length,
     };
   });
-
-  const trades = rows.reduce((a, r) => a + r.trades, 0);
-  const wins = rows.reduce((a, r) => a + r.wins, 0);
   const mean = (a) => (a.length ? a.reduce((x, y) => x + y, 0) / a.length : 0);
   const sd = (a) => {
     const m = mean(a);
     return Math.sqrt(a.reduce((x, y) => x + (y - m) ** 2, 0) / Math.max(a.length - 1, 1));
   };
   const rets = rows.map((r) => r.ret);
-  const upWeeks = rows.filter((r) => r.ret > 0).length;
-  const flatWeeks = rows.filter((r) => r.trades === 0).length;
-  const tradedWeeks = rows.length - flatWeeks;
+  const se = sd(rets) / Math.sqrt(rets.length || 1);
+  const trades = model.trades;
+  const wins = trades.filter((t) => t.pnl > 0).length;
+  const stats = summarize(model);
   return {
     rows,
+    model,
+    random,
+    dip,
     summary: {
       weeks: rows.length,
-      tradedWeeks,
-      upWeeks,
-      upRate: tradedWeeks ? upWeeks / tradedWeeks : 0,
-      upCI: wilson(upWeeks, tradedWeeks),
+      upWeeks: rows.filter((r) => r.ret > 0).length,
+      flatWeeks: rows.filter((r) => Math.abs(r.ret) < 1e-12).length,
       meanWeekly: mean(rets),
-      // Rough 95% range for the true average weekly return.
-      meanCI: [mean(rets) - 1.96 * (sd(rets) / Math.sqrt(rets.length || 1)), mean(rets) + 1.96 * (sd(rets) / Math.sqrt(rets.length || 1))],
-      totalPnl: rows.reduce((a, r) => a + r.pnl, 0),
+      meanCI: [mean(rets) - 1.96 * se, mean(rets) + 1.96 * se],
+      meanRandom: mean(rows.map((r) => r.random)),
+      meanDip: wD ? mean(rows.filter((r) => r.dip != null).map((r) => r.dip)) : null,
+      meanHold: mean(rows.filter((r) => r.hold != null).map((r) => r.hold)),
+      beatRandom: rows.filter((r) => r.ret > r.random).length / (rows.length || 1),
       bestWeek: Math.max(...rets),
       worstWeek: Math.min(...rets),
-      trades,
-      winRate: trades ? wins / trades : 0,
-      winCI: wilson(wins, trades),
-      meanEvery: mean(rows.map((r) => r.every)),
-      meanCoin: mean(rows.map((r) => r.coin)),
-      meanHold: mean(rows.filter((r) => r.hold != null).map((r) => r.hold)),
-      beatCoin: rows.filter((r) => r.ret > r.coin).length / (rows.length || 1),
+      trades: trades.length,
+      winRate: trades.length ? wins / trades.length : 0,
+      winCI: wilson(wins, trades.length),
+      avgTrade: trades.length ? mean(trades.map((t) => t.ret)) : 0,
+      avgDays: trades.length ? mean(trades.map((t) => t.days)) : 0,
+      cagr: stats.cagr,
+      maxDrawdown: stats.maxDrawdown,
+      exposure: stats.exposure,
+      randomCagr: summarize(random).cagr,
+      dipCagr: dip ? summarize(dip).cagr : null,
+      holdCagr: Math.pow(model.benchmark.at(-1) / capital, 1 / stats.years) - 1,
+      holdDrawdown: Math.min(...drawdowns(model.benchmark)),
+      years: stats.years,
     },
   };
 }
 
-// Calibration: when the model said "x% chance of a worthwhile up day", how
-// often did it actually happen? Uses every stock-day, not just trades.
-export function calibration(wf, buckets = [0, 0.45, 0.5, 0.55, 0.6, 0.65, 1]) {
+// Calibration over every stock-day: when the model said x%, how often would a
+// trade bought that morning actually have made money?
+export function calibration(wf, buckets = [0, 0.5, 0.6, 0.65, 0.7, 0.75, 0.8, 1]) {
   const out = buckets.slice(0, -1).map((lo, i) => ({ lo, hi: buckets[i + 1], n: 0, hits: 0, pSum: 0, retSum: 0 }));
-  for (const d of wf.days) {
-    for (const x of d.all) {
-      const b = out.find((o) => x.p >= o.lo && x.p < o.hi);
-      if (!b) continue;
-      b.n++;
-      b.pSum += x.p;
-      b.hits += x.intraday > wf.cost ? 1 : 0;
-      b.retSum += x.intraday - wf.cost;
-    }
+  for (const x of wf.samples) {
+    if (!x.outcome) continue;
+    const b = out.find((q) => x.p >= q.lo && x.p < q.hi);
+    if (!b) continue;
+    b.n++;
+    b.pSum += x.p;
+    b.hits += x.outcome.ret > 0 ? 1 : 0;
+    b.retSum += x.outcome.ret;
   }
   return out.filter((b) => b.n).map((b) => ({ ...b, predicted: b.pSum / b.n, actual: b.hits / b.n, avgNet: b.retSum / b.n }));
 }
