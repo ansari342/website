@@ -52,6 +52,13 @@ old one.
 | `trading/lib/` | Backtest engine, strategies, statistics, charts |
 | `trading/data/` | Saved price history, used when live prices are unavailable |
 
+The lab has four tabs: **Simulation** (strategy backtests), **Quick trades**
+(the probability trader, scored on sampled weeks), **Tuning** (hill-climbed
+settings, tuned on 2021–24 and tested on 2024–26) and **Live** (not built yet).
+Crypto (spot only) can be selected alongside the halal funds; scholars differ on
+whether it is permissible. Re-run the tuning with `node scripts/hillclimb.mjs`
+(a few minutes); it rewrites `trading/data/hillclimb.json`.
+
 Refresh the saved prices by downloading Yahoo chart JSON files into a folder and
 running `node scripts/build-snapshot.mjs <folder>`. Run the tests with `npm test`.
 

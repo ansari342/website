@@ -7,7 +7,7 @@ import { normalizeYahoo } from "../lib/yahoo.js";
 
 export const config = { runtime: "edge" };
 
-const ALLOWED = new Set(["SPUS", "HLAL", "UMMA", "SPWO", "SPTE", "SPRE", "SPSK", "AAPL", "MSFT", "NVDA", "ADBE", "ASML", "TSM"]);
+const ALLOWED = new Set(["SPUS", "HLAL", "UMMA", "SPWO", "SPTE", "SPRE", "SPSK", "AAPL", "MSFT", "NVDA", "ADBE", "ASML", "TSM", "BTC-USD", "ETH-USD", "SOL-USD", "XRP-USD", "ADA-USD", "LTC-USD", "LINK-USD", "AVAX-USD", "DOT-USD", "BCH-USD"]);
 
 async function fetchSymbol(sym) {
   const now = Math.floor(Date.now() / 1000);
@@ -20,7 +20,7 @@ async function fetchSymbol(sym) {
 export default async function handler(request) {
   const url = new URL(request.url);
   const symbols = [...new Set((url.searchParams.get("symbols") || "").toUpperCase().split(",").map((s) => s.trim()).filter(Boolean))];
-  if (!symbols.length || symbols.length > 13 || symbols.some((s) => !ALLOWED.has(s))) {
+  if (!symbols.length || symbols.length > 24 || symbols.some((s) => !ALLOWED.has(s))) {
     return new Response(JSON.stringify({ error: "Unknown or too many symbols" }), { status: 400, headers: { "content-type": "application/json" } });
   }
   try {

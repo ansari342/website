@@ -290,15 +290,19 @@ function renderHalal() {
   const { result, symbols } = last;
   const kinds = symbols.map((s) => UNIVERSE.find((u) => u.sym === s)?.kind);
   const stocks = symbols.filter((_, i) => kinds[i] === "Stock");
+  const coins = symbols.filter((_, i) => kinds[i] === "Crypto");
   const maxExposure = Math.max(...result.exposure);
   const item = (ok, text, note) => `<li class="${ok ? "ok" : "warn"}"><span class="ic">${ok ? "✓" : "!"}</span><span>${text}<small>${note}</small></span></li>`;
   $("#checks").innerHTML = [
     item(true, "Long only", "Only buys and later sells shares it owns. No short selling."),
     item(maxExposure <= 1.0001, "No borrowing or leverage", `At most ${pctPlain(maxExposure)} of the account was invested at any time.`),
-    item(true, "No options, futures or other derivatives", "Ordinary shares of funds only."),
+    item(true, "No options, futures or other derivatives", coins.length ? "Spot holdings only: no margin, futures, perpetuals or crypto lending." : "Ordinary shares of funds only."),
     item(true, "No interest", "Uninvested cash earns nothing. In live trading, the broker's cash interest must be turned off or given away."),
+    ...(coins.length ? [item(false, "Crypto: scholars differ", `${coins.join(", ")}: scholars disagree on whether cryptocurrencies are permissible. Check with a scholar you trust before trading them.`)] : []),
     stocks.length
       ? item(false, "Shariah screening: check the stocks", `${stocks.join(", ")} must be checked against a current screen (for example Zoya or Musaffa) before trading. Status can change every quarter.`)
+      : coins.length && coins.length === symbols.length
+      ? ""
       : item(true, "Shariah-screened funds", "Every fund here follows a published Shariah standard with a supervisory board."),
   ].join("");
   const rate = Math.max(0, state.purify || 0) / 100;
@@ -416,7 +420,7 @@ document.querySelectorAll(".tab[data-mode]").forEach((tab) =>
       t.classList.toggle("is-active", t === tab);
       t.setAttribute("aria-pressed", String(t === tab));
     });
-    for (const id of ["sim", "day", "live"]) $(`#${id}`).hidden = mode !== id;
+    for (const id of ["sim", "day", "tune", "live"]) $(`#${id}`).hidden = mode !== id;
     document.dispatchEvent(new CustomEvent("mode", { detail: mode }));
   })
 );

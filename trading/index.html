@@ -19,6 +19,7 @@
     <nav class="head__menu mono" aria-label="Mode">
       <button class="tab is-active" data-mode="sim" aria-pressed="true">Simulation</button>
       <button class="tab" data-mode="day" aria-pressed="false">Quick trades</button>
+      <button class="tab" data-mode="tune" aria-pressed="false">Tuning</button>
       <button class="tab" data-mode="live" aria-pressed="false">Live <span class="lock">🔒</span></button>
       <button class="tab" id="signout">Lock</button>
     </nav>
@@ -171,7 +172,11 @@
         </div>
         <div class="row2">
           <label>Sell after at most (days)<input type="number" id="day-hold" min="1" max="30" step="1" value="10" /></label>
-          <label>Protective stop (%)<input type="number" id="day-stop" min="1" max="30" step="1" value="10" /></label>
+          <label>Protective stop (%)<input type="number" id="day-stop" min="1" max="30" step="0.5" value="10" /></label>
+        </div>
+        <div class="row2">
+          <label>Size per stock (% of account)<input type="number" id="day-size" min="1" max="100" step="1" value="10" /></label>
+          <label>Sell above average of (days)<input type="number" id="day-exit" min="2" max="20" step="1" value="5" /></label>
         </div>
         <div class="row2">
           <label>Trading cost per fill (bps)<input type="number" id="day-cost" min="0" max="50" step="1" value="5" /></label>
@@ -239,6 +244,26 @@
     </main>
   </div>
 
+  <!-- Hill-climb tuning results -->
+  <section id="tune" class="tune" hidden>
+    <div class="tune__intro">
+      <p class="mono label">Hill climbing · tuned on the past, tested on the future</p>
+      <p class="lede">Each strategy's settings were tuned by hill climbing: change one setting a step at a time, keep any change that scores better, and repeat until nothing improves (with three random restarts). The score is yearly return divided by the worst drop, with drops under 10% counted as 10%, and at least 20 trades.</p>
+      <p class="lede">Tuning used only <b id="tune-train"></b>. The chosen settings were then run on <b id="tune-test"></b>, which the search never saw. <em>Only the test column tells you what to expect.</em> Settings that shine in tuning and fade in testing were overfit.</p>
+    </div>
+    <div id="tune-findings" class="verdict-box"></div>
+    <div id="tune-tables"></div>
+    <section class="card" id="tune-detail" hidden>
+      <header class="card__head">
+        <h2 class="mono" id="tune-detail-title"></h2>
+        <div class="legend mono" id="tune-legend"></div>
+      </header>
+      <p class="status mono" id="tune-detail-status"></p>
+      <div id="tune-chart"></div>
+      <div class="tune__params" id="tune-params"></div>
+    </section>
+  </section>
+
   <!-- Mode 2: Live (not built yet) -->
   <section id="live" class="live" hidden>
     <div class="card">
@@ -261,5 +286,6 @@
 
   <script type="module" src="app.js"></script>
   <script type="module" src="day.js"></script>
+  <script type="module" src="tune.js"></script>
 </body>
 </html>

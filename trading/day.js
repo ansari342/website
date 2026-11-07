@@ -7,13 +7,15 @@ import { LineChart, Histogram } from "./lib/chart.js";
 
 const $ = (s) => document.querySelector(s);
 const STORE = "trading-lab:prob:v1";
-const BENCH = "SPUS";
+let BENCH = "SPUS";
 const DEFAULTS = {
   symbols: ["SPUS", "HLAL", "UMMA", "SPTE", "AAPL", "MSFT", "NVDA", "ADBE", "ASML", "TSM"],
   threshold: 75,
   max: 10,
   hold: 10,
   stop: 10,
+  size: 10,
+  exit: 5,
   cost: 5,
   capital: 10000,
   weeks: 52,
@@ -46,7 +48,7 @@ $("#day-universe").addEventListener("change", (e) => {
   save();
   renderUniverse();
 });
-const inputs = { threshold: "#day-threshold", max: "#day-max", hold: "#day-hold", stop: "#day-stop", cost: "#day-cost", capital: "#day-capital", weeks: "#day-weeks", seed: "#day-seed" };
+const inputs = { threshold: "#day-threshold", max: "#day-max", hold: "#day-hold", stop: "#day-stop", size: "#day-size", exit: "#day-exit", cost: "#day-cost", capital: "#day-capital", weeks: "#day-weeks", seed: "#day-seed" };
 for (const [k, sel] of Object.entries(inputs)) {
   $(sel).value = state[k];
   $(sel).addEventListener("change", (e) => {
@@ -74,6 +76,8 @@ async function run() {
   try {
     const syms = state.symbols.filter((s) => choices.some((u) => u.sym === s));
     if (syms.length < 2) throw new Error("Pick at least two stocks or funds.");
+    // Compare crypto with Bitcoin, everything else with SPUS.
+    BENCH = syms.every((s) => s.endsWith("-USD")) ? "BTC-USD" : "SPUS";
     $("#day-status").textContent = "Loading prices…";
     const need = [...new Set([...syms, BENCH])].filter((s) => !cache.series[s]);
     if (need.length) {
@@ -86,7 +90,7 @@ async function run() {
     const t0 = performance.now();
     const last = syms.reduce((m, s) => (cache.series[s].d.at(-1) > m ? cache.series[s].d.at(-1) : m), "");
     const start = new Date(Date.parse(last) - 5 * 365.25 * 864e5).toISOString().slice(0, 10);
-    const opts = { start, costBps: state.cost, maxHold: state.hold, stopPct: state.stop / 100 };
+    const opts = { start, costBps: state.cost, maxHold: state.hold, stopPct: state.stop / 100, exitLen: state.exit };
     const key = JSON.stringify([syms, opts]);
     if (!wfCache || wfCache.key !== key) wfCache = { key, wf: walkForward(cache.series, syms, opts) };
     const wf = wfCache.wf;
@@ -94,6 +98,7 @@ async function run() {
     const ev = evaluate(series, syms, wf, {
       threshold: state.threshold / 100,
       maxPositions: state.max,
+      size: state.size / 100,
       weeks: state.weeks,
       seed: state.seed,
       capital: state.capital,
@@ -188,6 +193,16 @@ $("#day-controls").addEventListener("submit", (e) => {
   e.preventDefault();
   run();
 });
+// The Tuning tab can hand over a set of settings to try here.
+document.addEventListener("apply-prob", (e) => {
+  Object.assign(state, e.detail);
+  for (const [k, sel] of Object.entries(inputs)) $(sel).value = state[k];
+  save();
+  renderUniverse();
+  ranOnce = true;
+  run();
+});
+
 let ranOnce = false;
 document.addEventListener("mode", (e) => {
   if (e.detail === "day" && !ranOnce) {

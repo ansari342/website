@@ -22,6 +22,18 @@ export const UNIVERSE = [
   { sym: "ADBE", kind: "Stock", name: "Adobe", note: "Verify current screening" },
   { sym: "ASML", kind: "Stock", name: "ASML", note: "Verify current screening" },
   { sym: "TSM", kind: "Stock", name: "TSMC", note: "Verify current screening" },
+  // Crypto: spot coins only (no margin, futures or lending). Scholars disagree on
+  // whether cryptocurrencies are permissible; check with a scholar you trust.
+  { sym: "BTC-USD", kind: "Crypto", name: "Bitcoin", note: "Scholars differ on crypto" },
+  { sym: "ETH-USD", kind: "Crypto", name: "Ethereum", note: "Scholars differ on crypto" },
+  { sym: "SOL-USD", kind: "Crypto", name: "Solana", note: "Scholars differ on crypto" },
+  { sym: "XRP-USD", kind: "Crypto", name: "XRP", note: "Scholars differ on crypto" },
+  { sym: "ADA-USD", kind: "Crypto", name: "Cardano", note: "Scholars differ on crypto" },
+  { sym: "LTC-USD", kind: "Crypto", name: "Litecoin", note: "Scholars differ on crypto" },
+  { sym: "LINK-USD", kind: "Crypto", name: "Chainlink", note: "Scholars differ on crypto" },
+  { sym: "AVAX-USD", kind: "Crypto", name: "Avalanche", note: "Scholars differ on crypto" },
+  { sym: "DOT-USD", kind: "Crypto", name: "Polkadot", note: "Scholars differ on crypto" },
+  { sym: "BCH-USD", kind: "Crypto", name: "Bitcoin Cash", note: "Scholars differ on crypto" },
 ];
 
 export async function loadSeries(symbols, { source = "auto", seed = 1 } = {}) {

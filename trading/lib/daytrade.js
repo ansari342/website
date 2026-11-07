@@ -11,7 +11,7 @@
 
 import { mulberry32, wilson, summarize, drawdowns } from "./stats.js";
 import { runBacktest } from "./engine.js";
-import { sma } from "./indicators.js";
+import { sma, rsi } from "./indicators.js";
 
 export const FEATURES = [
   { key: "gap", label: "Opening gap vs yesterday's close" },
@@ -223,6 +223,10 @@ export function walkForward(series, symbols, opts = {}) {
   return { probs, samples, models, dates: [...probs.keys()], opts: o };
 }
 
+// Share of the account per position: `size` if given, else an equal split.
+// The engine never lets buys exceed the cash on hand, so there's no borrowing.
+const sizeOf = (o) => Math.min(1, o.size ?? 1 / o.maxPositions);
+
 // Engine strategy: buy at the open when p >= threshold; Dip Buyer exits.
 function exitRules(o) {
   return {
@@ -257,7 +261,45 @@ export function probabilityStrategy(wf, opts = {}) {
         .filter(([s, p]) => p >= o.threshold && !ctx.held(s) && ctx.bar(s) >= 0)
         .sort((a, b) => b[1] - a[1])
         .slice(0, slots)
-        .map(([s, p]) => ({ side: "buy", sym: s, weight: 1 / o.maxPositions, stopPct: o.stopPct, reason: `${Math.round(p * 100)}% chance` }));
+        .map(([s, p]) => ({ side: "buy", sym: s, weight: sizeOf(o), stopPct: o.stopPct, reason: `${Math.round(p * 100)}% chance` }));
+    },
+  };
+}
+
+// Dip Buyer with the model as an extra filter: a Dip Buyer signal at the close
+// becomes a buy at the next open only if the model's chance clears the bar.
+export function filteredDipStrategy(wf, opts = {}) {
+  const o = { entryRsi: 15, trendLen: 200, ...wf.opts, ...opts };
+  let pending = new Set();
+  return {
+    id: "dipmodel",
+    name: "Dip Buyer + model",
+    fields: [],
+    prepare: (s) => {
+      const c = s.c;
+      return { exit: sma(c, o.exitLen), trend: sma(c, o.trendLen), rsi: rsi(c, 2) };
+    },
+    onOpen(ctx) {
+      const m = wf.probs.get(ctx.date);
+      const want = [...pending];
+      pending = new Set();
+      if (!m) return [];
+      const slots = o.maxPositions - ctx.positions.size;
+      return want
+        .filter((s) => !ctx.held(s) && (m.get(s) ?? 0) >= o.threshold)
+        .sort((a, b) => m.get(b) - m.get(a))
+        .slice(0, Math.max(0, slots))
+        .map((s) => ({ side: "buy", sym: s, weight: sizeOf(o), stopPct: o.stopPct, reason: `dip + ${Math.round(m.get(s) * 100)}% chance` }));
+    },
+    onClose(ctx) {
+      const orders = exitRules(o).onClose(ctx);
+      for (const s of ctx.symbols) {
+        const i = ctx.bar(s);
+        if (i < 0 || ctx.held(s)) continue;
+        const { trend, rsi } = ctx.ind[s];
+        if (trend[i] != null && rsi[i] != null && ctx.series[s].c[i] > trend[i] && rsi[i] < o.entryRsi) pending.add(s);
+      }
+      return orders;
     },
   };
 }
@@ -277,7 +319,7 @@ export function randomStrategy(wf, rate, opts = {}, seed = 99) {
       if (!m) return [];
       const slots = o.maxPositions - ctx.positions.size;
       const picks = [...m.keys()].filter((s) => !ctx.held(s) && ctx.bar(s) >= 0 && rand() < rate);
-      return picks.slice(0, Math.max(0, slots)).map((s) => ({ side: "buy", sym: s, weight: 1 / o.maxPositions, stopPct: o.stopPct, reason: "random" }));
+      return picks.slice(0, Math.max(0, slots)).map((s) => ({ side: "buy", sym: s, weight: sizeOf(o), stopPct: o.stopPct, reason: "random" }));
     },
   };
 }
@@ -306,8 +348,8 @@ function weeklyReturns(dates, equity) {
 
 // Full evaluation: run the model, random entries, Dip Buyer and buy-and-hold
 // over the whole period, then score a random sample of weeks.
-export function evaluate(series, symbols, wf, { threshold = 0.75, maxPositions = 10, weeks = 52, seed = 7, capital = 10000, benchmark = "SPUS", dipBuyer = null } = {}) {
-  const o = { ...wf.opts, threshold, maxPositions };
+export function evaluate(series, symbols, wf, { threshold = 0.75, maxPositions = 10, size = null, weeks = 52, seed = 7, capital = 10000, benchmark = "SPUS", dipBuyer = null } = {}) {
+  const o = { ...wf.opts, threshold, maxPositions, ...(size ? { size } : {}) };
   const start = wf.dates[0];
   const run = (strategy) => runBacktest({ series, symbols, strategy, capital, slippageBps: o.costBps, startDate: start, benchmark });
   const model = run(probabilityStrategy(wf, o));
