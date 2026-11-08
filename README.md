@@ -56,8 +56,14 @@ The lab has four tabs: **Simulation** (strategy backtests), **Quick trades**
 (the probability trader, scored on sampled weeks), **Tuning** (hill-climbed
 settings, tuned on 2021–24 and tested on 2024–26) and **Live** (not built yet).
 Crypto (spot only) can be selected alongside the halal funds; scholars differ on
-whether it is permissible. Re-run the tuning with `node scripts/hillclimb.mjs`
-(a few minutes); it rewrites `trading/data/hillclimb.json`.
+whether it is permissible. Fourteen strategies are available: the original four, five new ideas
+(Breakout, Golden Cross, Volatility Target, Calm Leaders, Weekly Reversal) and
+five variations (Band Bounce, Momentum Dips, Core + Dips, Dual Momentum,
+Calm-Sized Dips), defined in `trading/lib/strategies.js` and
+`trading/lib/strategies2.js`. Re-run the tuning with
+`node scripts/hillclimb.mjs` (optionally followed by family ids to re-run only
+those), then `node scripts/robustness.mjs` for the fragility check. Both update
+`trading/data/hillclimb.json`.
 
 Refresh the saved prices by downloading Yahoo chart JSON files into a folder and
 running `node scripts/build-snapshot.mjs <folder>`. Run the tests with `npm test`.

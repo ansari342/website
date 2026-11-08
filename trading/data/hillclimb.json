@@ -1,5 +1,5 @@
 {
- "generated": "2026-11-07T04:09:12.118Z",
+ "generated": "2026-11-08T12:07:12.266Z",
  "tune": [
   "2021-11-05",
   "2024-09-01"
@@ -10,6 +10,2662 @@
  ],
  "objective": "yearly return ÷ worst drop (drops under 10% count as 10%), at least 20 trades",
  "results": [
+  {
+   "universe": "crypto",
+   "universeLabel": "Crypto (spot only)",
+   "symbols": [
+    "BTC-USD",
+    "ETH-USD",
+    "SOL-USD",
+    "XRP-USD",
+    "ADA-USD",
+    "LTC-USD",
+    "LINK-USD",
+    "AVAX-USD",
+    "DOT-USD",
+    "BCH-USD"
+   ],
+   "benchmark": "BTC-USD",
+   "costBps": 10,
+   "family": "prob",
+   "name": "Probability trader",
+   "start": {
+    "threshold": 0.75,
+    "maxPositions": 10,
+    "size": 0.1,
+    "maxHold": 10,
+    "stopPct": 0.1,
+    "exitLen": 5
+   },
+   "tuned": {
+    "threshold": 0.675,
+    "maxPositions": 6,
+    "size": 0.1,
+    "maxHold": 7,
+    "stopPct": 0.05,
+    "exitLen": 5
+   },
+   "evaluations": 221,
+   "climbPath": [
+    {
+     "params": {
+      "threshold": 0.675,
+      "maxPositions": 6,
+      "size": 0.33,
+      "maxHold": 3,
+      "stopPct": 0.05,
+      "exitLen": 5
+     },
+     "score": -10
+    },
+    {
+     "params": {
+      "threshold": 0.675,
+      "maxPositions": 6,
+      "size": 0.33,
+      "maxHold": 5,
+      "stopPct": 0.05,
+      "exitLen": 5
+     },
+     "score": -0.23034546240472484
+    },
+    {
+     "params": {
+      "threshold": 0.675,
+      "maxPositions": 6,
+      "size": 0.33,
+      "maxHold": 7,
+      "stopPct": 0.05,
+      "exitLen": 5
+     },
+     "score": -0.09470736506358546
+    },
+    {
+     "params": {
+      "threshold": 0.675,
+      "maxPositions": 6,
+      "size": 0.25,
+      "maxHold": 7,
+      "stopPct": 0.05,
+      "exitLen": 5
+     },
+     "score": -0.08593324083402853
+    },
+    {
+     "params": {
+      "threshold": 0.675,
+      "maxPositions": 6,
+      "size": 0.2,
+      "maxHold": 7,
+      "stopPct": 0.05,
+      "exitLen": 5
+     },
+     "score": -0.05501998111564932
+    },
+    {
+     "params": {
+      "threshold": 0.675,
+      "maxPositions": 6,
+      "size": 0.15,
+      "maxHold": 7,
+      "stopPct": 0.05,
+      "exitLen": 5
+     },
+     "score": -0.029664604772291492
+    },
+    {
+     "params": {
+      "threshold": 0.675,
+      "maxPositions": 6,
+      "size": 0.1,
+      "maxHold": 7,
+      "stopPct": 0.05,
+      "exitLen": 5
+     },
+     "score": -0.01907622367297024
+    }
+   ],
+   "defaultTrain": {
+    "cagr": 0,
+    "maxDrawdown": 0,
+    "sharpe": 0,
+    "trades": 0,
+    "winRate": 0,
+    "avgTrade": 0,
+    "exposure": 0,
+    "score": 0,
+    "pYearUp": 0,
+    "bench": {
+     "cagr": -0.024715613655438617,
+     "maxDrawdown": -0.7663456366986094,
+     "sharpe": 0.19660680164674701
+    }
+   },
+   "defaultTest": {
+    "cagr": 0.0020978951767225418,
+    "maxDrawdown": -0.0013758782973954942,
+    "sharpe": 0.4776152340059916,
+    "trades": 6,
+    "winRate": 1,
+    "avgTrade": 0.007619828073789467,
+    "exposure": 0.0017609255516676332,
+    "score": 0.020978951767225418,
+    "pYearUp": 0.128,
+    "bench": {
+     "cagr": 0.12271831655203203,
+     "maxDrawdown": -0.5305998300012049,
+     "sharpe": 0.425773810916874
+    }
+   },
+   "train": {
+    "cagr": -0.0019076223672970238,
+    "maxDrawdown": -0.035635429392136264,
+    "sharpe": -0.0810183944502971,
+    "trades": 39,
+    "winRate": 0.6923076923076923,
+    "avgTrade": -0.000612141554276887,
+    "exposure": 0.008538098729721793,
+    "score": -0.01907622367297024,
+    "pYearUp": 0.543,
+    "bench": {
+     "cagr": -0.024715613655438617,
+     "maxDrawdown": -0.7663456366986094,
+     "sharpe": 0.19660680164674701
+    }
+   },
+   "test": {
+    "cagr": -0.007274805752439328,
+    "maxDrawdown": -0.024913844693097098,
+    "sharpe": -0.5161583590508525,
+    "trades": 17,
+    "winRate": 0.5882352941176471,
+    "avgTrade": -0.009266574426544605,
+    "exposure": 0.003894607874557327,
+    "score": -0.07274805752439328,
+    "pYearUp": 0.2805,
+    "bench": {
+     "cagr": 0.12271831655203203,
+     "maxDrawdown": -0.5305998300012049,
+     "sharpe": 0.425773810916874
+    }
+   },
+   "testHighCost": {
+    "cagr": -0.009185145314774323,
+    "maxDrawdown": -0.026499821971831095,
+    "sharpe": -0.6432299044538147,
+    "trades": 17,
+    "winRate": 0.5882352941176471,
+    "avgTrade": -0.011733897746886846,
+    "exposure": 0.0038904922216226163,
+    "score": -0.09185145314774323,
+    "pYearUp": 0.244,
+    "bench": {
+     "cagr": 0.12194621128375616,
+     "maxDrawdown": -0.5305998300012049,
+     "sharpe": 0.4257738109168714
+    }
+   },
+   "neighbours": {
+    "n": 10,
+    "beatHold": 0,
+    "medianScore": -0.06838176785472161,
+    "worstScore": -0.2749738810730075,
+    "medianCagr": -0.006838176785472161,
+    "worstCagr": -0.05550220698957453
+   }
+  },
+  {
+   "universe": "crypto",
+   "universeLabel": "Crypto (spot only)",
+   "symbols": [
+    "BTC-USD",
+    "ETH-USD",
+    "SOL-USD",
+    "XRP-USD",
+    "ADA-USD",
+    "LTC-USD",
+    "LINK-USD",
+    "AVAX-USD",
+    "DOT-USD",
+    "BCH-USD"
+   ],
+   "benchmark": "BTC-USD",
+   "costBps": 10,
+   "family": "dipmodel",
+   "name": "Dip Buyer + model filter",
+   "start": {
+    "threshold": 0.6,
+    "entryRsi": 15,
+    "maxPositions": 3,
+    "size": 0.33,
+    "maxHold": 10,
+    "stopPct": 0.1,
+    "exitLen": 5
+   },
+   "tuned": {
+    "threshold": 0.65,
+    "entryRsi": 5,
+    "maxPositions": 3,
+    "size": 0.33,
+    "maxHold": 5,
+    "stopPct": 0.075,
+    "exitLen": 5
+   },
+   "evaluations": 311,
+   "climbPath": [
+    {
+     "params": {
+      "threshold": 0.7,
+      "entryRsi": 5,
+      "maxPositions": 2,
+      "size": 0.2,
+      "maxHold": 5,
+      "stopPct": 0.075,
+      "exitLen": 7
+     },
+     "score": -10
+    },
+    {
+     "params": {
+      "threshold": 0.65,
+      "entryRsi": 5,
+      "maxPositions": 2,
+      "size": 0.2,
+      "maxHold": 5,
+      "stopPct": 0.075,
+      "exitLen": 7
+     },
+     "score": -9.55
+    },
+    {
+     "params": {
+      "threshold": 0.65,
+      "entryRsi": 5,
+      "maxPositions": 2,
+      "size": 0.2,
+      "maxHold": 5,
+      "stopPct": 0.075,
+      "exitLen": 5
+     },
+     "score": 0.032853317048264774
+    },
+    {
+     "params": {
+      "threshold": 0.65,
+      "entryRsi": 5,
+      "maxPositions": 3,
+      "size": 0.2,
+      "maxHold": 5,
+      "stopPct": 0.075,
+      "exitLen": 5
+     },
+     "score": 0.07675651988657384
+    },
+    {
+     "params": {
+      "threshold": 0.65,
+      "entryRsi": 5,
+      "maxPositions": 3,
+      "size": 0.25,
+      "maxHold": 5,
+      "stopPct": 0.075,
+      "exitLen": 5
+     },
+     "score": 0.0951031289757065
+    },
+    {
+     "params": {
+      "threshold": 0.65,
+      "entryRsi": 5,
+      "maxPositions": 3,
+      "size": 0.33,
+      "maxHold": 5,
+      "stopPct": 0.075,
+      "exitLen": 5
+     },
+     "score": 0.1237475102727359
+    }
+   ],
+   "defaultTrain": {
+    "cagr": -0.25150179216885793,
+    "maxDrawdown": -0.5639575911281379,
+    "sharpe": -0.8648317966429482,
+    "trades": 210,
+    "winRate": 0.5761904761904761,
+    "avgTrade": -0.01018837920386744,
+    "exposure": 0.20132170637656066,
+    "score": -0.44595869640792496,
+    "pYearUp": 0.1965,
+    "bench": {
+     "cagr": -0.024715613655438617,
+     "maxDrawdown": -0.7663456366986094,
+     "sharpe": 0.19660680164674701
+    }
+   },
+   "defaultTest": {
+    "cagr": -0.06380470579795228,
+    "maxDrawdown": -0.3564028288754215,
+    "sharpe": -0.12204771448589159,
+    "trades": 140,
+    "winRate": 0.6285714285714286,
+    "avgTrade": -0.0018062877384104408,
+    "exposure": 0.16207061078590704,
+    "score": -0.1790241283978552,
+    "pYearUp": 0.441,
+    "bench": {
+     "cagr": 0.12271831655203203,
+     "maxDrawdown": -0.5305998300012049,
+     "sharpe": 0.425773810916874
+    }
+   },
+   "train": {
+    "cagr": 0.01237475102727359,
+    "maxDrawdown": -0.04912705527852046,
+    "sharpe": 0.23551432522532548,
+    "trades": 23,
+    "winRate": 0.782608695652174,
+    "avgTrade": 0.004873840771775018,
+    "exposure": 0.016360146562476485,
+    "score": 0.1237475102727359,
+    "pYearUp": 0.595,
+    "bench": {
+     "cagr": -0.024715613655438617,
+     "maxDrawdown": -0.7663456366986094,
+     "sharpe": 0.19660680164674701
+    }
+   },
+   "test": {
+    "cagr": -0.001877160492280816,
+    "maxDrawdown": -0.09045073484687527,
+    "sharpe": 0.01864002261341814,
+    "trades": 35,
+    "winRate": 0.6,
+    "avgTrade": 0.00007022491942715572,
+    "exposure": 0.037748692308572286,
+    "score": -0.01877160492280816,
+    "pYearUp": 0.538,
+    "bench": {
+     "cagr": 0.12271831655203203,
+     "maxDrawdown": -0.5305998300012049,
+     "sharpe": 0.425773810916874
+    }
+   },
+   "testHighCost": {
+    "cagr": -0.0157481630285643,
+    "maxDrawdown": -0.09590147827646633,
+    "sharpe": -0.1125375306966651,
+    "trades": 35,
+    "winRate": 0.6,
+    "avgTrade": -0.0025704934233627868,
+    "exposure": 0.03732949223688721,
+    "score": -0.157481630285643,
+    "pYearUp": 0.4535,
+    "bench": {
+     "cagr": 0.12194621128375616,
+     "maxDrawdown": -0.5305998300012049,
+     "sharpe": 0.4257738109168714
+    }
+   },
+   "neighbours": {
+    "n": 13,
+    "beatHold": 0,
+    "medianScore": -0.005522360462326681,
+    "worstScore": -0.3671443843326498,
+    "medianCagr": -0.0005522360462326681,
+    "worstCagr": -0.06948043000244519
+   }
+  },
+  {
+   "universe": "crypto",
+   "universeLabel": "Crypto (spot only)",
+   "symbols": [
+    "BTC-USD",
+    "ETH-USD",
+    "SOL-USD",
+    "XRP-USD",
+    "ADA-USD",
+    "LTC-USD",
+    "LINK-USD",
+    "AVAX-USD",
+    "DOT-USD",
+    "BCH-USD"
+   ],
+   "benchmark": "BTC-USD",
+   "costBps": 10,
+   "family": "dip",
+   "name": "Dip Buyer",
+   "start": {
+    "entryRsi": 15,
+    "trendLen": 200,
+    "exitLen": 5,
+    "maxHold": 10,
+    "stopPct": 10,
+    "maxPositions": 2
+   },
+   "tuned": {
+    "entryRsi": 5,
+    "trendLen": 250,
+    "exitLen": 7,
+    "maxHold": 7,
+    "stopPct": 20,
+    "maxPositions": 6
+   },
+   "evaluations": 211,
+   "climbPath": [
+    {
+     "params": {
+      "entryRsi": 5,
+      "trendLen": 200,
+      "exitLen": 7,
+      "maxHold": 7,
+      "stopPct": 10,
+      "maxPositions": 6
+     },
+     "score": -0.28530005687777577
+    },
+    {
+     "params": {
+      "entryRsi": 5,
+      "trendLen": 150,
+      "exitLen": 7,
+      "maxHold": 7,
+      "stopPct": 10,
+      "maxPositions": 6
+     },
+     "score": -0.1811569652748879
+    },
+    {
+     "params": {
+      "entryRsi": 5,
+      "trendLen": 150,
+      "exitLen": 7,
+      "maxHold": 7,
+      "stopPct": 15,
+      "maxPositions": 6
+     },
+     "score": -0.08306307843868768
+    },
+    {
+     "params": {
+      "entryRsi": 5,
+      "trendLen": 150,
+      "exitLen": 7,
+      "maxHold": 7,
+      "stopPct": 20,
+      "maxPositions": 6
+     },
+     "score": -0.0416301907128423
+    },
+    {
+     "params": {
+      "entryRsi": 5,
+      "trendLen": 200,
+      "exitLen": 7,
+      "maxHold": 7,
+      "stopPct": 20,
+      "maxPositions": 6
+     },
+     "score": -0.02238393786292087
+    },
+    {
+     "params": {
+      "entryRsi": 5,
+      "trendLen": 250,
+      "exitLen": 7,
+      "maxHold": 7,
+      "stopPct": 20,
+      "maxPositions": 6
+     },
+     "score": 0.04077136957967965
+    }
+   ],
+   "defaultTrain": {
+    "cagr": -0.28997146453664047,
+    "maxDrawdown": -0.6266489902716275,
+    "sharpe": -0.7516259270874381,
+    "trades": 174,
+    "winRate": 0.5862068965517241,
+    "avgTrade": -0.009053761878559564,
+    "exposure": 0.25646974436678194,
+    "score": -0.4627334744622334,
+    "pYearUp": 0.209,
+    "bench": {
+     "cagr": -0.024715613655438617,
+     "maxDrawdown": -0.7663456366986094,
+     "sharpe": 0.19660680164674701
+    }
+   },
+   "defaultTest": {
+    "cagr": -0.02833547738490294,
+    "maxDrawdown": -0.39467735156725936,
+    "sharpe": 0.061695467170689786,
+    "trades": 115,
+    "winRate": 0.6173913043478261,
+    "avgTrade": 0.0007861617913860731,
+    "exposure": 0.19742199038904312,
+    "score": -0.07179402940752257,
+    "pYearUp": 0.5,
+    "bench": {
+     "cagr": 0.12271831655203203,
+     "maxDrawdown": -0.5305998300012049,
+     "sharpe": 0.425773810916874
+    }
+   },
+   "train": {
+    "cagr": 0.007586369365417234,
+    "maxDrawdown": -0.18607099647685765,
+    "sharpe": 0.1093430094595177,
+    "trades": 100,
+    "winRate": 0.64,
+    "avgTrade": 0.0030778383086866967,
+    "exposure": 0.07549525354088947,
+    "score": 0.04077136957967965,
+    "pYearUp": 0.5905,
+    "bench": {
+     "cagr": -0.024715613655438617,
+     "maxDrawdown": -0.7663456366986094,
+     "sharpe": 0.19660680164674701
+    }
+   },
+   "test": {
+    "cagr": 0.17815436221551484,
+    "maxDrawdown": -0.14561854254414153,
+    "sharpe": 0.7737872825634615,
+    "trades": 78,
+    "winRate": 0.7051282051282052,
+    "avgTrade": 0.02990923851671389,
+    "exposure": 0.07011797996422013,
+    "score": 1.223431845305763,
+    "pYearUp": 0.8375,
+    "bench": {
+     "cagr": 0.12271831655203203,
+     "maxDrawdown": -0.5305998300012049,
+     "sharpe": 0.425773810916874
+    }
+   },
+   "testHighCost": {
+    "cagr": 0.15774281521926325,
+    "maxDrawdown": -0.148312842258443,
+    "sharpe": 0.6999576819568798,
+    "trades": 78,
+    "winRate": 0.6794871794871795,
+    "avgTrade": 0.02691597805485923,
+    "exposure": 0.07007911625663497,
+    "score": 1.0635816347203975,
+    "pYearUp": 0.811,
+    "bench": {
+     "cagr": 0.12194621128375616,
+     "maxDrawdown": -0.5305998300012049,
+     "sharpe": 0.4257738109168714
+    }
+   },
+   "neighbours": {
+    "n": 8,
+    "beatHold": 8,
+    "medianScore": 1.235231434073846,
+    "worstScore": 0.3093924475556288,
+    "medianCagr": 0.1798726011345433,
+    "worstCagr": 0.061855368883283024
+   }
+  },
+  {
+   "universe": "crypto",
+   "universeLabel": "Crypto (spot only)",
+   "symbols": [
+    "BTC-USD",
+    "ETH-USD",
+    "SOL-USD",
+    "XRP-USD",
+    "ADA-USD",
+    "LTC-USD",
+    "LINK-USD",
+    "AVAX-USD",
+    "DOT-USD",
+    "BCH-USD"
+   ],
+   "benchmark": "BTC-USD",
+   "costBps": 10,
+   "family": "guard",
+   "name": "Trend Guard",
+   "start": {
+    "trendLen": 200,
+    "band": 2,
+    "useDefensive": 0
+   },
+   "tuned": {
+    "trendLen": 150,
+    "band": 1,
+    "useDefensive": 0
+   },
+   "evaluations": 23,
+   "climbPath": [
+    {
+     "params": {
+      "trendLen": 150,
+      "band": 2,
+      "useDefensive": 0
+     },
+     "score": 0.5620607257199406
+    },
+    {
+     "params": {
+      "trendLen": 150,
+      "band": 1,
+      "useDefensive": 0
+     },
+     "score": 0.6922464674627266
+    }
+   ],
+   "defaultTrain": {
+    "cagr": 0.1660219926335158,
+    "maxDrawdown": -0.29538088152460595,
+    "sharpe": 0.49533380197219606,
+    "trades": 3,
+    "winRate": 0.6666666666666666,
+    "avgTrade": 0.20963258699635198,
+    "exposure": 0.5310077519379846,
+    "score": 0.5620607257199406,
+    "pYearUp": 0.654,
+    "bench": {
+     "cagr": -0.024715613655438617,
+     "maxDrawdown": -0.7663456366986094,
+     "sharpe": 0.19660680164674701
+    }
+   },
+   "defaultTest": {
+    "cagr": 0.038283145648686956,
+    "maxDrawdown": -0.32146980491769794,
+    "sharpe": 0.22906845694562328,
+    "trades": 2,
+    "winRate": 0.5,
+    "avgTrade": 0.0654090554758588,
+    "exposure": 0.5414572864321608,
+    "score": 0.11908784297327125,
+    "pYearUp": 0.547,
+    "bench": {
+     "cagr": 0.12271831655203203,
+     "maxDrawdown": -0.5305998300012049,
+     "sharpe": 0.425773810916874
+    }
+   },
+   "train": {
+    "cagr": 0.20447637179143463,
+    "maxDrawdown": -0.29538088152460595,
+    "sharpe": 0.5827240969786088,
+    "trades": 3,
+    "winRate": 0.6666666666666666,
+    "avgTrade": 0.2639236267407656,
+    "exposure": 0.500968992248062,
+    "score": 0.6922464674627266,
+    "pYearUp": 0.6755,
+    "bench": {
+     "cagr": -0.024715613655438617,
+     "maxDrawdown": -0.7663456366986094,
+     "sharpe": 0.19660680164674701
+    }
+   },
+   "test": {
+    "cagr": 0.14564040769909226,
+    "maxDrawdown": -0.20591183442632588,
+    "sharpe": 0.527008635568883,
+    "trades": 2,
+    "winRate": 1,
+    "avgTrade": 0.17988869557966403,
+    "exposure": 0.4648241206030151,
+    "score": 0.7072949843065072,
+    "pYearUp": 0.6795,
+    "bench": {
+     "cagr": 0.12271831655203203,
+     "maxDrawdown": -0.5305998300012049,
+     "sharpe": 0.425773810916874
+    }
+   },
+   "testHighCost": {
+    "cagr": 0.14170096940481303,
+    "maxDrawdown": -0.20821578472660762,
+    "sharpe": 0.516464173267162,
+    "trades": 2,
+    "winRate": 1,
+    "avgTrade": 0.17635432221703545,
+    "exposure": 0.4648241206030151,
+    "score": 0.6805486413571855,
+    "pYearUp": 0.6755,
+    "bench": {
+     "cagr": 0.12194621128375616,
+     "maxDrawdown": -0.5305998300012049,
+     "sharpe": 0.4257738109168714
+    }
+   },
+   "neighbours": {
+    "n": 4,
+    "beatHold": 4,
+    "medianScore": 0.8331440704888823,
+    "worstScore": 0.3913088904635041,
+    "medianCagr": 0.1715542238957819,
+    "worstCagr": 0.09171432931673795
+   }
+  },
+  {
+   "universe": "crypto",
+   "universeLabel": "Crypto (spot only)",
+   "symbols": [
+    "BTC-USD",
+    "ETH-USD",
+    "SOL-USD",
+    "XRP-USD",
+    "ADA-USD",
+    "LTC-USD",
+    "LINK-USD",
+    "AVAX-USD",
+    "DOT-USD",
+    "BCH-USD"
+   ],
+   "benchmark": "BTC-USD",
+   "costBps": 10,
+   "family": "breakout",
+   "name": "Breakout",
+   "kind": "new",
+   "start": {
+    "entryLen": 55,
+    "exitLen": 20,
+    "stopPct": 10,
+    "maxPositions": 3
+   },
+   "tuned": {
+    "entryLen": 55,
+    "exitLen": 5,
+    "stopPct": 15,
+    "maxPositions": 3
+   },
+   "evaluations": 123,
+   "climbPath": [
+    {
+     "params": {
+      "entryLen": 55,
+      "exitLen": 20,
+      "stopPct": 15,
+      "maxPositions": 4
+     },
+     "score": -0.01172763809522216
+    },
+    {
+     "params": {
+      "entryLen": 55,
+      "exitLen": 15,
+      "stopPct": 15,
+      "maxPositions": 4
+     },
+     "score": 0.17733599046307133
+    },
+    {
+     "params": {
+      "entryLen": 55,
+      "exitLen": 10,
+      "stopPct": 15,
+      "maxPositions": 4
+     },
+     "score": 0.36958835251652183
+    },
+    {
+     "params": {
+      "entryLen": 55,
+      "exitLen": 5,
+      "stopPct": 15,
+      "maxPositions": 4
+     },
+     "score": 1.1400311486448584
+    },
+    {
+     "params": {
+      "entryLen": 55,
+      "exitLen": 5,
+      "stopPct": 15,
+      "maxPositions": 3
+     },
+     "score": 1.2678002826456216
+    }
+   ],
+   "defaultTrain": {
+    "cagr": 0.03430238696561183,
+    "maxDrawdown": -0.4743695551084728,
+    "sharpe": 0.2385311599678832,
+    "trades": 44,
+    "winRate": 0.20454545454545456,
+    "avgTrade": 0.03204881067919938,
+    "exposure": 0.35197574729901726,
+    "score": 0.07231152715474752,
+    "pYearUp": 0.5215,
+    "bench": {
+     "cagr": -0.024715613655438617,
+     "maxDrawdown": -0.7663456366986094,
+     "sharpe": 0.19660680164674701
+    }
+   },
+   "defaultTest": {
+    "cagr": -0.12375839953160361,
+    "maxDrawdown": -0.4023601852874702,
+    "sharpe": -0.2323473939143871,
+    "trades": 33,
+    "winRate": 0.2727272727272727,
+    "avgTrade": -0.022124060995364056,
+    "exposure": 0.38228267900766466,
+    "score": -0.3075811276982667,
+    "pYearUp": 0.341,
+    "bench": {
+     "cagr": 0.12271831655203203,
+     "maxDrawdown": -0.5305998300012049,
+     "sharpe": 0.425773810916874
+    }
+   },
+   "train": {
+    "cagr": 0.33360788541601316,
+    "maxDrawdown": -0.26313914737410105,
+    "sharpe": 0.7959226165801656,
+    "trades": 53,
+    "winRate": 0.4716981132075472,
+    "avgTrade": 0.06196119540728969,
+    "exposure": 0.26577334975433997,
+    "score": 1.2678002826456216,
+    "pYearUp": 0.7085,
+    "bench": {
+     "cagr": -0.024715613655438617,
+     "maxDrawdown": -0.7663456366986094,
+     "sharpe": 0.19660680164674701
+    }
+   },
+   "test": {
+    "cagr": -0.036855754712156186,
+    "maxDrawdown": -0.3451666312948517,
+    "sharpe": 0.010504171708641406,
+    "trades": 46,
+    "winRate": 0.34782608695652173,
+    "avgTrade": -0.0017992155712140152,
+    "exposure": 0.2711419221410789,
+    "score": -0.10677670252740304,
+    "pYearUp": 0.423,
+    "bench": {
+     "cagr": 0.12271831655203203,
+     "maxDrawdown": -0.5305998300012049,
+     "sharpe": 0.425773810916874
+    }
+   },
+   "testHighCost": {
+    "cagr": -0.0553449363109948,
+    "maxDrawdown": -0.36117449996145157,
+    "sharpe": -0.04575862700050177,
+    "trades": 46,
+    "winRate": 0.34782608695652173,
+    "avgTrade": -0.004596286163191046,
+    "exposure": 0.27110125589793876,
+    "score": -0.15323600175788105,
+    "pYearUp": 0.4045,
+    "bench": {
+     "cagr": 0.12194621128375616,
+     "maxDrawdown": -0.5305998300012049,
+     "sharpe": 0.4257738109168714
+    }
+   },
+   "neighbours": {
+    "n": 7,
+    "beatHold": 0,
+    "medianScore": -0.10585558541998183,
+    "worstScore": -0.31490051498235,
+    "medianCagr": -0.036478743440951145,
+    "worstCagr": -0.15785055581198248
+   }
+  },
+  {
+   "universe": "crypto",
+   "universeLabel": "Crypto (spot only)",
+   "symbols": [
+    "BTC-USD",
+    "ETH-USD",
+    "SOL-USD",
+    "XRP-USD",
+    "ADA-USD",
+    "LTC-USD",
+    "LINK-USD",
+    "AVAX-USD",
+    "DOT-USD",
+    "BCH-USD"
+   ],
+   "benchmark": "BTC-USD",
+   "costBps": 10,
+   "family": "golden",
+   "name": "Golden Cross",
+   "kind": "new",
+   "start": {
+    "fast": 50,
+    "slow": 200,
+    "maxPositions": 3
+   },
+   "tuned": {
+    "fast": 50,
+    "slow": 150,
+    "maxPositions": 3
+   },
+   "evaluations": 44,
+   "climbPath": [
+    {
+     "params": {
+      "fast": 50,
+      "slow": 200,
+      "maxPositions": 3
+     },
+     "score": 0.3365308471807831
+    },
+    {
+     "params": {
+      "fast": 50,
+      "slow": 150,
+      "maxPositions": 3
+     },
+     "score": 0.5976617271654306
+    }
+   ],
+   "defaultTrain": {
+    "cagr": 0.1866393112214524,
+    "maxDrawdown": -0.5545979299817068,
+    "sharpe": 0.48421008461052323,
+    "trades": 15,
+    "winRate": 0.5333333333333333,
+    "avgTrade": 0.014708964378369422,
+    "exposure": 0.6746957581617624,
+    "score": 0.3365308471807831,
+    "pYearUp": 0.6175,
+    "bench": {
+     "cagr": -0.024715613655438617,
+     "maxDrawdown": -0.7663456366986094,
+     "sharpe": 0.19660680164674701
+    }
+   },
+   "defaultTest": {
+    "cagr": 0.339334067216851,
+    "maxDrawdown": -0.4470411154666266,
+    "sharpe": 0.6721876303356911,
+    "trades": 10,
+    "winRate": 0.4,
+    "avgTrade": 0.31723985508783675,
+    "exposure": 0.5913961367762448,
+    "score": 0.7590667960432459,
+    "pYearUp": 0.67,
+    "bench": {
+     "cagr": 0.12271831655203203,
+     "maxDrawdown": -0.5305998300012049,
+     "sharpe": 0.425773810916874
+    }
+   },
+   "train": {
+    "cagr": 0.2886569683043263,
+    "maxDrawdown": -0.48297716782595157,
+    "sharpe": 0.602643823961023,
+    "trades": 16,
+    "winRate": 0.5625,
+    "avgTrade": 0.28724282308812493,
+    "exposure": 0.6594813562504861,
+    "score": 0.5976617271654306,
+    "pYearUp": 0.666,
+    "bench": {
+     "cagr": -0.024715613655438617,
+     "maxDrawdown": -0.7663456366986094,
+     "sharpe": 0.19660680164674701
+    }
+   },
+   "test": {
+    "cagr": 0.20926552810583865,
+    "maxDrawdown": -0.5080182023394528,
+    "sharpe": 0.5078197182453973,
+    "trades": 13,
+    "winRate": 0.46153846153846156,
+    "avgTrade": 0.1776308904757548,
+    "exposure": 0.5580646451384013,
+    "score": 0.4119252561072791,
+    "pYearUp": 0.5855,
+    "bench": {
+     "cagr": 0.12271831655203203,
+     "maxDrawdown": -0.5305998300012049,
+     "sharpe": 0.425773810916874
+    }
+   },
+   "testHighCost": {
+    "cagr": 0.20228996660225795,
+    "maxDrawdown": -0.5131756733809507,
+    "sharpe": 0.4991485904316006,
+    "trades": 13,
+    "winRate": 0.46153846153846156,
+    "avgTrade": 0.1741032804004154,
+    "exposure": 0.5579255220930229,
+    "score": 0.3941924317446943,
+    "pYearUp": 0.5815,
+    "bench": {
+     "cagr": 0.12194621128375616,
+     "maxDrawdown": -0.5305998300012049,
+     "sharpe": 0.4257738109168714
+    }
+   },
+   "neighbours": {
+    "n": 6,
+    "beatHold": 4,
+    "medianScore": 0.3875996901391602,
+    "worstScore": -0.22835433251025702,
+    "medianCagr": 0.19616124552901248,
+    "worstCagr": -0.11848182721574052
+   }
+  },
+  {
+   "universe": "crypto",
+   "universeLabel": "Crypto (spot only)",
+   "symbols": [
+    "BTC-USD",
+    "ETH-USD",
+    "SOL-USD",
+    "XRP-USD",
+    "ADA-USD",
+    "LTC-USD",
+    "LINK-USD",
+    "AVAX-USD",
+    "DOT-USD",
+    "BCH-USD"
+   ],
+   "benchmark": "BTC-USD",
+   "costBps": 10,
+   "family": "voltarget",
+   "name": "Volatility Target",
+   "kind": "new",
+   "start": {
+    "targetVol": 15,
+    "volLen": 20,
+    "buffer": 20,
+    "trendLen": 0
+   },
+   "tuned": {
+    "targetVol": 20,
+    "volLen": 40,
+    "buffer": 50,
+    "trendLen": 200
+   },
+   "evaluations": 99,
+   "climbPath": [
+    {
+     "params": {
+      "targetVol": 25,
+      "volLen": 40,
+      "buffer": 30,
+      "trendLen": 150
+     },
+     "score": 0.8756581690076248
+    },
+    {
+     "params": {
+      "targetVol": 25,
+      "volLen": 40,
+      "buffer": 50,
+      "trendLen": 150
+     },
+     "score": 1.1508591335539136
+    },
+    {
+     "params": {
+      "targetVol": 20,
+      "volLen": 40,
+      "buffer": 50,
+      "trendLen": 150
+     },
+     "score": 1.3662347648226953
+    },
+    {
+     "params": {
+      "targetVol": 20,
+      "volLen": 40,
+      "buffer": 50,
+      "trendLen": 200
+     },
+     "score": 1.4382142283067267
+    }
+   ],
+   "defaultTrain": {
+    "cagr": 0.053467369473836124,
+    "maxDrawdown": -0.34095090298230357,
+    "sharpe": 0.3059529420522608,
+    "trades": 48,
+    "winRate": 0.5,
+    "avgTrade": 0.006458715163005796,
+    "exposure": 0.3455381828619309,
+    "score": 0.1568183835448333,
+    "pYearUp": 0.5635,
+    "bench": {
+     "cagr": -0.024715613655438617,
+     "maxDrawdown": -0.7663456366986094,
+     "sharpe": 0.19660680164674701
+    }
+   },
+   "defaultTest": {
+    "cagr": 0.07912555278941436,
+    "maxDrawdown": -0.2803060358541778,
+    "sharpe": 0.41403111843773316,
+    "trades": 38,
+    "winRate": 0.47368421052631576,
+    "avgTrade": 0.01087216783637274,
+    "exposure": 0.41639065110886353,
+    "score": 0.28228272911888863,
+    "pYearUp": 0.6195,
+    "bench": {
+     "cagr": 0.12271831655203203,
+     "maxDrawdown": -0.5305998300012049,
+     "sharpe": 0.425773810916874
+    }
+   },
+   "train": {
+    "cagr": 0.21141043314511565,
+    "maxDrawdown": -0.14699509223602836,
+    "sharpe": 0.8548392727345067,
+    "trades": 8,
+    "winRate": 0.25,
+    "avgTrade": 0.1226954078968391,
+    "exposure": 0.279970532270281,
+    "score": 1.4382142283067267,
+    "pYearUp": 0.763,
+    "bench": {
+     "cagr": -0.024715613655438617,
+     "maxDrawdown": -0.7663456366986094,
+     "sharpe": 0.19660680164674701
+    }
+   },
+   "test": {
+    "cagr": 0.038839729850576266,
+    "maxDrawdown": -0.16965603237003024,
+    "sharpe": 0.2596437791731877,
+    "trades": 4,
+    "winRate": 0.5,
+    "avgTrade": 0.047587971473850896,
+    "exposure": 0.26596592393406093,
+    "score": 0.22893220658293142,
+    "pYearUp": 0.574,
+    "bench": {
+     "cagr": 0.12271831655203203,
+     "maxDrawdown": -0.5305998300012049,
+     "sharpe": 0.425773810916874
+    }
+   },
+   "testHighCost": {
+    "cagr": 0.03600676592078411,
+    "maxDrawdown": -0.17107349041522835,
+    "sharpe": 0.24598662432850327,
+    "trades": 4,
+    "winRate": 0.5,
+    "avgTrade": 0.04444990681126165,
+    "exposure": 0.2657734870966159,
+    "score": 0.210475426867066,
+    "pYearUp": 0.5695,
+    "bench": {
+     "cagr": 0.12194621128375616,
+     "maxDrawdown": -0.5305998300012049,
+     "sharpe": 0.4257738109168714
+    }
+   },
+   "neighbours": {
+    "n": 6,
+    "beatHold": 3,
+    "medianScore": 0.23908827440998012,
+    "worstScore": 0.11759806770160341,
+    "medianCagr": 0.045549799306003,
+    "worstCagr": 0.018910719292550393
+   }
+  },
+  {
+   "universe": "crypto",
+   "universeLabel": "Crypto (spot only)",
+   "symbols": [
+    "BTC-USD",
+    "ETH-USD",
+    "SOL-USD",
+    "XRP-USD",
+    "ADA-USD",
+    "LTC-USD",
+    "LINK-USD",
+    "AVAX-USD",
+    "DOT-USD",
+    "BCH-USD"
+   ],
+   "benchmark": "BTC-USD",
+   "costBps": 10,
+   "family": "lowvol",
+   "name": "Calm Leaders",
+   "kind": "new",
+   "start": {
+    "volLen": 60,
+    "trendLen": 200,
+    "top": 3
+   },
+   "tuned": {
+    "volLen": 60,
+    "trendLen": 200,
+    "top": 1
+   },
+   "evaluations": 44,
+   "climbPath": [
+    {
+     "params": {
+      "volLen": 60,
+      "trendLen": 200,
+      "top": 3
+     },
+     "score": -0.0984273494256898
+    },
+    {
+     "params": {
+      "volLen": 60,
+      "trendLen": 200,
+      "top": 2
+     },
+     "score": 0.05297501262259501
+    },
+    {
+     "params": {
+      "volLen": 60,
+      "trendLen": 200,
+      "top": 1
+     },
+     "score": 0.2080419997395858
+    }
+   ],
+   "defaultTrain": {
+    "cagr": -0.06263720862781763,
+    "maxDrawdown": -0.6363801219203526,
+    "sharpe": 0.09459761726537834,
+    "trades": 32,
+    "winRate": 0.53125,
+    "avgTrade": 0.03221202192752365,
+    "exposure": 0.7106836163056748,
+    "score": -0.0984273494256898,
+    "pYearUp": 0.4595,
+    "bench": {
+     "cagr": -0.024715613655438617,
+     "maxDrawdown": -0.7663456366986094,
+     "sharpe": 0.19660680164674701
+    }
+   },
+   "defaultTest": {
+    "cagr": -0.11958902464016008,
+    "maxDrawdown": -0.3869275638221754,
+    "sharpe": -0.09750873209361255,
+    "trades": 13,
+    "winRate": 0.38461538461538464,
+    "avgTrade": -0.04007223168067646,
+    "exposure": 0.5517482255690316,
+    "score": -0.3090734179256377,
+    "pYearUp": 0.405,
+    "bench": {
+     "cagr": 0.12271831655203203,
+     "maxDrawdown": -0.5305998300012049,
+     "sharpe": 0.425773810916874
+    }
+   },
+   "train": {
+    "cagr": 0.137240353725679,
+    "maxDrawdown": -0.6596761898917913,
+    "sharpe": 0.4281975056988964,
+    "trades": 17,
+    "winRate": 0.47058823529411764,
+    "avgTrade": 0.04732950207499421,
+    "exposure": 0.8265503875968992,
+    "score": 0.2080419997395858,
+    "pYearUp": 0.5795,
+    "bench": {
+     "cagr": -0.024715613655438617,
+     "maxDrawdown": -0.7663456366986094,
+     "sharpe": 0.19660680164674701
+    }
+   },
+   "test": {
+    "cagr": -0.057091160784247696,
+    "maxDrawdown": -0.35102303917715105,
+    "sharpe": 0.04601950016659182,
+    "trades": 5,
+    "winRate": 0.4,
+    "avgTrade": -0.01186641386502206,
+    "exposure": 0.6959798994974874,
+    "score": -0.16264220410739325,
+    "pYearUp": 0.4655,
+    "bench": {
+     "cagr": 0.12271831655203203,
+     "maxDrawdown": -0.5305998300012049,
+     "sharpe": 0.425773810916874
+    }
+   },
+   "testHighCost": {
+    "cagr": -0.0642109024751577,
+    "maxDrawdown": -0.3549052552643589,
+    "sharpe": 0.03053419910706742,
+    "trades": 5,
+    "winRate": 0.4,
+    "avgTrade": -0.014826382071038518,
+    "exposure": 0.6959798994974874,
+    "score": -0.1809240678257323,
+    "pYearUp": 0.458,
+    "bench": {
+     "cagr": 0.12194621128375616,
+     "maxDrawdown": -0.5305998300012049,
+     "sharpe": 0.4257738109168714
+    }
+   },
+   "neighbours": {
+    "n": 5,
+    "beatHold": 1,
+    "medianScore": -0.14843042205675233,
+    "worstScore": -0.16264220410739325,
+    "medianCagr": -0.055640433683231016,
+    "worstCagr": -0.057091160784247696
+   }
+  },
+  {
+   "universe": "crypto",
+   "universeLabel": "Crypto (spot only)",
+   "symbols": [
+    "BTC-USD",
+    "ETH-USD",
+    "SOL-USD",
+    "XRP-USD",
+    "ADA-USD",
+    "LTC-USD",
+    "LINK-USD",
+    "AVAX-USD",
+    "DOT-USD",
+    "BCH-USD"
+   ],
+   "benchmark": "BTC-USD",
+   "costBps": 10,
+   "family": "reversal",
+   "name": "Weekly Reversal",
+   "kind": "new",
+   "start": {
+    "lookback": 5,
+    "trendLen": 200,
+    "top": 2,
+    "stopPct": 10
+   },
+   "tuned": {
+    "lookback": 15,
+    "trendLen": 200,
+    "top": 1,
+    "stopPct": 15
+   },
+   "evaluations": 120,
+   "climbPath": [
+    {
+     "params": {
+      "lookback": 5,
+      "trendLen": 200,
+      "top": 2,
+      "stopPct": 10
+     },
+     "score": -0.3461263095375207
+    },
+    {
+     "params": {
+      "lookback": 5,
+      "trendLen": 200,
+      "top": 2,
+      "stopPct": 15
+     },
+     "score": -0.30869611441193584
+    },
+    {
+     "params": {
+      "lookback": 5,
+      "trendLen": 200,
+      "top": 2,
+      "stopPct": 20
+     },
+     "score": -0.22732281888792882
+    },
+    {
+     "params": {
+      "lookback": 5,
+      "trendLen": 250,
+      "top": 2,
+      "stopPct": 20
+     },
+     "score": -0.12756172425375903
+    },
+    {
+     "params": {
+      "lookback": 5,
+      "trendLen": 250,
+      "top": 3,
+      "stopPct": 20
+     },
+     "score": -0.12099111616124048
+    },
+    {
+     "params": {
+      "lookback": 10,
+      "trendLen": 250,
+      "top": 3,
+      "stopPct": 20
+     },
+     "score": -0.1174616471277742
+    },
+    {
+     "params": {
+      "lookback": 15,
+      "trendLen": 250,
+      "top": 3,
+      "stopPct": 20
+     },
+     "score": -0.06289631465180895
+    },
+    {
+     "params": {
+      "lookback": 15,
+      "trendLen": 250,
+      "top": 2,
+      "stopPct": 20
+     },
+     "score": 0.18082439566581218
+    },
+    {
+     "params": {
+      "lookback": 15,
+      "trendLen": 250,
+      "top": 1,
+      "stopPct": 20
+     },
+     "score": 0.4875151055407572
+    },
+    {
+     "params": {
+      "lookback": 15,
+      "trendLen": 200,
+      "top": 1,
+      "stopPct": 20
+     },
+     "score": 0.7259036996318886
+    },
+    {
+     "params": {
+      "lookback": 15,
+      "trendLen": 200,
+      "top": 1,
+      "stopPct": 15
+     },
+     "score": 1.1095465323059732
+    }
+   ],
+   "defaultTrain": {
+    "cagr": -0.19587074191776166,
+    "maxDrawdown": -0.5658938269658722,
+    "sharpe": -0.23778768349476356,
+    "trades": 104,
+    "winRate": 0.36538461538461536,
+    "avgTrade": -0.007537045524302686,
+    "exposure": 0.3174036736800928,
+    "score": -0.3461263095375207,
+    "pYearUp": 0.343,
+    "bench": {
+     "cagr": -0.024715613655438617,
+     "maxDrawdown": -0.7663456366986094,
+     "sharpe": 0.19660680164674701
+    }
+   },
+   "defaultTest": {
+    "cagr": -0.02793320120457654,
+    "maxDrawdown": -0.4589583780300174,
+    "sharpe": 0.08033083651335993,
+    "trades": 68,
+    "winRate": 0.45588235294117646,
+    "avgTrade": 0.004244887158997935,
+    "exposure": 0.2666048795944378,
+    "score": -0.06086216646588728,
+    "pYearUp": 0.5135,
+    "bench": {
+     "cagr": 0.12271831655203203,
+     "maxDrawdown": -0.5305998300012049,
+     "sharpe": 0.425773810916874
+    }
+   },
+   "train": {
+    "cagr": 0.5326149837384213,
+    "maxDrawdown": -0.4800294248421346,
+    "sharpe": 0.7563156409722503,
+    "trades": 57,
+    "winRate": 0.5263157894736842,
+    "avgTrade": 0.03370400457454757,
+    "exposure": 0.45542635658914726,
+    "score": 1.1095465323059732,
+    "pYearUp": 0.703,
+    "bench": {
+     "cagr": -0.024715613655438617,
+     "maxDrawdown": -0.7663456366986094,
+     "sharpe": 0.19660680164674701
+    }
+   },
+   "test": {
+    "cagr": -0.3552605232642765,
+    "maxDrawdown": -0.709540222161791,
+    "sharpe": -0.6604549493654225,
+    "trades": 32,
+    "winRate": 0.46875,
+    "avgTrade": -0.01995746980243067,
+    "exposure": 0.30402010050251255,
+    "score": -0.5006911689683875,
+    "pYearUp": 0.2395,
+    "bench": {
+     "cagr": 0.12271831655203203,
+     "maxDrawdown": -0.5305998300012049,
+     "sharpe": 0.425773810916874
+    }
+   },
+   "testHighCost": {
+    "cagr": -0.37924775316914616,
+    "maxDrawdown": -0.7293189327765239,
+    "sharpe": -0.7329086446601691,
+    "trades": 32,
+    "winRate": 0.4375,
+    "avgTrade": -0.022496750854803682,
+    "exposure": 0.30402010050251255,
+    "score": -0.5200026163112843,
+    "pYearUp": 0.2155,
+    "bench": {
+     "cagr": 0.12194621128375616,
+     "maxDrawdown": -0.5305998300012049,
+     "sharpe": 0.4257738109168714
+    }
+   },
+   "neighbours": {
+    "n": 7,
+    "beatHold": 0,
+    "medianScore": -0.46443817813328114,
+    "worstScore": -0.6237490125776527,
+    "medianCagr": -0.2892340540153999,
+    "worstCagr": -0.4803673941403668
+   }
+  },
+  {
+   "universe": "crypto",
+   "universeLabel": "Crypto (spot only)",
+   "symbols": [
+    "BTC-USD",
+    "ETH-USD",
+    "SOL-USD",
+    "XRP-USD",
+    "ADA-USD",
+    "LTC-USD",
+    "LINK-USD",
+    "AVAX-USD",
+    "DOT-USD",
+    "BCH-USD"
+   ],
+   "benchmark": "BTC-USD",
+   "costBps": 10,
+   "family": "bands",
+   "name": "Band Bounce",
+   "kind": "permutation",
+   "start": {
+    "len": 20,
+    "k": 2,
+    "trendLen": 200,
+    "maxHold": 15,
+    "stopPct": 10,
+    "maxPositions": 3
+   },
+   "tuned": {
+    "len": 20,
+    "k": 2.5,
+    "trendLen": 200,
+    "maxHold": 5,
+    "stopPct": 7.5,
+    "maxPositions": 1
+   },
+   "evaluations": 177,
+   "climbPath": [
+    {
+     "params": {
+      "len": 20,
+      "k": 2.5,
+      "trendLen": 200,
+      "maxHold": 5,
+      "stopPct": 5,
+      "maxPositions": 2
+     },
+     "score": 0.44108210106992507
+    },
+    {
+     "params": {
+      "len": 20,
+      "k": 2.5,
+      "trendLen": 200,
+      "maxHold": 5,
+      "stopPct": 7.5,
+      "maxPositions": 2
+     },
+     "score": 0.7412917614475045
+    },
+    {
+     "params": {
+      "len": 20,
+      "k": 2.5,
+      "trendLen": 200,
+      "maxHold": 5,
+      "stopPct": 7.5,
+      "maxPositions": 1
+     },
+     "score": 1.0813238381222474
+    }
+   ],
+   "defaultTrain": {
+    "cagr": 0.0196729334270902,
+    "maxDrawdown": -0.2811719628678919,
+    "sharpe": 0.17118996397351502,
+    "trades": 70,
+    "winRate": 0.4142857142857143,
+    "avgTrade": 0.006575479953948787,
+    "exposure": 0.18252466126478079,
+    "score": 0.06996762133190886,
+    "pYearUp": 0.5105,
+    "bench": {
+     "cagr": -0.024715613655438617,
+     "maxDrawdown": -0.7663456366986094,
+     "sharpe": 0.19660680164674701
+    }
+   },
+   "defaultTest": {
+    "cagr": -0.15952867104643464,
+    "maxDrawdown": -0.35683817107348204,
+    "sharpe": -0.7093068218573253,
+    "trades": 39,
+    "winRate": 0.41025641025641024,
+    "avgTrade": -0.02543188131824698,
+    "exposure": 0.1020328718518089,
+    "score": -0.4470616766320766,
+    "pYearUp": 0.2585,
+    "bench": {
+     "cagr": 0.12271831655203203,
+     "maxDrawdown": -0.5305998300012049,
+     "sharpe": 0.425773810916874
+    }
+   },
+   "train": {
+    "cagr": 0.16006302595656763,
+    "maxDrawdown": -0.14802505994367243,
+    "sharpe": 0.6265774814623062,
+    "trades": 22,
+    "winRate": 0.5909090909090909,
+    "avgTrade": 0.021263474517495006,
+    "exposure": 0.10271317829457365,
+    "score": 1.0813238381222474,
+    "pYearUp": 0.7745,
+    "bench": {
+     "cagr": -0.024715613655438617,
+     "maxDrawdown": -0.7663456366986094,
+     "sharpe": 0.19660680164674701
+    }
+   },
+   "test": {
+    "cagr": -0.11755992301304397,
+    "maxDrawdown": -0.28051582665223074,
+    "sharpe": -0.6199957763919874,
+    "trades": 11,
+    "winRate": 0.36363636363636365,
+    "avgTrade": -0.02266785332409123,
+    "exposure": 0.048994974874371856,
+    "score": -0.41908481391600333,
+    "pYearUp": 0.0925,
+    "bench": {
+     "cagr": 0.12271831655203203,
+     "maxDrawdown": -0.5305998300012049,
+     "sharpe": 0.425773810916874
+    }
+   },
+   "testHighCost": {
+    "cagr": -0.1278431767944761,
+    "maxDrawdown": -0.2933581426837959,
+    "sharpe": -0.6765550402852608,
+    "trades": 11,
+    "winRate": 0.36363636363636365,
+    "avgTrade": -0.024967929391684896,
+    "exposure": 0.048994974874371856,
+    "score": -0.4357921536620695,
+    "pYearUp": 0.078,
+    "bench": {
+     "cagr": 0.12194621128375616,
+     "maxDrawdown": -0.5305998300012049,
+     "sharpe": 0.4257738109168714
+    }
+   },
+   "neighbours": {
+    "n": 10,
+    "beatHold": 0,
+    "medianScore": -0.37713103085218314,
+    "worstScore": -0.4600978773123875,
+    "medianCagr": -0.08441410682802797,
+    "worstCagr": -0.24818176723056262
+   }
+  },
+  {
+   "universe": "crypto",
+   "universeLabel": "Crypto (spot only)",
+   "symbols": [
+    "BTC-USD",
+    "ETH-USD",
+    "SOL-USD",
+    "XRP-USD",
+    "ADA-USD",
+    "LTC-USD",
+    "LINK-USD",
+    "AVAX-USD",
+    "DOT-USD",
+    "BCH-USD"
+   ],
+   "benchmark": "BTC-USD",
+   "costBps": 10,
+   "family": "momdip",
+   "name": "Momentum Dips",
+   "kind": "permutation",
+   "start": {
+    "lookback": 126,
+    "topK": 3,
+    "entryRsi": 15,
+    "trendLen": 200,
+    "exitLen": 5,
+    "maxHold": 10,
+    "stopPct": 10,
+    "maxPositions": 2
+   },
+   "tuned": {
+    "lookback": 189,
+    "topK": 1,
+    "entryRsi": 5,
+    "trendLen": 250,
+    "exitLen": 10,
+    "maxHold": 10,
+    "stopPct": 10,
+    "maxPositions": 3
+   },
+   "evaluations": 438,
+   "climbPath": [
+    {
+     "params": {
+      "lookback": 126,
+      "topK": 3,
+      "entryRsi": 15,
+      "trendLen": 200,
+      "exitLen": 5,
+      "maxHold": 10,
+      "stopPct": 10,
+      "maxPositions": 2
+     },
+     "score": -0.44179507169651994
+    },
+    {
+     "params": {
+      "lookback": 126,
+      "topK": 2,
+      "entryRsi": 15,
+      "trendLen": 200,
+      "exitLen": 5,
+      "maxHold": 10,
+      "stopPct": 10,
+      "maxPositions": 2
+     },
+     "score": -0.37995837630329976
+    },
+    {
+     "params": {
+      "lookback": 126,
+      "topK": 1,
+      "entryRsi": 15,
+      "trendLen": 200,
+      "exitLen": 5,
+      "maxHold": 10,
+      "stopPct": 10,
+      "maxPositions": 2
+     },
+     "score": -0.29904361330678686
+    },
+    {
+     "params": {
+      "lookback": 126,
+      "topK": 1,
+      "entryRsi": 15,
+      "trendLen": 250,
+      "exitLen": 5,
+      "maxHold": 10,
+      "stopPct": 10,
+      "maxPositions": 2
+     },
+     "score": -0.2681358640335219
+    },
+    {
+     "params": {
+      "lookback": 126,
+      "topK": 1,
+      "entryRsi": 10,
+      "trendLen": 250,
+      "exitLen": 5,
+      "maxHold": 10,
+      "stopPct": 10,
+      "maxPositions": 2
+     },
+     "score": -0.030634724710971183
+    },
+    {
+     "params": {
+      "lookback": 126,
+      "topK": 1,
+      "entryRsi": 10,
+      "trendLen": 250,
+      "exitLen": 7,
+      "maxHold": 10,
+      "stopPct": 10,
+      "maxPositions": 2
+     },
+     "score": 0.09600899401773998
+    },
+    {
+     "params": {
+      "lookback": 126,
+      "topK": 1,
+      "entryRsi": 10,
+      "trendLen": 250,
+      "exitLen": 10,
+      "maxHold": 10,
+      "stopPct": 10,
+      "maxPositions": 2
+     },
+     "score": 0.25530595888239305
+    },
+    {
+     "params": {
+      "lookback": 126,
+      "topK": 1,
+      "entryRsi": 5,
+      "trendLen": 250,
+      "exitLen": 10,
+      "maxHold": 10,
+      "stopPct": 10,
+      "maxPositions": 2
+     },
+     "score": 0.49677140595248404
+    },
+    {
+     "params": {
+      "lookback": 189,
+      "topK": 1,
+      "entryRsi": 5,
+      "trendLen": 250,
+      "exitLen": 10,
+      "maxHold": 10,
+      "stopPct": 10,
+      "maxPositions": 2
+     },
+     "score": 0.6064655936817186
+    },
+    {
+     "params": {
+      "lookback": 189,
+      "topK": 1,
+      "entryRsi": 5,
+      "trendLen": 250,
+      "exitLen": 10,
+      "maxHold": 10,
+      "stopPct": 10,
+      "maxPositions": 3
+     },
+     "score": 0.6179297194128619
+    }
+   ],
+   "defaultTrain": {
+    "cagr": -0.28187799101183897,
+    "maxDrawdown": -0.6380288261917688,
+    "sharpe": -0.7655827307587458,
+    "trades": 134,
+    "winRate": 0.5447761194029851,
+    "avgTrade": -0.011597873468786268,
+    "exposure": 0.20040187119493455,
+    "score": -0.44179507169651994,
+    "pYearUp": 0.185,
+    "bench": {
+     "cagr": -0.024715613655438617,
+     "maxDrawdown": -0.7663456366986094,
+     "sharpe": 0.19660680164674701
+    }
+   },
+   "defaultTest": {
+    "cagr": -0.04674475468563721,
+    "maxDrawdown": -0.4285468320566578,
+    "sharpe": -0.015777122998955076,
+    "trades": 88,
+    "winRate": 0.6136363636363636,
+    "avgTrade": -0.000495752669051109,
+    "exposure": 0.14090559160525373,
+    "score": -0.10907735441959149,
+    "pYearUp": 0.4775,
+    "bench": {
+     "cagr": 0.12271831655203203,
+     "maxDrawdown": -0.5305998300012049,
+     "sharpe": 0.425773810916874
+    }
+   },
+   "train": {
+    "cagr": 0.06179297194128619,
+    "maxDrawdown": -0.09991335525306189,
+    "sharpe": 0.5151202151164493,
+    "trades": 32,
+    "winRate": 0.65625,
+    "avgTrade": 0.017435826605512177,
+    "exposure": 0.03647046335939939,
+    "score": 0.6179297194128619,
+    "pYearUp": 0.7035,
+    "bench": {
+     "cagr": -0.024715613655438617,
+     "maxDrawdown": -0.7663456366986094,
+     "sharpe": 0.19660680164674701
+    }
+   },
+   "test": {
+    "cagr": 0.07885751990339562,
+    "maxDrawdown": -0.06647620744957439,
+    "sharpe": 0.7547065766641676,
+    "trades": 17,
+    "winRate": 0.7647058823529411,
+    "avgTrade": 0.030386753597195306,
+    "exposure": 0.032467305160246526,
+    "score": 0.7885751990339562,
+    "pYearUp": 0.8375,
+    "bench": {
+     "cagr": 0.12271831655203203,
+     "maxDrawdown": -0.5305998300012049,
+     "sharpe": 0.425773810916874
+    }
+   },
+   "testHighCost": {
+    "cagr": 0.05182891438047643,
+    "maxDrawdown": -0.06785524540477439,
+    "sharpe": 0.5229830039830534,
+    "trades": 17,
+    "winRate": 0.6470588235294118,
+    "avgTrade": 0.02070209491603804,
+    "exposure": 0.031593564209429985,
+    "score": 0.5182891438047643,
+    "pYearUp": 0.795,
+    "bench": {
+     "cagr": 0.12194621128375616,
+     "maxDrawdown": -0.5305998300012049,
+     "sharpe": 0.4257738109168714
+    }
+   },
+   "neighbours": {
+    "n": 12,
+    "beatHold": 11,
+    "medianScore": 0.7750142473053279,
+    "worstScore": 0.15826348233068357,
+    "medianCagr": 0.07750142473053279,
+    "worstCagr": 0.018639329285525807
+   }
+  },
+  {
+   "universe": "crypto",
+   "universeLabel": "Crypto (spot only)",
+   "symbols": [
+    "BTC-USD",
+    "ETH-USD",
+    "SOL-USD",
+    "XRP-USD",
+    "ADA-USD",
+    "LTC-USD",
+    "LINK-USD",
+    "AVAX-USD",
+    "DOT-USD",
+    "BCH-USD"
+   ],
+   "benchmark": "BTC-USD",
+   "costBps": 10,
+   "family": "coredip",
+   "name": "Core + Dips",
+   "kind": "permutation",
+   "start": {
+    "coreWeight": 60,
+    "coreTrend": 200,
+    "band": 2,
+    "entryRsi": 15,
+    "trendLen": 200,
+    "exitLen": 5,
+    "maxHold": 10,
+    "stopPct": 10,
+    "maxPositions": 2
+   },
+   "tuned": {
+    "coreWeight": 90,
+    "coreTrend": 250,
+    "band": 1,
+    "entryRsi": 10,
+    "trendLen": 250,
+    "exitLen": 7,
+    "maxHold": 5,
+    "stopPct": 5,
+    "maxPositions": 4
+   },
+   "evaluations": 480,
+   "climbPath": [
+    {
+     "params": {
+      "coreWeight": 60,
+      "coreTrend": 200,
+      "band": 2,
+      "entryRsi": 15,
+      "trendLen": 250,
+      "exitLen": 7,
+      "maxHold": 5,
+      "stopPct": 15,
+      "maxPositions": 3
+     },
+     "score": -0.04786227018183649
+    },
+    {
+     "params": {
+      "coreWeight": 60,
+      "coreTrend": 200,
+      "band": 2,
+      "entryRsi": 10,
+      "trendLen": 250,
+      "exitLen": 7,
+      "maxHold": 5,
+      "stopPct": 15,
+      "maxPositions": 3
+     },
+     "score": 0.150412863558268
+    },
+    {
+     "params": {
+      "coreWeight": 60,
+      "coreTrend": 250,
+      "band": 2,
+      "entryRsi": 10,
+      "trendLen": 250,
+      "exitLen": 7,
+      "maxHold": 5,
+      "stopPct": 15,
+      "maxPositions": 3
+     },
+     "score": 0.2805951035522678
+    },
+    {
+     "params": {
+      "coreWeight": 60,
+      "coreTrend": 250,
+      "band": 1,
+      "entryRsi": 10,
+      "trendLen": 250,
+      "exitLen": 7,
+      "maxHold": 5,
+      "stopPct": 15,
+      "maxPositions": 3
+     },
+     "score": 0.4775612346700463
+    },
+    {
+     "params": {
+      "coreWeight": 70,
+      "coreTrend": 250,
+      "band": 1,
+      "entryRsi": 10,
+      "trendLen": 250,
+      "exitLen": 7,
+      "maxHold": 5,
+      "stopPct": 15,
+      "maxPositions": 3
+     },
+     "score": 0.6179378619554514
+    },
+    {
+     "params": {
+      "coreWeight": 80,
+      "coreTrend": 250,
+      "band": 1,
+      "entryRsi": 10,
+      "trendLen": 250,
+      "exitLen": 7,
+      "maxHold": 5,
+      "stopPct": 15,
+      "maxPositions": 3
+     },
+     "score": 0.7846802787088838
+    },
+    {
+     "params": {
+      "coreWeight": 90,
+      "coreTrend": 250,
+      "band": 1,
+      "entryRsi": 10,
+      "trendLen": 250,
+      "exitLen": 7,
+      "maxHold": 5,
+      "stopPct": 15,
+      "maxPositions": 3
+     },
+     "score": 0.9001628050697619
+    },
+    {
+     "params": {
+      "coreWeight": 90,
+      "coreTrend": 250,
+      "band": 1,
+      "entryRsi": 10,
+      "trendLen": 250,
+      "exitLen": 7,
+      "maxHold": 5,
+      "stopPct": 10,
+      "maxPositions": 3
+     },
+     "score": 0.9240350699389346
+    },
+    {
+     "params": {
+      "coreWeight": 90,
+      "coreTrend": 250,
+      "band": 1,
+      "entryRsi": 10,
+      "trendLen": 250,
+      "exitLen": 7,
+      "maxHold": 5,
+      "stopPct": 5,
+      "maxPositions": 3
+     },
+     "score": 0.9399701721452117
+    },
+    {
+     "params": {
+      "coreWeight": 90,
+      "coreTrend": 250,
+      "band": 1,
+      "entryRsi": 10,
+      "trendLen": 250,
+      "exitLen": 7,
+      "maxHold": 5,
+      "stopPct": 5,
+      "maxPositions": 4
+     },
+     "score": 0.9571269989635685
+    }
+   ],
+   "defaultTrain": {
+    "cagr": -0.052487223359384605,
+    "maxDrawdown": -0.4365195982208966,
+    "sharpe": -0.005539948664215489,
+    "trades": 165,
+    "winRate": 0.5515151515151515,
+    "avgTrade": -0.008790048297016167,
+    "exposure": 0.4495646087179891,
+    "score": -0.12024024482131944,
+    "pYearUp": 0.471,
+    "bench": {
+     "cagr": -0.024715613655438617,
+     "maxDrawdown": -0.7663456366986094,
+     "sharpe": 0.19660680164674701
+    }
+   },
+   "defaultTest": {
+    "cagr": 0.019297058762254293,
+    "maxDrawdown": -0.29780589057978724,
+    "sharpe": 0.1711169290231188,
+    "trades": 105,
+    "winRate": 0.6,
+    "avgTrade": 0.0010083227016435714,
+    "exposure": 0.4086209697441579,
+    "score": 0.06479743810535636,
+    "pYearUp": 0.542,
+    "bench": {
+     "cagr": 0.12271831655203203,
+     "maxDrawdown": -0.5305998300012049,
+     "sharpe": 0.425773810916874
+    }
+   },
+   "train": {
+    "cagr": 0.2654445678693038,
+    "maxDrawdown": -0.2773347404855806,
+    "sharpe": 0.6863599338468419,
+    "trades": 202,
+    "winRate": 0.4405940594059406,
+    "avgTrade": 0.0031499467376622345,
+    "exposure": 0.5594700658825057,
+    "score": 0.9571269989635685,
+    "pYearUp": 0.727,
+    "bench": {
+     "cagr": -0.024715613655438617,
+     "maxDrawdown": -0.7663456366986094,
+     "sharpe": 0.19660680164674701
+    }
+   },
+   "test": {
+    "cagr": 0.15397707119388593,
+    "maxDrawdown": -0.29794299686762105,
+    "sharpe": 0.500599413584459,
+    "trades": 142,
+    "winRate": 0.4507042253521127,
+    "avgTrade": 0.009863002647435599,
+    "exposure": 0.5771833692267538,
+    "score": 0.5168004377102356,
+    "pYearUp": 0.664,
+    "bench": {
+     "cagr": 0.12271831655203203,
+     "maxDrawdown": -0.5305998300012049,
+     "sharpe": 0.425773810916874
+    }
+   },
+   "testHighCost": {
+    "cagr": 0.14596442652001973,
+    "maxDrawdown": -0.30134912519575174,
+    "sharpe": 0.4819665090449513,
+    "trades": 141,
+    "winRate": 0.4397163120567376,
+    "avgTrade": 0.006139668090748118,
+    "exposure": 0.5790690154740169,
+    "score": 0.4843698365648266,
+    "pYearUp": 0.6565,
+    "bench": {
+     "cagr": 0.12194621128375616,
+     "maxDrawdown": -0.5305998300012049,
+     "sharpe": 0.4257738109168714
+    }
+   },
+   "neighbours": {
+    "n": 12,
+    "beatHold": 11,
+    "medianScore": 0.5056710447463015,
+    "worstScore": 0.16833442335132032,
+    "medianCagr": 0.15120564373126855,
+    "worstCagr": 0.04860993566899663
+   }
+  },
+  {
+   "universe": "crypto",
+   "universeLabel": "Crypto (spot only)",
+   "symbols": [
+    "BTC-USD",
+    "ETH-USD",
+    "SOL-USD",
+    "XRP-USD",
+    "ADA-USD",
+    "LTC-USD",
+    "LINK-USD",
+    "AVAX-USD",
+    "DOT-USD",
+    "BCH-USD"
+   ],
+   "benchmark": "BTC-USD",
+   "costBps": 10,
+   "family": "dualmom",
+   "name": "Dual Momentum",
+   "kind": "permutation",
+   "start": {
+    "lookback": 252,
+    "top": 1,
+    "useDefensive": 0
+   },
+   "tuned": {
+    "lookback": 126,
+    "top": 4,
+    "useDefensive": 0
+   },
+   "evaluations": 20,
+   "climbPath": [
+    {
+     "params": {
+      "lookback": 126,
+      "top": 3,
+      "useDefensive": 0
+     },
+     "score": 0.08016904921993324
+    },
+    {
+     "params": {
+      "lookback": 126,
+      "top": 4,
+      "useDefensive": 0
+     },
+     "score": 0.2672941275162095
+    }
+   ],
+   "defaultTrain": {
+    "cagr": -0.3032195734848626,
+    "maxDrawdown": -0.8791907606300918,
+    "sharpe": -0.05025923309948033,
+    "trades": 5,
+    "winRate": 0.4,
+    "avgTrade": 0.041468303661102456,
+    "exposure": 0.7374031007751938,
+    "score": -0.34488484986756857,
+    "pYearUp": 0.386,
+    "bench": {
+     "cagr": -0.024715613655438617,
+     "maxDrawdown": -0.7663456366986094,
+     "sharpe": 0.19660680164674701
+    }
+   },
+   "defaultTest": {
+    "cagr": 0.11269679436995172,
+    "maxDrawdown": -0.5582354831272729,
+    "sharpe": 0.4139370618818599,
+    "trades": 4,
+    "winRate": 0.5,
+    "avgTrade": 0.18442919977203406,
+    "exposure": 0.6934673366834171,
+    "score": 0.2018803852070038,
+    "pYearUp": 0.57,
+    "bench": {
+     "cagr": 0.12271831655203203,
+     "maxDrawdown": -0.5305998300012049,
+     "sharpe": 0.425773810916874
+    }
+   },
+   "train": {
+    "cagr": 0.15070581690546492,
+    "maxDrawdown": -0.5638201568656822,
+    "sharpe": 0.4419928812610115,
+    "trades": 28,
+    "winRate": 0.42857142857142855,
+    "avgTrade": 0.24811587320121697,
+    "exposure": 0.6778766217581523,
+    "score": 0.2672941275162095,
+    "pYearUp": 0.5775,
+    "bench": {
+     "cagr": -0.024715613655438617,
+     "maxDrawdown": -0.7663456366986094,
+     "sharpe": 0.19660680164674701
+    }
+   },
+   "test": {
+    "cagr": -0.08360771067323192,
+    "maxDrawdown": -0.6402607548509778,
+    "sharpe": 0.10555998440610984,
+    "trades": 20,
+    "winRate": 0.4,
+    "avgTrade": 0.029007840990636895,
+    "exposure": 0.48903170355265796,
+    "score": -0.13058384422248684,
+    "pYearUp": 0.4465,
+    "bench": {
+     "cagr": 0.12271831655203203,
+     "maxDrawdown": -0.5305998300012049,
+     "sharpe": 0.425773810916874
+    }
+   },
+   "testHighCost": {
+    "cagr": -0.08979998746202011,
+    "maxDrawdown": -0.6444552528735901,
+    "sharpe": 0.09568222894351237,
+    "trades": 20,
+    "winRate": 0.4,
+    "avgTrade": 0.025925433373072283,
+    "exposure": 0.4890384523515479,
+    "score": -0.13934247112054246,
+    "pYearUp": 0.44,
+    "bench": {
+     "cagr": 0.12194621128375616,
+     "maxDrawdown": -0.5305998300012049,
+     "sharpe": 0.4257738109168714
+    }
+   },
+   "neighbours": {
+    "n": 3,
+    "beatHold": 0,
+    "medianScore": -0.32424216441011,
+    "worstScore": -0.3256126525455409,
+    "medianCagr": -0.1811968847314036,
+    "worstCagr": -0.19985124189684633
+   }
+  },
+  {
+   "universe": "crypto",
+   "universeLabel": "Crypto (spot only)",
+   "symbols": [
+    "BTC-USD",
+    "ETH-USD",
+    "SOL-USD",
+    "XRP-USD",
+    "ADA-USD",
+    "LTC-USD",
+    "LINK-USD",
+    "AVAX-USD",
+    "DOT-USD",
+    "BCH-USD"
+   ],
+   "benchmark": "BTC-USD",
+   "costBps": 10,
+   "family": "voldip",
+   "name": "Calm-Sized Dips",
+   "kind": "permutation",
+   "start": {
+    "targetVol": 20,
+    "entryRsi": 15,
+    "trendLen": 200,
+    "exitLen": 5,
+    "maxHold": 10,
+    "stopPct": 10,
+    "maxPositions": 2
+   },
+   "tuned": {
+    "targetVol": 15,
+    "entryRsi": 30,
+    "trendLen": 150,
+    "exitLen": 10,
+    "maxHold": 10,
+    "stopPct": 7.5,
+    "maxPositions": 2
+   },
+   "evaluations": 416,
+   "climbPath": [
+    {
+     "params": {
+      "targetVol": 30,
+      "entryRsi": 20,
+      "trendLen": 200,
+      "exitLen": 7,
+      "maxHold": 15,
+      "stopPct": 10,
+      "maxPositions": 1
+     },
+     "score": -0.36251519563692636
+    },
+    {
+     "params": {
+      "targetVol": 30,
+      "entryRsi": 20,
+      "trendLen": 200,
+      "exitLen": 10,
+      "maxHold": 15,
+      "stopPct": 10,
+      "maxPositions": 1
+     },
+     "score": -0.14198803010402886
+    },
+    {
+     "params": {
+      "targetVol": 30,
+      "entryRsi": 20,
+      "trendLen": 150,
+      "exitLen": 10,
+      "maxHold": 15,
+      "stopPct": 10,
+      "maxPositions": 1
+     },
+     "score": -0.05007782474476299
+    },
+    {
+     "params": {
+      "targetVol": 30,
+      "entryRsi": 20,
+      "trendLen": 150,
+      "exitLen": 10,
+      "maxHold": 15,
+      "stopPct": 10,
+      "maxPositions": 2
+     },
+     "score": 0.028150683021651343
+    },
+    {
+     "params": {
+      "targetVol": 30,
+      "entryRsi": 20,
+      "trendLen": 150,
+      "exitLen": 10,
+      "maxHold": 15,
+      "stopPct": 7.5,
+      "maxPositions": 2
+     },
+     "score": 0.0435755991149804
+    },
+    {
+     "params": {
+      "targetVol": 30,
+      "entryRsi": 25,
+      "trendLen": 150,
+      "exitLen": 10,
+      "maxHold": 15,
+      "stopPct": 7.5,
+      "maxPositions": 2
+     },
+     "score": 0.08299018825001032
+    },
+    {
+     "params": {
+      "targetVol": 30,
+      "entryRsi": 30,
+      "trendLen": 150,
+      "exitLen": 10,
+      "maxHold": 15,
+      "stopPct": 7.5,
+      "maxPositions": 2
+     },
+     "score": 0.7523934783826282
+    },
+    {
+     "params": {
+      "targetVol": 30,
+      "entryRsi": 30,
+      "trendLen": 150,
+      "exitLen": 10,
+      "maxHold": 10,
+      "stopPct": 7.5,
+      "maxPositions": 2
+     },
+     "score": 0.7572263738480866
+    },
+    {
+     "params": {
+      "targetVol": 20,
+      "entryRsi": 30,
+      "trendLen": 150,
+      "exitLen": 10,
+      "maxHold": 10,
+      "stopPct": 7.5,
+      "maxPositions": 2
+     },
+     "score": 0.758716373499151
+    },
+    {
+     "params": {
+      "targetVol": 15,
+      "entryRsi": 30,
+      "trendLen": 150,
+      "exitLen": 10,
+      "maxHold": 10,
+      "stopPct": 7.5,
+      "maxPositions": 2
+     },
+     "score": 0.7669390912109366
+    }
+   ],
+   "defaultTrain": {
+    "cagr": -0.0746966362007746,
+    "maxDrawdown": -0.20197233878765963,
+    "sharpe": -0.5795847558352845,
+    "trades": 174,
+    "winRate": 0.5862068965517241,
+    "avgTrade": -0.009053761878559574,
+    "exposure": 0.08430180718817773,
+    "score": -0.36983597184219225,
+    "pYearUp": 0.299,
+    "bench": {
+     "cagr": -0.024715613655438617,
+     "maxDrawdown": -0.7663456366986094,
+     "sharpe": 0.19660680164674701
+    }
+   },
+   "defaultTest": {
+    "cagr": 0.026730809782532283,
+    "maxDrawdown": -0.09829645162912704,
+    "sharpe": 0.28008579047978077,
+    "trades": 115,
+    "winRate": 0.6173913043478261,
+    "avgTrade": 0.0007861617913860569,
+    "exposure": 0.06472005177687401,
+    "score": 0.26730809782532283,
+    "pYearUp": 0.6185,
+    "bench": {
+     "cagr": 0.12271831655203203,
+     "maxDrawdown": -0.5305998300012049,
+     "sharpe": 0.425773810916874
+    }
+   },
+   "train": {
+    "cagr": 0.08138294360496934,
+    "maxDrawdown": -0.10611395942339052,
+    "sharpe": 0.5199705456623956,
+    "trades": 257,
+    "winRate": 0.5953307392996109,
+    "avgTrade": 0.0013551300182152218,
+    "exposure": 0.09141659058849455,
+    "score": 0.7669390912109366,
+    "pYearUp": 0.6945,
+    "bench": {
+     "cagr": -0.024715613655438617,
+     "maxDrawdown": -0.7663456366986094,
+     "sharpe": 0.19660680164674701
+    }
+   },
+   "test": {
+    "cagr": -0.031723882992243935,
+    "maxDrawdown": -0.0955417768948047,
+    "sharpe": -0.2908509346271386,
+    "trades": 171,
+    "winRate": 0.5263157894736842,
+    "avgTrade": -0.004030906661015892,
+    "exposure": 0.08049793046328757,
+    "score": -0.31723882992243935,
+    "pYearUp": 0.409,
+    "bench": {
+     "cagr": 0.12271831655203203,
+     "maxDrawdown": -0.5305998300012049,
+     "sharpe": 0.425773810916874
+    }
+   },
+   "testHighCost": {
+    "cagr": -0.057369311538892576,
+    "maxDrawdown": -0.13343738145692485,
+    "sharpe": -0.5574459432326005,
+    "trades": 173,
+    "winRate": 0.5086705202312138,
+    "avgTrade": -0.007371702922658367,
+    "exposure": 0.08056556927849523,
+    "score": -0.42993433258739466,
+    "pYearUp": 0.28,
+    "bench": {
+     "cagr": 0.12194621128375616,
+     "maxDrawdown": -0.5305998300012049,
+     "sharpe": 0.4257738109168714
+    }
+   },
+   "neighbours": {
+    "n": 12,
+    "beatHold": 1,
+    "medianScore": -0.14753193489570493,
+    "worstScore": -0.3441558429442925,
+    "medianCagr": -0.014753193489570493,
+    "worstCagr": -0.043411013304910484
+   }
+  },
   {
    "universe": "etfs",
    "universeLabel": "Halal ETFs only (no stock picking)",
@@ -200,6 +2856,14 @@
      "maxDrawdown": -0.22743432084963677,
      "sharpe": 0.9817333799379591
     }
+   },
+   "neighbours": {
+    "n": 10,
+    "beatHold": 0,
+    "medianScore": 0.2962320467157214,
+    "worstScore": 0.10513549171228331,
+    "medianCagr": 0.046310884215297055,
+    "worstCagr": 0.014496710604689378
    }
   },
   {
@@ -389,6 +3053,14 @@
      "maxDrawdown": -0.22743432084963677,
      "sharpe": 0.9817333799379591
     }
+   },
+   "neighbours": {
+    "n": 13,
+    "beatHold": 0,
+    "medianScore": 0.4249852048159992,
+    "worstScore": 0.31580680826695195,
+    "medianCagr": 0.048816639512851534,
+    "worstCagr": 0.033290598082903466
    }
   },
   {
@@ -581,6 +3253,14 @@
      "maxDrawdown": -0.22743432084963677,
      "sharpe": 0.9817333799379591
     }
+   },
+   "neighbours": {
+    "n": 9,
+    "beatHold": 0,
+    "medianScore": -0.1101360301133713,
+    "worstScore": -0.2914515897517883,
+    "medianCagr": -0.013875459982661265,
+    "worstCagr": -0.04654284561103039
    }
   },
   {
@@ -714,6 +3394,1759 @@
      "maxDrawdown": -0.22743432084963677,
      "sharpe": 0.9817333799379591
     }
+   },
+   "neighbours": {
+    "n": 4,
+    "beatHold": 0,
+    "medianScore": 0.46095442598067105,
+    "worstScore": 0.23335012784410183,
+    "medianCagr": 0.06044469740920233,
+    "worstCagr": 0.030929224905213104
+   }
+  },
+  {
+   "universe": "etfs",
+   "universeLabel": "Halal ETFs only (no stock picking)",
+   "symbols": [
+    "SPUS",
+    "HLAL",
+    "UMMA",
+    "SPTE",
+    "SPWO",
+    "SPRE"
+   ],
+   "benchmark": "SPUS",
+   "costBps": 5,
+   "family": "breakout",
+   "name": "Breakout",
+   "kind": "new",
+   "start": {
+    "entryLen": 55,
+    "exitLen": 20,
+    "stopPct": 10,
+    "maxPositions": 3
+   },
+   "tuned": {
+    "entryLen": 20,
+    "exitLen": 15,
+    "stopPct": 5,
+    "maxPositions": 3
+   },
+   "evaluations": 108,
+   "climbPath": [
+    {
+     "params": {
+      "entryLen": 55,
+      "exitLen": 20,
+      "stopPct": 10,
+      "maxPositions": 3
+     },
+     "score": -0.03555353563425664
+    },
+    {
+     "params": {
+      "entryLen": 40,
+      "exitLen": 20,
+      "stopPct": 10,
+      "maxPositions": 3
+     },
+     "score": -0.01850226186211214
+    },
+    {
+     "params": {
+      "entryLen": 30,
+      "exitLen": 20,
+      "stopPct": 10,
+      "maxPositions": 3
+     },
+     "score": 0.0854264723524612
+    },
+    {
+     "params": {
+      "entryLen": 20,
+      "exitLen": 20,
+      "stopPct": 10,
+      "maxPositions": 3
+     },
+     "score": 0.38866111734057096
+    },
+    {
+     "params": {
+      "entryLen": 20,
+      "exitLen": 15,
+      "stopPct": 10,
+      "maxPositions": 3
+     },
+     "score": 0.6257766040779713
+    },
+    {
+     "params": {
+      "entryLen": 20,
+      "exitLen": 15,
+      "stopPct": 7.5,
+      "maxPositions": 3
+     },
+     "score": 0.6522002448739106
+    },
+    {
+     "params": {
+      "entryLen": 20,
+      "exitLen": 15,
+      "stopPct": 5,
+      "maxPositions": 3
+     },
+     "score": 0.6844173829004152
+    }
+   ],
+   "defaultTrain": {
+    "cagr": -0.0063323001874030505,
+    "maxDrawdown": -0.17810606102707083,
+    "sharpe": -0.03018653328521822,
+    "trades": 24,
+    "winRate": 0.3333333333333333,
+    "avgTrade": -0.0011671056750372324,
+    "exposure": 0.44298438959355546,
+    "score": -0.03555353563425664,
+    "pYearUp": 0.4845,
+    "bench": {
+     "cagr": 0.08934672032794233,
+     "maxDrawdown": -0.28081910461773163,
+     "sharpe": 0.5325496238717892
+    }
+   },
+   "defaultTest": {
+    "cagr": 0.015656657392639772,
+    "maxDrawdown": -0.1235840331687531,
+    "sharpe": 0.18213142395722343,
+    "trades": 26,
+    "winRate": 0.5,
+    "avgTrade": 0.004708831736772388,
+    "exposure": 0.6798351906605979,
+    "score": 0.12668835116637372,
+    "pYearUp": 0.569,
+    "bench": {
+     "cagr": 0.17031034976557247,
+     "maxDrawdown": -0.22743432084963677,
+     "sharpe": 0.9817333799379574
+    }
+   },
+   "train": {
+    "cagr": 0.06844173829004152,
+    "maxDrawdown": -0.09076813685894058,
+    "sharpe": 0.6509478577255172,
+    "trades": 31,
+    "winRate": 0.6451612903225806,
+    "avgTrade": 0.018755138846090348,
+    "exposure": 0.5388536228135923,
+    "score": 0.6844173829004152,
+    "pYearUp": 0.759,
+    "bench": {
+     "cagr": 0.08934672032794233,
+     "maxDrawdown": -0.28081910461773163,
+     "sharpe": 0.5325496238717892
+    }
+   },
+   "test": {
+    "cagr": 0.0896875793844516,
+    "maxDrawdown": -0.10006245209969933,
+    "sharpe": 0.6521537489621122,
+    "trades": 31,
+    "winRate": 0.41935483870967744,
+    "avgTrade": 0.01991592954265396,
+    "exposure": 0.7336623768137384,
+    "score": 0.8963160256665457,
+    "pYearUp": 0.768,
+    "bench": {
+     "cagr": 0.17031034976557247,
+     "maxDrawdown": -0.22743432084963677,
+     "sharpe": 0.9817333799379574
+    }
+   },
+   "testHighCost": {
+    "cagr": 0.08226837286799293,
+    "maxDrawdown": -0.10247990610682323,
+    "sharpe": 0.6065169654118923,
+    "trades": 31,
+    "winRate": 0.41935483870967744,
+    "avgTrade": 0.01845745942281876,
+    "exposure": 0.7336823951322117,
+    "score": 0.8027756464007476,
+    "pYearUp": 0.743,
+    "bench": {
+     "cagr": 0.16990649558709103,
+     "maxDrawdown": -0.22743432084963677,
+     "sharpe": 0.9817333799379591
+    }
+   },
+   "neighbours": {
+    "n": 7,
+    "beatHold": 6,
+    "medianScore": 0.9502553219162796,
+    "worstScore": 0.6804066782788041,
+    "medianCagr": 0.10585860224565158,
+    "worstCagr": 0.07096629410773114
+   }
+  },
+  {
+   "universe": "etfs",
+   "universeLabel": "Halal ETFs only (no stock picking)",
+   "symbols": [
+    "SPUS",
+    "HLAL",
+    "UMMA",
+    "SPTE",
+    "SPWO",
+    "SPRE"
+   ],
+   "benchmark": "SPUS",
+   "costBps": 5,
+   "family": "golden",
+   "name": "Golden Cross",
+   "kind": "new",
+   "start": {
+    "fast": 50,
+    "slow": 200,
+    "maxPositions": 3
+   },
+   "tuned": {
+    "fast": 50,
+    "slow": 150,
+    "maxPositions": 3
+   },
+   "evaluations": 35,
+   "climbPath": [
+    {
+     "params": {
+      "fast": 50,
+      "slow": 200,
+      "maxPositions": 3
+     },
+     "score": -9.166666666666666
+    },
+    {
+     "params": {
+      "fast": 50,
+      "slow": 150,
+      "maxPositions": 3
+     },
+     "score": 0.6905263707271362
+    }
+   ],
+   "defaultTrain": {
+    "cagr": 0.06608486886875453,
+    "maxDrawdown": -0.1847288843124093,
+    "sharpe": 0.5982260089830229,
+    "trades": 5,
+    "winRate": 0.2,
+    "avgTrade": -0.07228347818431516,
+    "exposure": 0.6745083166942455,
+    "score": 0.3577397715291416,
+    "pYearUp": 0.6735,
+    "bench": {
+     "cagr": 0.08934672032794233,
+     "maxDrawdown": -0.28081910461773163,
+     "sharpe": 0.5325496238717892
+    }
+   },
+   "defaultTest": {
+    "cagr": 0.044453626724702655,
+    "maxDrawdown": -0.25256184406740956,
+    "sharpe": 0.31177502681456387,
+    "trades": 6,
+    "winRate": 0,
+    "avgTrade": -0.08683873041639883,
+    "exposure": 0.9018211114840415,
+    "score": 0.17601085741533404,
+    "pYearUp": 0.6445,
+    "bench": {
+     "cagr": 0.17031034976557247,
+     "maxDrawdown": -0.22743432084963677,
+     "sharpe": 0.9817333799379574
+    }
+   },
+   "train": {
+    "cagr": 0.09549089745887485,
+    "maxDrawdown": -0.13828711184240694,
+    "sharpe": 0.848310881890115,
+    "trades": 6,
+    "winRate": 0.5,
+    "avgTrade": 0.01414424039861087,
+    "exposure": 0.6514865223034839,
+    "score": 0.6905263707271362,
+    "pYearUp": 0.7865,
+    "bench": {
+     "cagr": 0.08934672032794233,
+     "maxDrawdown": -0.28081910461773163,
+     "sharpe": 0.5325496238717892
+    }
+   },
+   "test": {
+    "cagr": 0.09538131364689284,
+    "maxDrawdown": -0.20090616737230538,
+    "sharpe": 0.5413461555420629,
+    "trades": 5,
+    "winRate": 0.2,
+    "avgTrade": -0.04370144123577225,
+    "exposure": 0.9012557049560128,
+    "score": 0.47475552838623813,
+    "pYearUp": 0.749,
+    "bench": {
+     "cagr": 0.17031034976557247,
+     "maxDrawdown": -0.22743432084963677,
+     "sharpe": 0.9817333799379574
+    }
+   },
+   "testHighCost": {
+    "cagr": 0.09372588451058284,
+    "maxDrawdown": -0.20207571529083213,
+    "sharpe": 0.5340598779753182,
+    "trades": 5,
+    "winRate": 0,
+    "avgTrade": -0.04513249881313655,
+    "exposure": 0.9011257920664408,
+    "score": 0.463815676097894,
+    "pYearUp": 0.746,
+    "bench": {
+     "cagr": 0.16990649558709103,
+     "maxDrawdown": -0.22743432084963677,
+     "sharpe": 0.9817333799379591
+    }
+   },
+   "neighbours": {
+    "n": 6,
+    "beatHold": 1,
+    "medianScore": 0.47442699259113724,
+    "worstScore": 0.17601085741533404,
+    "medianCagr": 0.10084347473827782,
+    "worstCagr": 0.044453626724702655
+   }
+  },
+  {
+   "universe": "etfs",
+   "universeLabel": "Halal ETFs only (no stock picking)",
+   "symbols": [
+    "SPUS",
+    "HLAL",
+    "UMMA",
+    "SPTE",
+    "SPWO",
+    "SPRE"
+   ],
+   "benchmark": "SPUS",
+   "costBps": 5,
+   "family": "voltarget",
+   "name": "Volatility Target",
+   "kind": "new",
+   "start": {
+    "targetVol": 15,
+    "volLen": 20,
+    "buffer": 20,
+    "trendLen": 0
+   },
+   "tuned": {
+    "targetVol": 15,
+    "volLen": 20,
+    "buffer": 30,
+    "trendLen": 200
+   },
+   "evaluations": 84,
+   "climbPath": [
+    {
+     "params": {
+      "targetVol": 25,
+      "volLen": 40,
+      "buffer": 30,
+      "trendLen": 150
+     },
+     "score": 0.39131959919034764
+    },
+    {
+     "params": {
+      "targetVol": 25,
+      "volLen": 40,
+      "buffer": 30,
+      "trendLen": 200
+     },
+     "score": 0.5099952190454635
+    },
+    {
+     "params": {
+      "targetVol": 20,
+      "volLen": 40,
+      "buffer": 30,
+      "trendLen": 200
+     },
+     "score": 0.5395302957201055
+    },
+    {
+     "params": {
+      "targetVol": 15,
+      "volLen": 40,
+      "buffer": 30,
+      "trendLen": 200
+     },
+     "score": 0.5520290694517574
+    },
+    {
+     "params": {
+      "targetVol": 15,
+      "volLen": 20,
+      "buffer": 30,
+      "trendLen": 200
+     },
+     "score": 0.7103799678911511
+    }
+   ],
+   "defaultTrain": {
+    "cagr": 0.09389245965135395,
+    "maxDrawdown": -0.1961793062711179,
+    "sharpe": 0.6773182847385846,
+    "trades": 10,
+    "winRate": 0.6,
+    "avgTrade": 0.02795179082056224,
+    "exposure": 0.8151881460213078,
+    "score": 0.47860531998005684,
+    "pYearUp": 0.7265,
+    "bench": {
+     "cagr": 0.08934672032794233,
+     "maxDrawdown": -0.28081910461773163,
+     "sharpe": 0.5325496238717892
+    }
+   },
+   "defaultTest": {
+    "cagr": 0.12018056776677066,
+    "maxDrawdown": -0.20256249536731463,
+    "sharpe": 0.803787290489748,
+    "trades": 10,
+    "winRate": 0.7,
+    "avgTrade": 0.04229347654642276,
+    "exposure": 0.9077836921451049,
+    "score": 0.5933011811927102,
+    "pYearUp": 0.821,
+    "bench": {
+     "cagr": 0.17031034976557247,
+     "maxDrawdown": -0.22743432084963677,
+     "sharpe": 0.9817333799379574
+    }
+   },
+   "train": {
+    "cagr": 0.08002766389908356,
+    "maxDrawdown": -0.11265473058968056,
+    "sharpe": 0.7567060150500892,
+    "trades": 6,
+    "winRate": 0.5,
+    "avgTrade": 0.033468338028664994,
+    "exposure": 0.5678096710089903,
+    "score": 0.7103799678911511,
+    "pYearUp": 0.768,
+    "bench": {
+     "cagr": 0.08934672032794233,
+     "maxDrawdown": -0.28081910461773163,
+     "sharpe": 0.5325496238717892
+    }
+   },
+   "test": {
+    "cagr": 0.1140599752588849,
+    "maxDrawdown": -0.0881539351606081,
+    "sharpe": 1.0368614131596274,
+    "trades": 3,
+    "winRate": 0.6666666666666666,
+    "avgTrade": 0.06980856246734478,
+    "exposure": 0.6693874799169612,
+    "score": 1.140599752588849,
+    "pYearUp": 0.9,
+    "bench": {
+     "cagr": 0.17031034976557247,
+     "maxDrawdown": -0.22743432084963677,
+     "sharpe": 0.9817333799379574
+    }
+   },
+   "testHighCost": {
+    "cagr": 0.11206568244537696,
+    "maxDrawdown": -0.08913028233114373,
+    "sharpe": 1.021205443339109,
+    "trades": 3,
+    "winRate": 0.6666666666666666,
+    "avgTrade": 0.06820735996470949,
+    "exposure": 0.6692728436486992,
+    "score": 1.1206568244537696,
+    "pYearUp": 0.895,
+    "bench": {
+     "cagr": 0.16990649558709103,
+     "maxDrawdown": -0.22743432084963677,
+     "sharpe": 0.9817333799379591
+    }
+   },
+   "neighbours": {
+    "n": 7,
+    "beatHold": 7,
+    "medianScore": 1.1741932612501516,
+    "worstScore": 0.9295305991045133,
+    "medianCagr": 0.11741932612501516,
+    "worstCagr": 0.09295305991045133
+   }
+  },
+  {
+   "universe": "etfs",
+   "universeLabel": "Halal ETFs only (no stock picking)",
+   "symbols": [
+    "SPUS",
+    "HLAL",
+    "UMMA",
+    "SPTE",
+    "SPWO",
+    "SPRE"
+   ],
+   "benchmark": "SPUS",
+   "costBps": 5,
+   "family": "lowvol",
+   "name": "Calm Leaders",
+   "kind": "new",
+   "start": {
+    "volLen": 60,
+    "trendLen": 200,
+    "top": 3
+   },
+   "tuned": {
+    "volLen": 60,
+    "trendLen": 250,
+    "top": 2
+   },
+   "evaluations": 45,
+   "climbPath": [
+    {
+     "params": {
+      "volLen": 60,
+      "trendLen": 250,
+      "top": 3
+     },
+     "score": -9.166666666666666
+    },
+    {
+     "params": {
+      "volLen": 60,
+      "trendLen": 250,
+      "top": 2
+     },
+     "score": 0.3817235735780211
+    }
+   ],
+   "defaultTrain": {
+    "cagr": 0.027457296382032315,
+    "maxDrawdown": -0.22061477380553762,
+    "sharpe": 0.2831405681502152,
+    "trades": 11,
+    "winRate": 0.2727272727272727,
+    "avgTrade": -0.015189551046014773,
+    "exposure": 0.6666124185757408,
+    "score": 0.12445810363649867,
+    "pYearUp": 0.564,
+    "bench": {
+     "cagr": 0.08934672032794233,
+     "maxDrawdown": -0.28081910461773163,
+     "sharpe": 0.5325496238717892
+    }
+   },
+   "defaultTest": {
+    "cagr": 0.05649324649416787,
+    "maxDrawdown": -0.11272080343160673,
+    "sharpe": 0.4605493440864163,
+    "trades": 18,
+    "winRate": 0.5555555555555556,
+    "avgTrade": 0.021728689000725165,
+    "exposure": 0.8849697940491851,
+    "score": 0.5011785293780763,
+    "pYearUp": 0.7575,
+    "bench": {
+     "cagr": 0.17031034976557247,
+     "maxDrawdown": -0.22743432084963677,
+     "sharpe": 0.9817333799379574
+    }
+   },
+   "train": {
+    "cagr": 0.07027436862528758,
+    "maxDrawdown": -0.18409753415693642,
+    "sharpe": 0.6095479781241222,
+    "trades": 6,
+    "winRate": 0.3333333333333333,
+    "avgTrade": 0.02442157108103185,
+    "exposure": 0.6899117137675513,
+    "score": 0.3817235735780211,
+    "pYearUp": 0.6845,
+    "bench": {
+     "cagr": 0.08934672032794233,
+     "maxDrawdown": -0.28081910461773163,
+     "sharpe": 0.5325496238717892
+    }
+   },
+   "test": {
+    "cagr": 0.025637009731176885,
+    "maxDrawdown": -0.12031609559700318,
+    "sharpe": 0.266872227719929,
+    "trades": 9,
+    "winRate": 0.4444444444444444,
+    "avgTrade": 0.028486208514536402,
+    "exposure": 0.8794444780710019,
+    "score": 0.2130804661169162,
+    "pYearUp": 0.698,
+    "bench": {
+     "cagr": 0.17031034976557247,
+     "maxDrawdown": -0.22743432084963677,
+     "sharpe": 0.9817333799379574
+    }
+   },
+   "testHighCost": {
+    "cagr": 0.022171991402824442,
+    "maxDrawdown": -0.12092634593714324,
+    "sharpe": 0.2393756977939496,
+    "trades": 9,
+    "winRate": 0.4444444444444444,
+    "avgTrade": 0.026949846081928623,
+    "exposure": 0.8794692506235227,
+    "score": 0.1833512063148696,
+    "pYearUp": 0.685,
+    "bench": {
+     "cagr": 0.16990649558709103,
+     "maxDrawdown": -0.22743432084963677,
+     "sharpe": 0.9817333799379591
+    }
+   },
+   "neighbours": {
+    "n": 5,
+    "beatHold": 0,
+    "medianScore": 0.21908611363290978,
+    "worstScore": 0.07595730775890881,
+    "medianCagr": 0.026227144404353142,
+    "worstCagr": 0.013330406804876294
+   }
+  },
+  {
+   "universe": "etfs",
+   "universeLabel": "Halal ETFs only (no stock picking)",
+   "symbols": [
+    "SPUS",
+    "HLAL",
+    "UMMA",
+    "SPTE",
+    "SPWO",
+    "SPRE"
+   ],
+   "benchmark": "SPUS",
+   "costBps": 5,
+   "family": "reversal",
+   "name": "Weekly Reversal",
+   "kind": "new",
+   "start": {
+    "lookback": 5,
+    "trendLen": 200,
+    "top": 2,
+    "stopPct": 10
+   },
+   "tuned": {
+    "lookback": 5,
+    "trendLen": 200,
+    "top": 1,
+    "stopPct": 10
+   },
+   "evaluations": 87,
+   "climbPath": [
+    {
+     "params": {
+      "lookback": 5,
+      "trendLen": 200,
+      "top": 2,
+      "stopPct": 10
+     },
+     "score": 0.09656618830282844
+    },
+    {
+     "params": {
+      "lookback": 5,
+      "trendLen": 200,
+      "top": 1,
+      "stopPct": 10
+     },
+     "score": 0.5808183573925653
+    }
+   ],
+   "defaultTrain": {
+    "cagr": 0.01330051566890389,
+    "maxDrawdown": -0.13773470717508185,
+    "sharpe": 0.19137593738982608,
+    "trades": 74,
+    "winRate": 0.6486486486486487,
+    "avgTrade": 0.0014289537100850393,
+    "exposure": 0.36126969212620297,
+    "score": 0.09656618830282844,
+    "pYearUp": 0.5275,
+    "bench": {
+     "cagr": 0.08934672032794233,
+     "maxDrawdown": -0.28081910461773163,
+     "sharpe": 0.5325496238717892
+    }
+   },
+   "defaultTest": {
+    "cagr": -0.002295935123127535,
+    "maxDrawdown": -0.16443595539334577,
+    "sharpe": 0.05590104844187191,
+    "trades": 93,
+    "winRate": 0.5806451612903226,
+    "avgTrade": 0.00089544148256593,
+    "exposure": 0.5471539606659689,
+    "score": -0.013962488420707315,
+    "pYearUp": 0.579,
+    "bench": {
+     "cagr": 0.17031034976557247,
+     "maxDrawdown": -0.22743432084963677,
+     "sharpe": 0.9817333799379574
+    }
+   },
+   "train": {
+    "cagr": 0.06750971982378862,
+    "maxDrawdown": -0.11623206974183142,
+    "sharpe": 0.6056454708506823,
+    "trades": 53,
+    "winRate": 0.660377358490566,
+    "avgTrade": 0.003972475885186509,
+    "exposure": 0.4631680559022179,
+    "score": 0.5808183573925653,
+    "pYearUp": 0.6875,
+    "bench": {
+     "cagr": 0.08934672032794233,
+     "maxDrawdown": -0.28081910461773163,
+     "sharpe": 0.5325496238717892
+    }
+   },
+   "test": {
+    "cagr": -0.009522336555245925,
+    "maxDrawdown": -0.18275568107560114,
+    "sharpe": 0.023564022036714875,
+    "trades": 62,
+    "winRate": 0.532258064516129,
+    "avgTrade": 0.001529706836178782,
+    "exposure": 0.6341727551514694,
+    "score": -0.05210418904190885,
+    "pYearUp": 0.61,
+    "bench": {
+     "cagr": 0.17031034976557247,
+     "maxDrawdown": -0.22743432084963677,
+     "sharpe": 0.9817333799379574
+    }
+   },
+   "testHighCost": {
+    "cagr": -0.05137304574153212,
+    "maxDrawdown": -0.19853502682853252,
+    "sharpe": -0.24096325457668405,
+    "trades": 62,
+    "winRate": 0.5161290322580645,
+    "avgTrade": 0.000028838418272178938,
+    "exposure": 0.6341727551514694,
+    "score": -0.2587606155053997,
+    "pYearUp": 0.4885,
+    "bench": {
+     "cagr": 0.16990649558709103,
+     "maxDrawdown": -0.22743432084963677,
+     "sharpe": 0.9817333799379591
+    }
+   },
+   "neighbours": {
+    "n": 7,
+    "beatHold": 0,
+    "medianScore": -0.065549957357591,
+    "worstScore": -0.2654955036163795,
+    "medianCagr": -0.010867212993234787,
+    "worstCagr": -0.053060037962722295
+   }
+  },
+  {
+   "universe": "etfs",
+   "universeLabel": "Halal ETFs only (no stock picking)",
+   "symbols": [
+    "SPUS",
+    "HLAL",
+    "UMMA",
+    "SPTE",
+    "SPWO",
+    "SPRE"
+   ],
+   "benchmark": "SPUS",
+   "costBps": 5,
+   "family": "bands",
+   "name": "Band Bounce",
+   "kind": "permutation",
+   "start": {
+    "len": 20,
+    "k": 2,
+    "trendLen": 200,
+    "maxHold": 15,
+    "stopPct": 10,
+    "maxPositions": 3
+   },
+   "tuned": {
+    "len": 10,
+    "k": 1.5,
+    "trendLen": 250,
+    "maxHold": 20,
+    "stopPct": 15,
+    "maxPositions": 1
+   },
+   "evaluations": 174,
+   "climbPath": [
+    {
+     "params": {
+      "len": 10,
+      "k": 2,
+      "trendLen": 200,
+      "maxHold": 15,
+      "stopPct": 10,
+      "maxPositions": 6
+     },
+     "score": 0.10841918755414959
+    },
+    {
+     "params": {
+      "len": 10,
+      "k": 2,
+      "trendLen": 200,
+      "maxHold": 15,
+      "stopPct": 15,
+      "maxPositions": 6
+     },
+     "score": 0.13245408430942796
+    },
+    {
+     "params": {
+      "len": 10,
+      "k": 2,
+      "trendLen": 200,
+      "maxHold": 15,
+      "stopPct": 15,
+      "maxPositions": 5
+     },
+     "score": 0.15877017114723335
+    },
+    {
+     "params": {
+      "len": 10,
+      "k": 2,
+      "trendLen": 200,
+      "maxHold": 15,
+      "stopPct": 15,
+      "maxPositions": 4
+     },
+     "score": 0.1981329616655203
+    },
+    {
+     "params": {
+      "len": 10,
+      "k": 2,
+      "trendLen": 200,
+      "maxHold": 15,
+      "stopPct": 15,
+      "maxPositions": 3
+     },
+     "score": 0.24170486389243573
+    },
+    {
+     "params": {
+      "len": 10,
+      "k": 2,
+      "trendLen": 200,
+      "maxHold": 20,
+      "stopPct": 15,
+      "maxPositions": 3
+     },
+     "score": 0.2699514343872167
+    },
+    {
+     "params": {
+      "len": 10,
+      "k": 2,
+      "trendLen": 200,
+      "maxHold": 20,
+      "stopPct": 15,
+      "maxPositions": 2
+     },
+     "score": 0.307293089081182
+    },
+    {
+     "params": {
+      "len": 10,
+      "k": 1.5,
+      "trendLen": 200,
+      "maxHold": 20,
+      "stopPct": 15,
+      "maxPositions": 2
+     },
+     "score": 0.3102663927731575
+    },
+    {
+     "params": {
+      "len": 10,
+      "k": 1.5,
+      "trendLen": 200,
+      "maxHold": 20,
+      "stopPct": 15,
+      "maxPositions": 1
+     },
+     "score": 0.33179145837674273
+    },
+    {
+     "params": {
+      "len": 10,
+      "k": 1.5,
+      "trendLen": 250,
+      "maxHold": 20,
+      "stopPct": 15,
+      "maxPositions": 1
+     },
+     "score": 0.5350761675010274
+    }
+   ],
+   "defaultTrain": {
+    "cagr": 0.020018012597948998,
+    "maxDrawdown": -0.06357555308197371,
+    "sharpe": 0.41338170150151854,
+    "trades": 20,
+    "winRate": 0.7,
+    "avgTrade": 0.008515846543734017,
+    "exposure": 0.09972930986448354,
+    "score": 0.20018012597948998,
+    "pYearUp": 0.674,
+    "bench": {
+     "cagr": 0.08934672032794233,
+     "maxDrawdown": -0.28081910461773163,
+     "sharpe": 0.5325496238717892
+    }
+   },
+   "defaultTest": {
+    "cagr": -0.013780366178097303,
+    "maxDrawdown": -0.10182265546004743,
+    "sharpe": -0.10984606778278083,
+    "trades": 32,
+    "winRate": 0.71875,
+    "avgTrade": 0.0016805968523179366,
+    "exposure": 0.18632086003583354,
+    "score": -0.1353369357323858,
+    "pYearUp": 0.594,
+    "bench": {
+     "cagr": 0.17031034976557247,
+     "maxDrawdown": -0.22743432084963677,
+     "sharpe": 0.9817333799379574
+    }
+   },
+   "train": {
+    "cagr": 0.05350761675010274,
+    "maxDrawdown": -0.09791705648827365,
+    "sharpe": 0.5675724126373929,
+    "trades": 31,
+    "winRate": 0.6774193548387096,
+    "avgTrade": 0.0048758233328334765,
+    "exposure": 0.28379983309552137,
+    "score": 0.5350761675010274,
+    "pYearUp": 0.7165,
+    "bench": {
+     "cagr": 0.08934672032794233,
+     "maxDrawdown": -0.28081910461773163,
+     "sharpe": 0.5325496238717892
+    }
+   },
+   "test": {
+    "cagr": 0.025105013048370095,
+    "maxDrawdown": -0.1782102949474108,
+    "sharpe": 0.2517692880487971,
+    "trades": 35,
+    "winRate": 0.6857142857142857,
+    "avgTrade": 0.0032876417192447905,
+    "exposure": 0.4386675108771053,
+    "score": 0.1408729672759842,
+    "pYearUp": 0.6325,
+    "bench": {
+     "cagr": 0.17031034976557247,
+     "maxDrawdown": -0.22743432084963677,
+     "sharpe": 0.9817333799379574
+    }
+   },
+   "testHighCost": {
+    "cagr": 0.00027299056196650184,
+    "maxDrawdown": -0.18434852429971038,
+    "sharpe": 0.06965064171254778,
+    "trades": 35,
+    "winRate": 0.6857142857142857,
+    "avgTrade": 0.001784083701697061,
+    "exposure": 0.4386675108771053,
+    "score": 0.0014808394208932147,
+    "pYearUp": 0.559,
+    "bench": {
+     "cagr": 0.16990649558709103,
+     "maxDrawdown": -0.22743432084963677,
+     "sharpe": 0.9817333799379591
+    }
+   },
+   "neighbours": {
+    "n": 9,
+    "beatHold": 0,
+    "medianScore": 0.1669763886445178,
+    "worstScore": -0.14446158559372357,
+    "medianCagr": 0.024235673722317275,
+    "worstCagr": -0.03344951490581516
+   }
+  },
+  {
+   "universe": "etfs",
+   "universeLabel": "Halal ETFs only (no stock picking)",
+   "symbols": [
+    "SPUS",
+    "HLAL",
+    "UMMA",
+    "SPTE",
+    "SPWO",
+    "SPRE"
+   ],
+   "benchmark": "SPUS",
+   "costBps": 5,
+   "family": "momdip",
+   "name": "Momentum Dips",
+   "kind": "permutation",
+   "start": {
+    "lookback": 126,
+    "topK": 3,
+    "entryRsi": 15,
+    "trendLen": 200,
+    "exitLen": 5,
+    "maxHold": 10,
+    "stopPct": 10,
+    "maxPositions": 2
+   },
+   "tuned": {
+    "lookback": 189,
+    "topK": 3,
+    "entryRsi": 30,
+    "trendLen": 150,
+    "exitLen": 5,
+    "maxHold": 10,
+    "stopPct": 10,
+    "maxPositions": 1
+   },
+   "evaluations": 367,
+   "climbPath": [
+    {
+     "params": {
+      "lookback": 126,
+      "topK": 3,
+      "entryRsi": 15,
+      "trendLen": 200,
+      "exitLen": 5,
+      "maxHold": 10,
+      "stopPct": 10,
+      "maxPositions": 2
+     },
+     "score": 0.27576824864553817
+    },
+    {
+     "params": {
+      "lookback": 126,
+      "topK": 3,
+      "entryRsi": 20,
+      "trendLen": 200,
+      "exitLen": 5,
+      "maxHold": 10,
+      "stopPct": 10,
+      "maxPositions": 2
+     },
+     "score": 0.8059370173360514
+    },
+    {
+     "params": {
+      "lookback": 126,
+      "topK": 3,
+      "entryRsi": 20,
+      "trendLen": 200,
+      "exitLen": 5,
+      "maxHold": 10,
+      "stopPct": 10,
+      "maxPositions": 1
+     },
+     "score": 0.9879342950089449
+    },
+    {
+     "params": {
+      "lookback": 189,
+      "topK": 3,
+      "entryRsi": 20,
+      "trendLen": 200,
+      "exitLen": 5,
+      "maxHold": 10,
+      "stopPct": 10,
+      "maxPositions": 1
+     },
+     "score": 1.0173687807229124
+    },
+    {
+     "params": {
+      "lookback": 189,
+      "topK": 3,
+      "entryRsi": 20,
+      "trendLen": 150,
+      "exitLen": 5,
+      "maxHold": 10,
+      "stopPct": 10,
+      "maxPositions": 1
+     },
+     "score": 1.033600322038774
+    },
+    {
+     "params": {
+      "lookback": 189,
+      "topK": 3,
+      "entryRsi": 25,
+      "trendLen": 150,
+      "exitLen": 5,
+      "maxHold": 10,
+      "stopPct": 10,
+      "maxPositions": 1
+     },
+     "score": 1.0757896840357415
+    },
+    {
+     "params": {
+      "lookback": 189,
+      "topK": 3,
+      "entryRsi": 30,
+      "trendLen": 150,
+      "exitLen": 5,
+      "maxHold": 10,
+      "stopPct": 10,
+      "maxPositions": 1
+     },
+     "score": 1.1877889038967635
+    }
+   ],
+   "defaultTrain": {
+    "cagr": 0.027576824864553817,
+    "maxDrawdown": -0.0624226791360063,
+    "sharpe": 0.4728995273934351,
+    "trades": 69,
+    "winRate": 0.6521739130434783,
+    "avgTrade": 0.0022683467342821174,
+    "exposure": 0.17352599634163843,
+    "score": 0.27576824864553817,
+    "pYearUp": 0.6665,
+    "bench": {
+     "cagr": 0.08934672032794233,
+     "maxDrawdown": -0.28081910461773163,
+     "sharpe": 0.5325496238717892
+    }
+   },
+   "defaultTest": {
+    "cagr": 0.03334840318439758,
+    "maxDrawdown": -0.09057775880904217,
+    "sharpe": 0.3431037864524143,
+    "trades": 73,
+    "winRate": 0.6027397260273972,
+    "avgTrade": 0.0034743294912278153,
+    "exposure": 0.25726670018073416,
+    "score": 0.3334840318439758,
+    "pYearUp": 0.771,
+    "bench": {
+     "cagr": 0.17031034976557247,
+     "maxDrawdown": -0.22743432084963677,
+     "sharpe": 0.9817333799379574
+    }
+   },
+   "train": {
+    "cagr": 0.13280730180803424,
+    "maxDrawdown": -0.11181052573595784,
+    "sharpe": 1.2744878559714625,
+    "trades": 79,
+    "winRate": 0.7215189873417721,
+    "avgTrade": 0.004568342208947801,
+    "exposure": 0.33752447494167276,
+    "score": 1.1877889038967635,
+    "pYearUp": 0.8815,
+    "bench": {
+     "cagr": 0.08934672032794233,
+     "maxDrawdown": -0.28081910461773163,
+     "sharpe": 0.5325496238717892
+    }
+   },
+   "test": {
+    "cagr": 0.19041605855894428,
+    "maxDrawdown": -0.0990724815858457,
+    "sharpe": 1.191478360124644,
+    "trades": 67,
+    "winRate": 0.6268656716417911,
+    "avgTrade": 0.0058529857309451835,
+    "exposure": 0.3967057819996928,
+    "score": 1.9041605855894428,
+    "pYearUp": 0.9495,
+    "bench": {
+     "cagr": 0.17031034976557247,
+     "maxDrawdown": -0.22743432084963677,
+     "sharpe": 0.9817333799379574
+    }
+   },
+   "testHighCost": {
+    "cagr": 0.13656836745122347,
+    "maxDrawdown": -0.10465309516233468,
+    "sharpe": 0.8944467617012419,
+    "trades": 67,
+    "winRate": 0.6119402985074627,
+    "avgTrade": 0.004345343797634123,
+    "exposure": 0.3967057819996928,
+    "score": 1.3049625263293245,
+    "pYearUp": 0.89,
+    "bench": {
+     "cagr": 0.16990649558709103,
+     "maxDrawdown": -0.22743432084963677,
+     "sharpe": 0.9817333799379591
+    }
+   },
+   "neighbours": {
+    "n": 14,
+    "beatHold": 13,
+    "medianScore": 1.3201788367409084,
+    "worstScore": 0.5562912495326655,
+    "medianCagr": 0.14229477075524155,
+    "worstCagr": 0.05562912495326655
+   }
+  },
+  {
+   "universe": "etfs",
+   "universeLabel": "Halal ETFs only (no stock picking)",
+   "symbols": [
+    "SPUS",
+    "HLAL",
+    "UMMA",
+    "SPTE",
+    "SPWO",
+    "SPRE"
+   ],
+   "benchmark": "SPUS",
+   "costBps": 5,
+   "family": "coredip",
+   "name": "Core + Dips",
+   "kind": "permutation",
+   "start": {
+    "coreWeight": 60,
+    "coreTrend": 200,
+    "band": 2,
+    "entryRsi": 15,
+    "trendLen": 200,
+    "exitLen": 5,
+    "maxHold": 10,
+    "stopPct": 10,
+    "maxPositions": 2
+   },
+   "tuned": {
+    "coreWeight": 60,
+    "coreTrend": 200,
+    "band": 2,
+    "entryRsi": 25,
+    "trendLen": 200,
+    "exitLen": 10,
+    "maxHold": 5,
+    "stopPct": 15,
+    "maxPositions": 2
+   },
+   "evaluations": 362,
+   "climbPath": [
+    {
+     "params": {
+      "coreWeight": 60,
+      "coreTrend": 200,
+      "band": 2,
+      "entryRsi": 15,
+      "trendLen": 250,
+      "exitLen": 7,
+      "maxHold": 5,
+      "stopPct": 15,
+      "maxPositions": 3
+     },
+     "score": 0.6230401465167076
+    },
+    {
+     "params": {
+      "coreWeight": 60,
+      "coreTrend": 200,
+      "band": 2,
+      "entryRsi": 20,
+      "trendLen": 250,
+      "exitLen": 7,
+      "maxHold": 5,
+      "stopPct": 15,
+      "maxPositions": 3
+     },
+     "score": 0.6982870488545867
+    },
+    {
+     "params": {
+      "coreWeight": 60,
+      "coreTrend": 200,
+      "band": 2,
+      "entryRsi": 20,
+      "trendLen": 200,
+      "exitLen": 7,
+      "maxHold": 5,
+      "stopPct": 15,
+      "maxPositions": 3
+     },
+     "score": 0.7500156206410669
+    },
+    {
+     "params": {
+      "coreWeight": 60,
+      "coreTrend": 200,
+      "band": 2,
+      "entryRsi": 20,
+      "trendLen": 200,
+      "exitLen": 7,
+      "maxHold": 5,
+      "stopPct": 15,
+      "maxPositions": 2
+     },
+     "score": 0.7776414949038291
+    },
+    {
+     "params": {
+      "coreWeight": 60,
+      "coreTrend": 200,
+      "band": 2,
+      "entryRsi": 25,
+      "trendLen": 200,
+      "exitLen": 7,
+      "maxHold": 5,
+      "stopPct": 15,
+      "maxPositions": 2
+     },
+     "score": 0.7868369946084047
+    },
+    {
+     "params": {
+      "coreWeight": 60,
+      "coreTrend": 200,
+      "band": 2,
+      "entryRsi": 25,
+      "trendLen": 200,
+      "exitLen": 10,
+      "maxHold": 5,
+      "stopPct": 15,
+      "maxPositions": 2
+     },
+     "score": 0.8540766975693281
+    }
+   ],
+   "defaultTrain": {
+    "cagr": 0.07120598524489652,
+    "maxDrawdown": -0.10574403432512558,
+    "sharpe": 0.8298832934092764,
+    "trades": 68,
+    "winRate": 0.6323529411764706,
+    "avgTrade": 0.0006784264323234592,
+    "exposure": 0.4329152589546293,
+    "score": 0.6733806374926385,
+    "pYearUp": 0.7835,
+    "bench": {
+     "cagr": 0.08934672032794233,
+     "maxDrawdown": -0.28081910461773163,
+     "sharpe": 0.5325496238717892
+    }
+   },
+   "defaultTest": {
+    "cagr": 0.06592511087626729,
+    "maxDrawdown": -0.09733453792354374,
+    "sharpe": 0.5912680970713728,
+    "trades": 92,
+    "winRate": 0.5978260869565217,
+    "avgTrade": 0.001799331781824948,
+    "exposure": 0.646447873033671,
+    "score": 0.6592511087626729,
+    "pYearUp": 0.8215,
+    "bench": {
+     "cagr": 0.17031034976557247,
+     "maxDrawdown": -0.22743432084963677,
+     "sharpe": 0.9817333799379574
+    }
+   },
+   "train": {
+    "cagr": 0.08540766975693281,
+    "maxDrawdown": -0.09680368049312738,
+    "sharpe": 0.9425761155205074,
+    "trades": 103,
+    "winRate": 0.6310679611650486,
+    "avgTrade": 0.002553524447270982,
+    "exposure": 0.46200143629646345,
+    "score": 0.8540766975693281,
+    "pYearUp": 0.809,
+    "bench": {
+     "cagr": 0.08934672032794233,
+     "maxDrawdown": -0.28081910461773163,
+     "sharpe": 0.5325496238717892
+    }
+   },
+   "test": {
+    "cagr": 0.05569271584533819,
+    "maxDrawdown": -0.11084449275461195,
+    "sharpe": 0.4907993538118187,
+    "trades": 132,
+    "winRate": 0.553030303030303,
+    "avgTrade": 0.0010193454336112281,
+    "exposure": 0.6903846227642313,
+    "score": 0.5024400803441899,
+    "pYearUp": 0.799,
+    "bench": {
+     "cagr": 0.17031034976557247,
+     "maxDrawdown": -0.22743432084963677,
+     "sharpe": 0.9817333799379574
+    }
+   },
+   "testHighCost": {
+    "cagr": 0.03751400147741468,
+    "maxDrawdown": -0.11483282481077539,
+    "sharpe": 0.35348108951886087,
+    "trades": 132,
+    "winRate": 0.5227272727272727,
+    "avgTrade": -0.00048098473067122654,
+    "exposure": 0.6937009232481485,
+    "score": 0.3266836075767644,
+    "pYearUp": 0.748,
+    "bench": {
+     "cagr": 0.16990649558709103,
+     "maxDrawdown": -0.22743432084963677,
+     "sharpe": 0.9817333799379591
+    }
+   },
+   "neighbours": {
+    "n": 15,
+    "beatHold": 1,
+    "medianScore": 0.5024400803441899,
+    "worstScore": 0.200690152694491,
+    "medianCagr": 0.05569271584533819,
+    "worstCagr": 0.022245398176266473
+   }
+  },
+  {
+   "universe": "etfs",
+   "universeLabel": "Halal ETFs only (no stock picking)",
+   "symbols": [
+    "SPUS",
+    "HLAL",
+    "UMMA",
+    "SPTE",
+    "SPWO",
+    "SPRE"
+   ],
+   "benchmark": "SPUS",
+   "costBps": 5,
+   "family": "dualmom",
+   "name": "Dual Momentum",
+   "kind": "permutation",
+   "start": {
+    "lookback": 252,
+    "top": 1,
+    "useDefensive": 1
+   },
+   "tuned": {
+    "lookback": 126,
+    "top": 2,
+    "useDefensive": 1
+   },
+   "evaluations": 27,
+   "climbPath": [
+    {
+     "params": {
+      "lookback": 252,
+      "top": 1,
+      "useDefensive": 1
+     },
+     "score": -9.166666666666666
+    },
+    {
+     "params": {
+      "lookback": 189,
+      "top": 1,
+      "useDefensive": 1
+     },
+     "score": 0.14801291739197403
+    },
+    {
+     "params": {
+      "lookback": 126,
+      "top": 1,
+      "useDefensive": 1
+     },
+     "score": 0.4548795134018194
+    },
+    {
+     "params": {
+      "lookback": 126,
+      "top": 2,
+      "useDefensive": 1
+     },
+     "score": 0.5063075505578001
+    }
+   ],
+   "defaultTrain": {
+    "cagr": 0.017326141963467157,
+    "maxDrawdown": -0.28089886161674327,
+    "sharpe": 0.1900174091516607,
+    "trades": 5,
+    "winRate": 0.4,
+    "avgTrade": -0.046223696697355196,
+    "exposure": 0.793302897393482,
+    "score": 0.061681068637105554,
+    "pYearUp": 0.5315,
+    "bench": {
+     "cagr": 0.08934672032794233,
+     "maxDrawdown": -0.28081910461773163,
+     "sharpe": 0.5325496238717892
+    }
+   },
+   "defaultTest": {
+    "cagr": 0.24432387025113522,
+    "maxDrawdown": -0.24579867719025916,
+    "sharpe": 0.999762785223187,
+    "trades": 7,
+    "winRate": 0.7142857142857143,
+    "avgTrade": 0.05233790473403161,
+    "exposure": 0.9628533754008335,
+    "score": 0.9939999394789973,
+    "pYearUp": 0.8985,
+    "bench": {
+     "cagr": 0.17031034976557247,
+     "maxDrawdown": -0.22743432084963677,
+     "sharpe": 0.9817333799379574
+    }
+   },
+   "train": {
+    "cagr": 0.07759623471285781,
+    "maxDrawdown": -0.15325909050214614,
+    "sharpe": 0.6257699818189459,
+    "trades": 9,
+    "winRate": 0.5555555555555556,
+    "avgTrade": 0.012148659720492512,
+    "exposure": 0.7192892504837636,
+    "score": 0.5063075505578001,
+    "pYearUp": 0.704,
+    "bench": {
+     "cagr": 0.08934672032794233,
+     "maxDrawdown": -0.28081910461773163,
+     "sharpe": 0.5325496238717892
+    }
+   },
+   "test": {
+    "cagr": 0.042879090605536074,
+    "maxDrawdown": -0.14646899682172265,
+    "sharpe": 0.30765970908781004,
+    "trades": 15,
+    "winRate": 0.6,
+    "avgTrade": 0.02850527348439256,
+    "exposure": 0.9600711990018191,
+    "score": 0.29275199213473907,
+    "pYearUp": 0.704,
+    "bench": {
+     "cagr": 0.17031034976557247,
+     "maxDrawdown": -0.22743432084963677,
+     "sharpe": 0.9817333799379574
+    }
+   },
+   "testHighCost": {
+    "cagr": 0.03686436817960881,
+    "maxDrawdown": -0.1495049795061174,
+    "sharpe": 0.2794582909473674,
+    "trades": 15,
+    "winRate": 0.6,
+    "avgTrade": 0.02696569934600818,
+    "exposure": 0.96003102730765,
+    "score": 0.24657618964524458,
+    "pYearUp": 0.6935,
+    "bench": {
+     "cagr": 0.16990649558709103,
+     "maxDrawdown": -0.22743432084963677,
+     "sharpe": 0.9817333799379591
+    }
+   },
+   "neighbours": {
+    "n": 5,
+    "beatHold": 0,
+    "medianScore": 0.27662400319570557,
+    "worstScore": 0.20764330648009774,
+    "medianCagr": 0.049720870106228165,
+    "worstCagr": 0.039960171641451714
+   }
+  },
+  {
+   "universe": "etfs",
+   "universeLabel": "Halal ETFs only (no stock picking)",
+   "symbols": [
+    "SPUS",
+    "HLAL",
+    "UMMA",
+    "SPTE",
+    "SPWO",
+    "SPRE"
+   ],
+   "benchmark": "SPUS",
+   "costBps": 5,
+   "family": "voldip",
+   "name": "Calm-Sized Dips",
+   "kind": "permutation",
+   "start": {
+    "targetVol": 20,
+    "entryRsi": 15,
+    "trendLen": 200,
+    "exitLen": 5,
+    "maxHold": 10,
+    "stopPct": 10,
+    "maxPositions": 2
+   },
+   "tuned": {
+    "targetVol": 30,
+    "entryRsi": 25,
+    "trendLen": 200,
+    "exitLen": 3,
+    "maxHold": 15,
+    "stopPct": 10,
+    "maxPositions": 1
+   },
+   "evaluations": 240,
+   "climbPath": [
+    {
+     "params": {
+      "targetVol": 30,
+      "entryRsi": 20,
+      "trendLen": 200,
+      "exitLen": 7,
+      "maxHold": 15,
+      "stopPct": 10,
+      "maxPositions": 1
+     },
+     "score": 0.22938823826348387
+    },
+    {
+     "params": {
+      "targetVol": 30,
+      "entryRsi": 20,
+      "trendLen": 200,
+      "exitLen": 5,
+      "maxHold": 15,
+      "stopPct": 10,
+      "maxPositions": 1
+     },
+     "score": 0.724174151274186
+    },
+    {
+     "params": {
+      "targetVol": 30,
+      "entryRsi": 20,
+      "trendLen": 200,
+      "exitLen": 3,
+      "maxHold": 15,
+      "stopPct": 10,
+      "maxPositions": 1
+     },
+     "score": 1.0010272901565531
+    },
+    {
+     "params": {
+      "targetVol": 30,
+      "entryRsi": 25,
+      "trendLen": 200,
+      "exitLen": 3,
+      "maxHold": 15,
+      "stopPct": 10,
+      "maxPositions": 1
+     },
+     "score": 1.1036335539142372
+    }
+   ],
+   "defaultTrain": {
+    "cagr": 0.030665615961362747,
+    "maxDrawdown": -0.06849426920829971,
+    "sharpe": 0.5027032786155011,
+    "trades": 79,
+    "winRate": 0.6708860759493671,
+    "avgTrade": 0.0021969540274624,
+    "exposure": 0.19501102606112802,
+    "score": 0.30665615961362747,
+    "pYearUp": 0.664,
+    "bench": {
+     "cagr": 0.08934672032794233,
+     "maxDrawdown": -0.28081910461773163,
+     "sharpe": 0.5325496238717892
+    }
+   },
+   "defaultTest": {
+    "cagr": 0.029255231342174115,
+    "maxDrawdown": -0.07606323744255639,
+    "sharpe": 0.33452607623277947,
+    "trades": 93,
+    "winRate": 0.6021505376344086,
+    "avgTrade": 0.001709185143305812,
+    "exposure": 0.3115065639790495,
+    "score": 0.29255231342174115,
+    "pYearUp": 0.684,
+    "bench": {
+     "cagr": 0.17031034976557247,
+     "maxDrawdown": -0.22743432084963677,
+     "sharpe": 0.9817333799379574
+    }
+   },
+   "train": {
+    "cagr": 0.12339784788299468,
+    "maxDrawdown": -0.11181052573595807,
+    "sharpe": 1.3023317734464237,
+    "trades": 87,
+    "winRate": 0.7011494252873564,
+    "avgTrade": 0.003872159282911261,
+    "exposure": 0.2895233993403041,
+    "score": 1.1036335539142372,
+    "pYearUp": 0.8575,
+    "bench": {
+     "cagr": 0.08934672032794233,
+     "maxDrawdown": -0.28081910461773163,
+     "sharpe": 0.5325496238717892
+    }
+   },
+   "test": {
+    "cagr": -0.013737470678093833,
+    "maxDrawdown": -0.12345393561396156,
+    "sharpe": -0.05474519983353991,
+    "trades": 91,
+    "winRate": 0.4725274725274725,
+    "avgTrade": -0.00028469782819635073,
+    "exposure": 0.42766859112227307,
+    "score": -0.11127608536556241,
+    "pYearUp": 0.508,
+    "bench": {
+     "cagr": 0.17031034976557247,
+     "maxDrawdown": -0.22743432084963677,
+     "sharpe": 0.9817333799379574
+    }
+   },
+   "testHighCost": {
+    "cagr": -0.0733559072970309,
+    "maxDrawdown": -0.19619564494063602,
+    "sharpe": -0.5687376129399518,
+    "trades": 91,
+    "winRate": 0.43956043956043955,
+    "avgTrade": -0.0017831456479430307,
+    "exposure": 0.427667365119348,
+    "score": -0.3738916188441726,
+    "pYearUp": 0.2665,
+    "bench": {
+     "cagr": 0.16990649558709103,
+     "maxDrawdown": -0.22743432084963677,
+     "sharpe": 0.9817333799379591
+    }
+   },
+   "neighbours": {
+    "n": 11,
+    "beatHold": 0,
+    "medianScore": -0.11127608536556241,
+    "worstScore": -0.21623238172201967,
+    "medianCagr": -0.013737470678093833,
+    "worstCagr": -0.025281750972309558
    }
   },
   {
@@ -877,6 +5310,14 @@
      "maxDrawdown": -0.22743432084963677,
      "sharpe": 0.9817333799379591
     }
+   },
+   "neighbours": {
+    "n": 9,
+    "beatHold": 7,
+    "medianScore": 0.9060087308229295,
+    "worstScore": 0.4055116381021776,
+    "medianCagr": 0.10898188025641287,
+    "worstCagr": 0.058701357789501696
    }
   },
   {
@@ -1094,6 +5535,14 @@
      "maxDrawdown": -0.22743432084963677,
      "sharpe": 0.9817333799379591
     }
+   },
+   "neighbours": {
+    "n": 13,
+    "beatHold": 13,
+    "medianScore": 1.5332828827432663,
+    "worstScore": 1.4089784163658494,
+    "medianCagr": 0.17309529467570073,
+    "worstCagr": 0.1423524646374188
    }
   },
   {
@@ -1345,6 +5794,14 @@
      "maxDrawdown": -0.22743432084963677,
      "sharpe": 0.9817333799379591
     }
+   },
+   "neighbours": {
+    "n": 10,
+    "beatHold": 8,
+    "medianScore": 2.3418912657479463,
+    "worstScore": 0.5766137131070617,
+    "medianCagr": 0.2700098850197592,
+    "worstCagr": 0.09782421426377796
    }
   },
   {
@@ -1482,417 +5939,1024 @@
      "maxDrawdown": -0.22743432084963677,
      "sharpe": 0.9817333799379591
     }
+   },
+   "neighbours": {
+    "n": 4,
+    "beatHold": 0,
+    "medianScore": 0.46095442598067105,
+    "worstScore": 0.23335012784410183,
+    "medianCagr": 0.06044469740920233,
+    "worstCagr": 0.030929224905213104
    }
   },
   {
-   "universe": "crypto",
-   "universeLabel": "Crypto (spot only)",
+   "universe": "stocks",
+   "universeLabel": "Halal stocks and funds",
    "symbols": [
-    "BTC-USD",
-    "ETH-USD",
-    "SOL-USD",
-    "XRP-USD",
-    "ADA-USD",
-    "LTC-USD",
-    "LINK-USD",
-    "AVAX-USD",
-    "DOT-USD",
-    "BCH-USD"
+    "SPUS",
+    "HLAL",
+    "UMMA",
+    "SPTE",
+    "AAPL",
+    "MSFT",
+    "NVDA",
+    "ADBE",
+    "ASML",
+    "TSM"
    ],
-   "benchmark": "BTC-USD",
-   "costBps": 10,
-   "family": "prob",
-   "name": "Probability trader",
+   "benchmark": "SPUS",
+   "costBps": 5,
+   "family": "breakout",
+   "name": "Breakout",
+   "kind": "new",
    "start": {
-    "threshold": 0.75,
-    "maxPositions": 10,
-    "size": 0.1,
-    "maxHold": 10,
-    "stopPct": 0.1,
-    "exitLen": 5
+    "entryLen": 55,
+    "exitLen": 20,
+    "stopPct": 10,
+    "maxPositions": 3
    },
    "tuned": {
-    "threshold": 0.675,
-    "maxPositions": 6,
-    "size": 0.1,
-    "maxHold": 7,
-    "stopPct": 0.05,
-    "exitLen": 5
+    "entryLen": 40,
+    "exitLen": 5,
+    "stopPct": 10,
+    "maxPositions": 2
    },
-   "evaluations": 221,
+   "evaluations": 126,
    "climbPath": [
     {
      "params": {
-      "threshold": 0.675,
-      "maxPositions": 6,
-      "size": 0.33,
-      "maxHold": 3,
-      "stopPct": 0.05,
-      "exitLen": 5
+      "entryLen": 55,
+      "exitLen": 20,
+      "stopPct": 10,
+      "maxPositions": 3
      },
-     "score": -10
+     "score": 0.664099542324526
     },
     {
      "params": {
-      "threshold": 0.675,
-      "maxPositions": 6,
-      "size": 0.33,
-      "maxHold": 5,
-      "stopPct": 0.05,
-      "exitLen": 5
+      "entryLen": 55,
+      "exitLen": 15,
+      "stopPct": 10,
+      "maxPositions": 3
      },
-     "score": -0.23034546240472484
+     "score": 0.968231382590483
     },
     {
      "params": {
-      "threshold": 0.675,
-      "maxPositions": 6,
-      "size": 0.33,
-      "maxHold": 7,
-      "stopPct": 0.05,
-      "exitLen": 5
+      "entryLen": 40,
+      "exitLen": 15,
+      "stopPct": 10,
+      "maxPositions": 3
      },
-     "score": -0.09470736506358546
+     "score": 1.2173511714220553
     },
     {
      "params": {
-      "threshold": 0.675,
-      "maxPositions": 6,
-      "size": 0.25,
-      "maxHold": 7,
-      "stopPct": 0.05,
-      "exitLen": 5
+      "entryLen": 40,
+      "exitLen": 10,
+      "stopPct": 10,
+      "maxPositions": 3
      },
-     "score": -0.08593324083402853
+     "score": 1.5548180571570482
     },
     {
      "params": {
-      "threshold": 0.675,
-      "maxPositions": 6,
-      "size": 0.2,
-      "maxHold": 7,
-      "stopPct": 0.05,
-      "exitLen": 5
+      "entryLen": 40,
+      "exitLen": 10,
+      "stopPct": 10,
+      "maxPositions": 2
      },
-     "score": -0.05501998111564932
+     "score": 2.0954250546901165
     },
     {
      "params": {
-      "threshold": 0.675,
-      "maxPositions": 6,
-      "size": 0.15,
-      "maxHold": 7,
-      "stopPct": 0.05,
-      "exitLen": 5
+      "entryLen": 40,
+      "exitLen": 5,
+      "stopPct": 10,
+      "maxPositions": 2
      },
-     "score": -0.029664604772291492
-    },
-    {
-     "params": {
-      "threshold": 0.675,
-      "maxPositions": 6,
-      "size": 0.1,
-      "maxHold": 7,
-      "stopPct": 0.05,
-      "exitLen": 5
-     },
-     "score": -0.01907622367297024
+     "score": 2.2918649058331813
     }
    ],
    "defaultTrain": {
-    "cagr": 0,
-    "maxDrawdown": 0,
-    "sharpe": 0,
-    "trades": 0,
-    "winRate": 0,
-    "avgTrade": 0,
-    "exposure": 0,
-    "score": 0,
-    "pYearUp": 0,
+    "cagr": 0.13555824110747094,
+    "maxDrawdown": -0.20412337679526305,
+    "sharpe": 0.7725080464021956,
+    "trades": 26,
+    "winRate": 0.4230769230769231,
+    "avgTrade": 0.05146919681115381,
+    "exposure": 0.5498675475450606,
+    "score": 0.664099542324526,
+    "pYearUp": 0.741,
     "bench": {
-     "cagr": -0.024715613655438617,
-     "maxDrawdown": -0.7663456366986094,
-     "sharpe": 0.19660680164674701
+     "cagr": 0.08934672032794233,
+     "maxDrawdown": -0.28081910461773163,
+     "sharpe": 0.5325496238717892
     }
    },
    "defaultTest": {
-    "cagr": 0.0020978951767225418,
-    "maxDrawdown": -0.0013758782973954942,
-    "sharpe": 0.4776152340059916,
-    "trades": 6,
-    "winRate": 1,
-    "avgTrade": 0.007619828073789467,
-    "exposure": 0.0017609255516676332,
-    "score": 0.020978951767225418,
-    "pYearUp": 0.128,
+    "cagr": 0.03499727408667397,
+    "maxDrawdown": -0.19443725193522754,
+    "sharpe": 0.27038627590131675,
+    "trades": 27,
+    "winRate": 0.4074074074074074,
+    "avgTrade": 0.012896553800828485,
+    "exposure": 0.7459730056653853,
+    "score": 0.17999263895342718,
+    "pYearUp": 0.6105,
     "bench": {
-     "cagr": 0.12271831655203203,
-     "maxDrawdown": -0.5305998300012049,
-     "sharpe": 0.425773810916874
+     "cagr": 0.17031034976557247,
+     "maxDrawdown": -0.22743432084963677,
+     "sharpe": 0.9817333799379574
     }
    },
    "train": {
-    "cagr": -0.0019076223672970238,
-    "maxDrawdown": -0.035635429392136264,
-    "sharpe": -0.0810183944502971,
+    "cagr": 0.26046153131410477,
+    "maxDrawdown": -0.11364611005264158,
+    "sharpe": 1.3339983969080964,
     "trades": 39,
-    "winRate": 0.6923076923076923,
-    "avgTrade": -0.000612141554276887,
-    "exposure": 0.008538098729721793,
-    "score": -0.01907622367297024,
-    "pYearUp": 0.543,
+    "winRate": 0.6666666666666666,
+    "avgTrade": 0.03578650085808511,
+    "exposure": 0.4626505378036233,
+    "score": 2.2918649058331813,
+    "pYearUp": 0.931,
     "bench": {
-     "cagr": -0.024715613655438617,
-     "maxDrawdown": -0.7663456366986094,
-     "sharpe": 0.19660680164674701
+     "cagr": 0.08934672032794233,
+     "maxDrawdown": -0.28081910461773163,
+     "sharpe": 0.5325496238717892
     }
    },
    "test": {
-    "cagr": -0.007274805752439328,
-    "maxDrawdown": -0.024913844693097098,
-    "sharpe": -0.5161583590508525,
-    "trades": 17,
-    "winRate": 0.5882352941176471,
-    "avgTrade": -0.009266574426544605,
-    "exposure": 0.003894607874557327,
-    "score": -0.07274805752439328,
-    "pYearUp": 0.2805,
+    "cagr": -0.10516445506028416,
+    "maxDrawdown": -0.3640240341293135,
+    "sharpe": -0.47783536987542385,
+    "trades": 48,
+    "winRate": 0.375,
+    "avgTrade": -0.007011192832918243,
+    "exposure": 0.594099664751284,
+    "score": -0.28889426301705734,
+    "pYearUp": 0.343,
     "bench": {
-     "cagr": 0.12271831655203203,
-     "maxDrawdown": -0.5305998300012049,
-     "sharpe": 0.425773810916874
+     "cagr": 0.17031034976557247,
+     "maxDrawdown": -0.22743432084963677,
+     "sharpe": 0.9817333799379574
     }
    },
    "testHighCost": {
-    "cagr": -0.009185145314774323,
-    "maxDrawdown": -0.026499821971831095,
-    "sharpe": -0.6432299044538147,
-    "trades": 17,
-    "winRate": 0.5882352941176471,
-    "avgTrade": -0.011733897746886846,
-    "exposure": 0.0038904922216226163,
-    "score": -0.09185145314774323,
-    "pYearUp": 0.244,
+    "cagr": -0.11948265623621679,
+    "maxDrawdown": -0.3734360712336503,
+    "sharpe": -0.5608685707173555,
+    "trades": 48,
+    "winRate": 0.375,
+    "avgTrade": -0.008457168901243985,
+    "exposure": 0.5941144222021741,
+    "score": -0.3199547805907032,
+    "pYearUp": 0.3195,
     "bench": {
-     "cagr": 0.12194621128375616,
-     "maxDrawdown": -0.5305998300012049,
-     "sharpe": 0.4257738109168714
+     "cagr": 0.16990649558709103,
+     "maxDrawdown": -0.22743432084963677,
+     "sharpe": 0.9817333799379591
     }
+   },
+   "neighbours": {
+    "n": 7,
+    "beatHold": 0,
+    "medianScore": -0.25904007092792475,
+    "worstScore": -0.34726415093471524,
+    "medianCagr": -0.08358831401389133,
+    "worstCagr": -0.13265446537417436
    }
   },
   {
-   "universe": "crypto",
-   "universeLabel": "Crypto (spot only)",
+   "universe": "stocks",
+   "universeLabel": "Halal stocks and funds",
    "symbols": [
-    "BTC-USD",
-    "ETH-USD",
-    "SOL-USD",
-    "XRP-USD",
-    "ADA-USD",
-    "LTC-USD",
-    "LINK-USD",
-    "AVAX-USD",
-    "DOT-USD",
-    "BCH-USD"
+    "SPUS",
+    "HLAL",
+    "UMMA",
+    "SPTE",
+    "AAPL",
+    "MSFT",
+    "NVDA",
+    "ADBE",
+    "ASML",
+    "TSM"
    ],
-   "benchmark": "BTC-USD",
-   "costBps": 10,
-   "family": "dipmodel",
-   "name": "Dip Buyer + model filter",
+   "benchmark": "SPUS",
+   "costBps": 5,
+   "family": "golden",
+   "name": "Golden Cross",
+   "kind": "new",
    "start": {
-    "threshold": 0.6,
-    "entryRsi": 15,
-    "maxPositions": 3,
-    "size": 0.33,
-    "maxHold": 10,
-    "stopPct": 0.1,
-    "exitLen": 5
+    "fast": 50,
+    "slow": 200,
+    "maxPositions": 3
    },
    "tuned": {
-    "threshold": 0.65,
-    "entryRsi": 5,
-    "maxPositions": 3,
-    "size": 0.33,
-    "maxHold": 5,
-    "stopPct": 0.075,
-    "exitLen": 5
+    "fast": 50,
+    "slow": 150,
+    "maxPositions": 3
    },
-   "evaluations": 311,
+   "evaluations": 48,
    "climbPath": [
     {
      "params": {
-      "threshold": 0.7,
-      "entryRsi": 5,
-      "maxPositions": 2,
-      "size": 0.2,
-      "maxHold": 5,
-      "stopPct": 0.075,
-      "exitLen": 7
+      "fast": 50,
+      "slow": 200,
+      "maxPositions": 3
      },
-     "score": -10
+     "score": 0.7264905366691085
     },
     {
      "params": {
-      "threshold": 0.65,
-      "entryRsi": 5,
-      "maxPositions": 2,
-      "size": 0.2,
-      "maxHold": 5,
-      "stopPct": 0.075,
-      "exitLen": 7
+      "fast": 50,
+      "slow": 150,
+      "maxPositions": 3
      },
-     "score": -9.55
-    },
-    {
-     "params": {
-      "threshold": 0.65,
-      "entryRsi": 5,
-      "maxPositions": 2,
-      "size": 0.2,
-      "maxHold": 5,
-      "stopPct": 0.075,
-      "exitLen": 5
-     },
-     "score": 0.032853317048264774
-    },
-    {
-     "params": {
-      "threshold": 0.65,
-      "entryRsi": 5,
-      "maxPositions": 3,
-      "size": 0.2,
-      "maxHold": 5,
-      "stopPct": 0.075,
-      "exitLen": 5
-     },
-     "score": 0.07675651988657384
-    },
-    {
-     "params": {
-      "threshold": 0.65,
-      "entryRsi": 5,
-      "maxPositions": 3,
-      "size": 0.25,
-      "maxHold": 5,
-      "stopPct": 0.075,
-      "exitLen": 5
-     },
-     "score": 0.0951031289757065
-    },
-    {
-     "params": {
-      "threshold": 0.65,
-      "entryRsi": 5,
-      "maxPositions": 3,
-      "size": 0.33,
-      "maxHold": 5,
-      "stopPct": 0.075,
-      "exitLen": 5
-     },
-     "score": 0.1237475102727359
+     "score": 1.2224926364599265
     }
    ],
    "defaultTrain": {
-    "cagr": -0.25150179216885793,
-    "maxDrawdown": -0.5639575911281379,
-    "sharpe": -0.8648317966429482,
-    "trades": 210,
-    "winRate": 0.5761904761904761,
-    "avgTrade": -0.01018837920386744,
-    "exposure": 0.20132170637656066,
-    "score": -0.44595869640792496,
-    "pYearUp": 0.1965,
+    "cagr": 0.24998453225825878,
+    "maxDrawdown": -0.3440988142865764,
+    "sharpe": 0.8570387047408847,
+    "trades": 10,
+    "winRate": 0.2,
+    "avgTrade": -0.10251501428787886,
+    "exposure": 0.757972257168059,
+    "score": 0.7264905366691085,
+    "pYearUp": 0.779,
     "bench": {
-     "cagr": -0.024715613655438617,
-     "maxDrawdown": -0.7663456366986094,
-     "sharpe": 0.19660680164674701
+     "cagr": 0.08934672032794233,
+     "maxDrawdown": -0.28081910461773163,
+     "sharpe": 0.5325496238717892
     }
    },
    "defaultTest": {
-    "cagr": -0.06380470579795228,
-    "maxDrawdown": -0.3564028288754215,
-    "sharpe": -0.12204771448589159,
-    "trades": 140,
-    "winRate": 0.6285714285714286,
-    "avgTrade": -0.0018062877384104408,
-    "exposure": 0.16207061078590704,
-    "score": -0.1790241283978552,
-    "pYearUp": 0.441,
+    "cagr": 0.035240370788172104,
+    "maxDrawdown": -0.32492239169330184,
+    "sharpe": 0.2648861459855208,
+    "trades": 6,
+    "winRate": 0.16666666666666666,
+    "avgTrade": -0.06627723094809067,
+    "exposure": 0.9079779387105307,
+    "score": 0.10845780927722555,
+    "pYearUp": 0.6165,
     "bench": {
-     "cagr": 0.12271831655203203,
-     "maxDrawdown": -0.5305998300012049,
-     "sharpe": 0.425773810916874
+     "cagr": 0.17031034976557247,
+     "maxDrawdown": -0.22743432084963677,
+     "sharpe": 0.9817333799379574
     }
    },
    "train": {
-    "cagr": 0.01237475102727359,
-    "maxDrawdown": -0.04912705527852046,
-    "sharpe": 0.23551432522532548,
-    "trades": 23,
-    "winRate": 0.782608695652174,
-    "avgTrade": 0.004873840771775018,
-    "exposure": 0.016360146562476485,
-    "score": 0.1237475102727359,
-    "pYearUp": 0.595,
+    "cagr": 0.38569397456481336,
+    "maxDrawdown": -0.31549799406702317,
+    "sharpe": 1.1665245851506778,
+    "trades": 11,
+    "winRate": 0.18181818181818182,
+    "avgTrade": -0.08398112884601462,
+    "exposure": 0.7495569526688697,
+    "score": 1.2224926364599265,
+    "pYearUp": 0.86,
     "bench": {
-     "cagr": -0.024715613655438617,
-     "maxDrawdown": -0.7663456366986094,
-     "sharpe": 0.19660680164674701
+     "cagr": 0.08934672032794233,
+     "maxDrawdown": -0.28081910461773163,
+     "sharpe": 0.5325496238717892
     }
    },
    "test": {
-    "cagr": -0.001877160492280816,
-    "maxDrawdown": -0.09045073484687527,
-    "sharpe": 0.01864002261341814,
-    "trades": 35,
-    "winRate": 0.6,
-    "avgTrade": 0.00007022491942715572,
-    "exposure": 0.037748692308572286,
-    "score": -0.01877160492280816,
-    "pYearUp": 0.538,
+    "cagr": 0.18995103386105083,
+    "maxDrawdown": -0.25510073020152213,
+    "sharpe": 0.7212016205576383,
+    "trades": 7,
+    "winRate": 0.42857142857142855,
+    "avgTrade": 0.003126784799572038,
+    "exposure": 0.9078143215567807,
+    "score": 0.7446118782607759,
+    "pYearUp": 0.8175,
     "bench": {
-     "cagr": 0.12271831655203203,
-     "maxDrawdown": -0.5305998300012049,
-     "sharpe": 0.425773810916874
+     "cagr": 0.17031034976557247,
+     "maxDrawdown": -0.22743432084963677,
+     "sharpe": 0.9817333799379574
     }
    },
    "testHighCost": {
-    "cagr": -0.0157481630285643,
-    "maxDrawdown": -0.09590147827646633,
-    "sharpe": -0.1125375306966651,
-    "trades": 35,
-    "winRate": 0.6,
-    "avgTrade": -0.0025704934233627868,
-    "exposure": 0.03732949223688721,
-    "score": -0.157481630285643,
-    "pYearUp": 0.4535,
+    "cagr": 0.18767710441487462,
+    "maxDrawdown": -0.2565898573589691,
+    "sharpe": 0.7149474651553174,
+    "trades": 7,
+    "winRate": 0.42857142857142855,
+    "avgTrade": 0.0016252806759275474,
+    "exposure": 0.9078162551449224,
+    "score": 0.7314283828152819,
+    "pYearUp": 0.816,
     "bench": {
-     "cagr": 0.12194621128375616,
-     "maxDrawdown": -0.5305998300012049,
-     "sharpe": 0.4257738109168714
+     "cagr": 0.16990649558709103,
+     "maxDrawdown": -0.22743432084963677,
+     "sharpe": 0.9817333799379591
     }
+   },
+   "neighbours": {
+    "n": 6,
+    "beatHold": 3,
+    "medianScore": 0.846810723540058,
+    "worstScore": 0.10845780927722555,
+    "medianCagr": 0.18799844137427524,
+    "worstCagr": 0.035240370788172104
    }
   },
   {
-   "universe": "crypto",
-   "universeLabel": "Crypto (spot only)",
+   "universe": "stocks",
+   "universeLabel": "Halal stocks and funds",
    "symbols": [
-    "BTC-USD",
-    "ETH-USD",
-    "SOL-USD",
-    "XRP-USD",
-    "ADA-USD",
-    "LTC-USD",
-    "LINK-USD",
-    "AVAX-USD",
-    "DOT-USD",
-    "BCH-USD"
+    "SPUS",
+    "HLAL",
+    "UMMA",
+    "SPTE",
+    "AAPL",
+    "MSFT",
+    "NVDA",
+    "ADBE",
+    "ASML",
+    "TSM"
    ],
-   "benchmark": "BTC-USD",
-   "costBps": 10,
-   "family": "dip",
-   "name": "Dip Buyer",
+   "benchmark": "SPUS",
+   "costBps": 5,
+   "family": "voltarget",
+   "name": "Volatility Target",
+   "kind": "new",
    "start": {
+    "targetVol": 15,
+    "volLen": 20,
+    "buffer": 20,
+    "trendLen": 0
+   },
+   "tuned": {
+    "targetVol": 15,
+    "volLen": 20,
+    "buffer": 30,
+    "trendLen": 200
+   },
+   "evaluations": 84,
+   "climbPath": [
+    {
+     "params": {
+      "targetVol": 25,
+      "volLen": 40,
+      "buffer": 30,
+      "trendLen": 150
+     },
+     "score": 0.39131959919034764
+    },
+    {
+     "params": {
+      "targetVol": 25,
+      "volLen": 40,
+      "buffer": 30,
+      "trendLen": 200
+     },
+     "score": 0.5099952190454635
+    },
+    {
+     "params": {
+      "targetVol": 20,
+      "volLen": 40,
+      "buffer": 30,
+      "trendLen": 200
+     },
+     "score": 0.5395302957201055
+    },
+    {
+     "params": {
+      "targetVol": 15,
+      "volLen": 40,
+      "buffer": 30,
+      "trendLen": 200
+     },
+     "score": 0.5520290694517574
+    },
+    {
+     "params": {
+      "targetVol": 15,
+      "volLen": 20,
+      "buffer": 30,
+      "trendLen": 200
+     },
+     "score": 0.7103799678911511
+    }
+   ],
+   "defaultTrain": {
+    "cagr": 0.09389245965135395,
+    "maxDrawdown": -0.1961793062711179,
+    "sharpe": 0.6773182847385846,
+    "trades": 10,
+    "winRate": 0.6,
+    "avgTrade": 0.02795179082056224,
+    "exposure": 0.8151881460213078,
+    "score": 0.47860531998005684,
+    "pYearUp": 0.7265,
+    "bench": {
+     "cagr": 0.08934672032794233,
+     "maxDrawdown": -0.28081910461773163,
+     "sharpe": 0.5325496238717892
+    }
+   },
+   "defaultTest": {
+    "cagr": 0.12018056776677066,
+    "maxDrawdown": -0.20256249536731463,
+    "sharpe": 0.803787290489748,
+    "trades": 10,
+    "winRate": 0.7,
+    "avgTrade": 0.04229347654642276,
+    "exposure": 0.9077836921451049,
+    "score": 0.5933011811927102,
+    "pYearUp": 0.821,
+    "bench": {
+     "cagr": 0.17031034976557247,
+     "maxDrawdown": -0.22743432084963677,
+     "sharpe": 0.9817333799379574
+    }
+   },
+   "train": {
+    "cagr": 0.08002766389908356,
+    "maxDrawdown": -0.11265473058968056,
+    "sharpe": 0.7567060150500892,
+    "trades": 6,
+    "winRate": 0.5,
+    "avgTrade": 0.033468338028664994,
+    "exposure": 0.5678096710089903,
+    "score": 0.7103799678911511,
+    "pYearUp": 0.768,
+    "bench": {
+     "cagr": 0.08934672032794233,
+     "maxDrawdown": -0.28081910461773163,
+     "sharpe": 0.5325496238717892
+    }
+   },
+   "test": {
+    "cagr": 0.1140599752588849,
+    "maxDrawdown": -0.0881539351606081,
+    "sharpe": 1.0368614131596274,
+    "trades": 3,
+    "winRate": 0.6666666666666666,
+    "avgTrade": 0.06980856246734478,
+    "exposure": 0.6693874799169612,
+    "score": 1.140599752588849,
+    "pYearUp": 0.9,
+    "bench": {
+     "cagr": 0.17031034976557247,
+     "maxDrawdown": -0.22743432084963677,
+     "sharpe": 0.9817333799379574
+    }
+   },
+   "testHighCost": {
+    "cagr": 0.11206568244537696,
+    "maxDrawdown": -0.08913028233114373,
+    "sharpe": 1.021205443339109,
+    "trades": 3,
+    "winRate": 0.6666666666666666,
+    "avgTrade": 0.06820735996470949,
+    "exposure": 0.6692728436486992,
+    "score": 1.1206568244537696,
+    "pYearUp": 0.895,
+    "bench": {
+     "cagr": 0.16990649558709103,
+     "maxDrawdown": -0.22743432084963677,
+     "sharpe": 0.9817333799379591
+    }
+   },
+   "neighbours": {
+    "n": 7,
+    "beatHold": 7,
+    "medianScore": 1.1741932612501516,
+    "worstScore": 0.9295305991045133,
+    "medianCagr": 0.11741932612501516,
+    "worstCagr": 0.09295305991045133
+   }
+  },
+  {
+   "universe": "stocks",
+   "universeLabel": "Halal stocks and funds",
+   "symbols": [
+    "SPUS",
+    "HLAL",
+    "UMMA",
+    "SPTE",
+    "AAPL",
+    "MSFT",
+    "NVDA",
+    "ADBE",
+    "ASML",
+    "TSM"
+   ],
+   "benchmark": "SPUS",
+   "costBps": 5,
+   "family": "lowvol",
+   "name": "Calm Leaders",
+   "kind": "new",
+   "start": {
+    "volLen": 60,
+    "trendLen": 200,
+    "top": 3
+   },
+   "tuned": {
+    "volLen": 60,
+    "trendLen": 200,
+    "top": 1
+   },
+   "evaluations": 40,
+   "climbPath": [
+    {
+     "params": {
+      "volLen": 60,
+      "trendLen": 200,
+      "top": 3
+     },
+     "score": 0.30594311953490194
+    },
+    {
+     "params": {
+      "volLen": 60,
+      "trendLen": 200,
+      "top": 2
+     },
+     "score": 0.5378783256021411
+    },
+    {
+     "params": {
+      "volLen": 60,
+      "trendLen": 200,
+      "top": 1
+     },
+     "score": 0.6061321831783465
+    }
+   ],
+   "defaultTrain": {
+    "cagr": 0.07150344025470146,
+    "maxDrawdown": -0.2337148171967448,
+    "sharpe": 0.5285163539124768,
+    "trades": 18,
+    "winRate": 0.3888888888888889,
+    "avgTrade": 0.0062844476848248456,
+    "exposure": 0.7583841605540765,
+    "score": 0.30594311953490194,
+    "pYearUp": 0.6605,
+    "bench": {
+     "cagr": 0.08934672032794233,
+     "maxDrawdown": -0.28081910461773163,
+     "sharpe": 0.5325496238717892
+    }
+   },
+   "defaultTest": {
+    "cagr": 0.11971213587657314,
+    "maxDrawdown": -0.12993563878608294,
+    "sharpe": 0.8316468110165756,
+    "trades": 16,
+    "winRate": 0.625,
+    "avgTrade": 0.053890773526803694,
+    "exposure": 0.8761415361701204,
+    "score": 0.9213187159041019,
+    "pYearUp": 0.8465,
+    "bench": {
+     "cagr": 0.17031034976557247,
+     "maxDrawdown": -0.22743432084963677,
+     "sharpe": 0.9817333799379574
+    }
+   },
+   "train": {
+    "cagr": 0.128974143210157,
+    "maxDrawdown": -0.2127822062406609,
+    "sharpe": 0.8492264259567592,
+    "trades": 6,
+    "winRate": 0.5,
+    "avgTrade": 0.03499950215638095,
+    "exposure": 0.7974426504994971,
+    "score": 0.6061321831783465,
+    "pYearUp": 0.751,
+    "bench": {
+     "cagr": 0.08934672032794233,
+     "maxDrawdown": -0.28081910461773163,
+     "sharpe": 0.5325496238717892
+    }
+   },
+   "test": {
+    "cagr": 0.07412700205581424,
+    "maxDrawdown": -0.11944343397599122,
+    "sharpe": 0.5568477021132184,
+    "trades": 7,
+    "winRate": 0.7142857142857143,
+    "avgTrade": 0.0257840157348756,
+    "exposure": 0.8861009122766355,
+    "score": 0.6206034068872649,
+    "pYearUp": 0.794,
+    "bench": {
+     "cagr": 0.17031034976557247,
+     "maxDrawdown": -0.22743432084963677,
+     "sharpe": 0.9817333799379574
+    }
+   },
+   "testHighCost": {
+    "cagr": 0.06857965380536735,
+    "maxDrawdown": -0.11944343397599133,
+    "sharpe": 0.5220804905921165,
+    "trades": 7,
+    "winRate": 0.7142857142857143,
+    "avgTrade": 0.024247562353552708,
+    "exposure": 0.8861009122766355,
+    "score": 0.5741600984040041,
+    "pYearUp": 0.782,
+    "bench": {
+     "cagr": 0.16990649558709103,
+     "maxDrawdown": -0.22743432084963677,
+     "sharpe": 0.9817333799379591
+    }
+   },
+   "neighbours": {
+    "n": 5,
+    "beatHold": 1,
+    "medianScore": 0.6626125861344276,
+    "worstScore": 0.20497261163884356,
+    "medianCagr": 0.07975707481388672,
+    "worstCagr": 0.06192989752386291
+   }
+  },
+  {
+   "universe": "stocks",
+   "universeLabel": "Halal stocks and funds",
+   "symbols": [
+    "SPUS",
+    "HLAL",
+    "UMMA",
+    "SPTE",
+    "AAPL",
+    "MSFT",
+    "NVDA",
+    "ADBE",
+    "ASML",
+    "TSM"
+   ],
+   "benchmark": "SPUS",
+   "costBps": 5,
+   "family": "reversal",
+   "name": "Weekly Reversal",
+   "kind": "new",
+   "start": {
+    "lookback": 5,
+    "trendLen": 200,
+    "top": 2,
+    "stopPct": 10
+   },
+   "tuned": {
+    "lookback": 15,
+    "trendLen": 200,
+    "top": 1,
+    "stopPct": 10
+   },
+   "evaluations": 79,
+   "climbPath": [
+    {
+     "params": {
+      "lookback": 5,
+      "trendLen": 200,
+      "top": 2,
+      "stopPct": 10
+     },
+     "score": 0.15672413048774755
+    },
+    {
+     "params": {
+      "lookback": 10,
+      "trendLen": 200,
+      "top": 2,
+      "stopPct": 10
+     },
+     "score": 0.43137291857177695
+    },
+    {
+     "params": {
+      "lookback": 10,
+      "trendLen": 200,
+      "top": 1,
+      "stopPct": 10
+     },
+     "score": 0.659355087575324
+    },
+    {
+     "params": {
+      "lookback": 15,
+      "trendLen": 200,
+      "top": 1,
+      "stopPct": 10
+     },
+     "score": 1.4329730145512851
+    }
+   ],
+   "defaultTrain": {
+    "cagr": 0.06715809184268307,
+    "maxDrawdown": -0.4285114974552906,
+    "sharpe": 0.4012164348520533,
+    "trades": 123,
+    "winRate": 0.4796747967479675,
+    "avgTrade": 0.004692620329221059,
+    "exposure": 0.5052684857579248,
+    "score": 0.15672413048774755,
+    "pYearUp": 0.5695,
+    "bench": {
+     "cagr": 0.08934672032794233,
+     "maxDrawdown": -0.28081910461773163,
+     "sharpe": 0.5325496238717892
+    }
+   },
+   "defaultTest": {
+    "cagr": 0.07924959752770477,
+    "maxDrawdown": -0.25979889536955025,
+    "sharpe": 0.44347836417890535,
+    "trades": 127,
+    "winRate": 0.5826771653543307,
+    "avgTrade": 0.0034641889342456843,
+    "exposure": 0.6565961357992746,
+    "score": 0.30504208809270106,
+    "pYearUp": 0.698,
+    "bench": {
+     "cagr": 0.17031034976557247,
+     "maxDrawdown": -0.22743432084963677,
+     "sharpe": 0.9817333799379574
+    }
+   },
+   "train": {
+    "cagr": 0.3705566588401972,
+    "maxDrawdown": -0.25859290794546586,
+    "sharpe": 1.2324701861890563,
+    "trades": 46,
+    "winRate": 0.6086956521739131,
+    "avgTrade": 0.02200819539379252,
+    "exposure": 0.5296476781135392,
+    "score": 1.4329730145512851,
+    "pYearUp": 0.87,
+    "bench": {
+     "cagr": 0.08934672032794233,
+     "maxDrawdown": -0.28081910461773163,
+     "sharpe": 0.5325496238717892
+    }
+   },
+   "test": {
+    "cagr": 0.3274938643375396,
+    "maxDrawdown": -0.1931157596662787,
+    "sharpe": 1.1180109055668286,
+    "trades": 54,
+    "winRate": 0.6296296296296297,
+    "avgTrade": 0.012939003277452418,
+    "exposure": 0.6781334521774907,
+    "score": 1.6958422497650023,
+    "pYearUp": 0.9185,
+    "bench": {
+     "cagr": 0.17031034976557247,
+     "maxDrawdown": -0.22743432084963677,
+     "sharpe": 0.9817333799379574
+    }
+   },
+   "testHighCost": {
+    "cagr": 0.2802112410559878,
+    "maxDrawdown": -0.19734133165810586,
+    "sharpe": 0.9942356539732482,
+    "trades": 54,
+    "winRate": 0.5925925925925926,
+    "avgTrade": 0.011458335614564875,
+    "exposure": 0.6781334521774905,
+    "score": 1.419931844492943,
+    "pYearUp": 0.8975,
+    "bench": {
+     "cagr": 0.16990649558709103,
+     "maxDrawdown": -0.22743432084963677,
+     "sharpe": 0.9817333799379591
+    }
+   },
+   "neighbours": {
+    "n": 7,
+    "beatHold": 5,
+    "medianScore": 1.3199395779489684,
+    "worstScore": 0.2940848997276994,
+    "medianCagr": 0.2399993367040465,
+    "worstCagr": 0.0635301879942447
+   }
+  },
+  {
+   "universe": "stocks",
+   "universeLabel": "Halal stocks and funds",
+   "symbols": [
+    "SPUS",
+    "HLAL",
+    "UMMA",
+    "SPTE",
+    "AAPL",
+    "MSFT",
+    "NVDA",
+    "ADBE",
+    "ASML",
+    "TSM"
+   ],
+   "benchmark": "SPUS",
+   "costBps": 5,
+   "family": "bands",
+   "name": "Band Bounce",
+   "kind": "permutation",
+   "start": {
+    "len": 20,
+    "k": 2,
+    "trendLen": 200,
+    "maxHold": 15,
+    "stopPct": 10,
+    "maxPositions": 3
+   },
+   "tuned": {
+    "len": 20,
+    "k": 2,
+    "trendLen": 200,
+    "maxHold": 30,
+    "stopPct": 20,
+    "maxPositions": 2
+   },
+   "evaluations": 197,
+   "climbPath": [
+    {
+     "params": {
+      "len": 20,
+      "k": 2,
+      "trendLen": 200,
+      "maxHold": 15,
+      "stopPct": 10,
+      "maxPositions": 3
+     },
+     "score": 0.6035434709082708
+    },
+    {
+     "params": {
+      "len": 20,
+      "k": 2,
+      "trendLen": 200,
+      "maxHold": 20,
+      "stopPct": 10,
+      "maxPositions": 3
+     },
+     "score": 0.761278946598325
+    },
+    {
+     "params": {
+      "len": 20,
+      "k": 2,
+      "trendLen": 200,
+      "maxHold": 20,
+      "stopPct": 15,
+      "maxPositions": 3
+     },
+     "score": 0.8210322320145752
+    },
+    {
+     "params": {
+      "len": 20,
+      "k": 2,
+      "trendLen": 200,
+      "maxHold": 20,
+      "stopPct": 20,
+      "maxPositions": 3
+     },
+     "score": 0.898988786705206
+    },
+    {
+     "params": {
+      "len": 20,
+      "k": 2,
+      "trendLen": 200,
+      "maxHold": 20,
+      "stopPct": 20,
+      "maxPositions": 2
+     },
+     "score": 0.932140998345655
+    },
+    {
+     "params": {
+      "len": 20,
+      "k": 2,
+      "trendLen": 200,
+      "maxHold": 30,
+      "stopPct": 20,
+      "maxPositions": 2
+     },
+     "score": 0.9867915857163659
+    }
+   ],
+   "defaultTrain": {
+    "cagr": 0.06919945456838628,
+    "maxDrawdown": -0.11465529477810144,
+    "sharpe": 0.6428326641935788,
+    "trades": 45,
+    "winRate": 0.7111111111111111,
+    "avgTrade": 0.013446617224584512,
+    "exposure": 0.19383724973975522,
+    "score": 0.6035434709082708,
+    "pYearUp": 0.8005,
+    "bench": {
+     "cagr": 0.08934672032794233,
+     "maxDrawdown": -0.28081910461773163,
+     "sharpe": 0.5325496238717892
+    }
+   },
+   "defaultTest": {
+    "cagr": 0.06448570632041317,
+    "maxDrawdown": -0.11787090292758895,
+    "sharpe": 0.5613741739793794,
+    "trades": 44,
+    "winRate": 0.7045454545454546,
+    "avgTrade": 0.011164938175710888,
+    "exposure": 0.24265386697592536,
+    "score": 0.5470875739369567,
+    "pYearUp": 0.8185,
+    "bench": {
+     "cagr": 0.17031034976557247,
+     "maxDrawdown": -0.22743432084963677,
+     "sharpe": 0.9817333799379574
+    }
+   },
+   "train": {
+    "cagr": 0.11986348214730547,
+    "maxDrawdown": -0.12146788023155874,
+    "sharpe": 0.9279380891774253,
+    "trades": 30,
+    "winRate": 0.7333333333333333,
+    "avgTrade": 0.02191866417105082,
+    "exposure": 0.23692868111199783,
+    "score": 0.9867915857163659,
+    "pYearUp": 0.8765,
+    "bench": {
+     "cagr": 0.08934672032794233,
+     "maxDrawdown": -0.28081910461773163,
+     "sharpe": 0.5325496238717892
+    }
+   },
+   "test": {
+    "cagr": 0.148773362266033,
+    "maxDrawdown": -0.10333343446886245,
+    "sharpe": 0.9720724202243304,
+    "trades": 32,
+    "winRate": 0.8125,
+    "avgTrade": 0.024929553346309134,
+    "exposure": 0.3062606201181695,
+    "score": 1.4397408063588846,
+    "pYearUp": 0.9225,
+    "bench": {
+     "cagr": 0.17031034976557247,
+     "maxDrawdown": -0.22743432084963677,
+     "sharpe": 0.9817333799379574
+    }
+   },
+   "testHighCost": {
+    "cagr": 0.13572388904956778,
+    "maxDrawdown": -0.1046688789959469,
+    "sharpe": 0.898670447920299,
+    "trades": 32,
+    "winRate": 0.78125,
+    "avgTrade": 0.023393533292234862,
+    "exposure": 0.3062343768078923,
+    "score": 1.2966976464400983,
+    "pYearUp": 0.911,
+    "bench": {
+     "cagr": 0.16990649558709103,
+     "maxDrawdown": -0.22743432084963677,
+     "sharpe": 0.9817333799379591
+    }
+   },
+   "neighbours": {
+    "n": 10,
+    "beatHold": 8,
+    "medianScore": 1.4397408063588846,
+    "worstScore": 0.17410705873660556,
+    "medianCagr": 0.148773362266033,
+    "worstCagr": 0.02565079604254117
+   }
+  },
+  {
+   "universe": "stocks",
+   "universeLabel": "Halal stocks and funds",
+   "symbols": [
+    "SPUS",
+    "HLAL",
+    "UMMA",
+    "SPTE",
+    "AAPL",
+    "MSFT",
+    "NVDA",
+    "ADBE",
+    "ASML",
+    "TSM"
+   ],
+   "benchmark": "SPUS",
+   "costBps": 5,
+   "family": "momdip",
+   "name": "Momentum Dips",
+   "kind": "permutation",
+   "start": {
+    "lookback": 126,
+    "topK": 3,
     "entryRsi": 15,
     "trendLen": 200,
     "exitLen": 5,
@@ -1901,290 +6965,770 @@
     "maxPositions": 2
    },
    "tuned": {
-    "entryRsi": 5,
-    "trendLen": 250,
-    "exitLen": 7,
-    "maxHold": 7,
-    "stopPct": 20,
-    "maxPositions": 6
+    "lookback": 63,
+    "topK": 4,
+    "entryRsi": 20,
+    "trendLen": 200,
+    "exitLen": 5,
+    "maxHold": 10,
+    "stopPct": 10,
+    "maxPositions": 1
    },
-   "evaluations": 211,
+   "evaluations": 321,
    "climbPath": [
     {
      "params": {
-      "entryRsi": 5,
+      "lookback": 126,
+      "topK": 3,
+      "entryRsi": 15,
       "trendLen": 200,
-      "exitLen": 7,
-      "maxHold": 7,
+      "exitLen": 5,
+      "maxHold": 10,
       "stopPct": 10,
-      "maxPositions": 6
+      "maxPositions": 2
      },
-     "score": -0.28530005687777577
+     "score": 1.3745111089663709
     },
     {
      "params": {
-      "entryRsi": 5,
-      "trendLen": 150,
-      "exitLen": 7,
-      "maxHold": 7,
-      "stopPct": 10,
-      "maxPositions": 6
-     },
-     "score": -0.1811569652748879
-    },
-    {
-     "params": {
-      "entryRsi": 5,
-      "trendLen": 150,
-      "exitLen": 7,
-      "maxHold": 7,
-      "stopPct": 15,
-      "maxPositions": 6
-     },
-     "score": -0.08306307843868768
-    },
-    {
-     "params": {
-      "entryRsi": 5,
-      "trendLen": 150,
-      "exitLen": 7,
-      "maxHold": 7,
-      "stopPct": 20,
-      "maxPositions": 6
-     },
-     "score": -0.0416301907128423
-    },
-    {
-     "params": {
-      "entryRsi": 5,
+      "lookback": 63,
+      "topK": 3,
+      "entryRsi": 15,
       "trendLen": 200,
-      "exitLen": 7,
-      "maxHold": 7,
-      "stopPct": 20,
-      "maxPositions": 6
+      "exitLen": 5,
+      "maxHold": 10,
+      "stopPct": 10,
+      "maxPositions": 2
      },
-     "score": -0.02238393786292087
+     "score": 1.8733252427841434
     },
     {
      "params": {
-      "entryRsi": 5,
-      "trendLen": 250,
-      "exitLen": 7,
-      "maxHold": 7,
-      "stopPct": 20,
-      "maxPositions": 6
+      "lookback": 63,
+      "topK": 3,
+      "entryRsi": 15,
+      "trendLen": 200,
+      "exitLen": 5,
+      "maxHold": 10,
+      "stopPct": 10,
+      "maxPositions": 1
      },
-     "score": 0.04077136957967965
+     "score": 2.3606309958948213
+    },
+    {
+     "params": {
+      "lookback": 63,
+      "topK": 3,
+      "entryRsi": 20,
+      "trendLen": 200,
+      "exitLen": 5,
+      "maxHold": 10,
+      "stopPct": 10,
+      "maxPositions": 1
+     },
+     "score": 2.5007068004708946
+    },
+    {
+     "params": {
+      "lookback": 63,
+      "topK": 4,
+      "entryRsi": 20,
+      "trendLen": 200,
+      "exitLen": 5,
+      "maxHold": 10,
+      "stopPct": 10,
+      "maxPositions": 1
+     },
+     "score": 3.0014707801284755
     }
    ],
    "defaultTrain": {
-    "cagr": -0.28997146453664047,
-    "maxDrawdown": -0.6266489902716275,
-    "sharpe": -0.7516259270874381,
-    "trades": 174,
-    "winRate": 0.5862068965517241,
-    "avgTrade": -0.009053761878559564,
-    "exposure": 0.25646974436678194,
-    "score": -0.4627334744622334,
-    "pYearUp": 0.209,
+    "cagr": 0.17642213526796446,
+    "maxDrawdown": -0.128352644163519,
+    "sharpe": 1.082337122821831,
+    "trades": 87,
+    "winRate": 0.7471264367816092,
+    "avgTrade": 0.011094994061962534,
+    "exposure": 0.2046093298013705,
+    "score": 1.3745111089663709,
+    "pYearUp": 0.8815,
     "bench": {
-     "cagr": -0.024715613655438617,
-     "maxDrawdown": -0.7663456366986094,
-     "sharpe": 0.19660680164674701
+     "cagr": 0.08934672032794233,
+     "maxDrawdown": -0.28081910461773163,
+     "sharpe": 0.5325496238717892
     }
    },
    "defaultTest": {
-    "cagr": -0.02833547738490294,
-    "maxDrawdown": -0.39467735156725936,
-    "sharpe": 0.061695467170689786,
-    "trades": 115,
-    "winRate": 0.6173913043478261,
-    "avgTrade": 0.0007861617913860731,
-    "exposure": 0.19742199038904312,
-    "score": -0.07179402940752257,
-    "pYearUp": 0.5,
+    "cagr": 0.3108743909341749,
+    "maxDrawdown": -0.1241173087404801,
+    "sharpe": 1.7964554547522598,
+    "trades": 81,
+    "winRate": 0.7283950617283951,
+    "avgTrade": 0.015078197186036743,
+    "exposure": 0.24558127063797147,
+    "score": 2.504682014852495,
+    "pYearUp": 0.959,
     "bench": {
-     "cagr": 0.12271831655203203,
-     "maxDrawdown": -0.5305998300012049,
-     "sharpe": 0.425773810916874
+     "cagr": 0.17031034976557247,
+     "maxDrawdown": -0.22743432084963677,
+     "sharpe": 0.9817333799379574
     }
    },
    "train": {
-    "cagr": 0.007586369365417234,
-    "maxDrawdown": -0.18607099647685765,
-    "sharpe": 0.1093430094595177,
-    "trades": 100,
-    "winRate": 0.64,
-    "avgTrade": 0.0030778383086866967,
-    "exposure": 0.07549525354088947,
-    "score": 0.04077136957967965,
-    "pYearUp": 0.5905,
+    "cagr": 0.447493547127789,
+    "maxDrawdown": -0.14909142214225868,
+    "sharpe": 1.8482172306792302,
+    "trades": 74,
+    "winRate": 0.7027027027027027,
+    "avgTrade": 0.014849604569352134,
+    "exposure": 0.3319159709473018,
+    "score": 3.0014707801284755,
+    "pYearUp": 0.9805,
     "bench": {
-     "cagr": -0.024715613655438617,
-     "maxDrawdown": -0.7663456366986094,
-     "sharpe": 0.19660680164674701
+     "cagr": 0.08934672032794233,
+     "maxDrawdown": -0.28081910461773163,
+     "sharpe": 0.5325496238717892
     }
    },
    "test": {
-    "cagr": 0.17815436221551484,
-    "maxDrawdown": -0.14561854254414153,
-    "sharpe": 0.7737872825634615,
-    "trades": 78,
-    "winRate": 0.7051282051282052,
-    "avgTrade": 0.02990923851671389,
-    "exposure": 0.07011797996422013,
-    "score": 1.223431845305763,
-    "pYearUp": 0.8375,
+    "cagr": 0.13400724533154285,
+    "maxDrawdown": -0.2513656786038675,
+    "sharpe": 0.6619586047689785,
+    "trades": 68,
+    "winRate": 0.6470588235294118,
+    "avgTrade": 0.00465785768032889,
+    "exposure": 0.4314215322480185,
+    "score": 0.5331167169513532,
+    "pYearUp": 0.6855,
     "bench": {
-     "cagr": 0.12271831655203203,
-     "maxDrawdown": -0.5305998300012049,
-     "sharpe": 0.425773810916874
+     "cagr": 0.17031034976557247,
+     "maxDrawdown": -0.22743432084963677,
+     "sharpe": 0.9817333799379574
     }
    },
    "testHighCost": {
-    "cagr": 0.15774281521926325,
-    "maxDrawdown": -0.148312842258443,
-    "sharpe": 0.6999576819568798,
-    "trades": 78,
-    "winRate": 0.6794871794871795,
-    "avgTrade": 0.02691597805485923,
-    "exposure": 0.07007911625663497,
-    "score": 1.0635816347203975,
-    "pYearUp": 0.811,
+    "cagr": 0.0827116204532421,
+    "maxDrawdown": -0.263616805120784,
+    "sharpe": 0.4601008918163023,
+    "trades": 68,
+    "winRate": 0.6470588235294118,
+    "avgTrade": 0.003171842944145536,
+    "exposure": 0.4314215322480185,
+    "score": 0.31375700959331965,
+    "pYearUp": 0.6085,
     "bench": {
-     "cagr": 0.12194621128375616,
-     "maxDrawdown": -0.5305998300012049,
-     "sharpe": 0.4257738109168714
+     "cagr": 0.16990649558709103,
+     "maxDrawdown": -0.22743432084963677,
+     "sharpe": 0.9817333799379591
     }
+   },
+   "neighbours": {
+    "n": 15,
+    "beatHold": 6,
+    "medianScore": 0.6948479606749207,
+    "worstScore": 0.2218315555186331,
+    "medianCagr": 0.14865740376366432,
+    "worstCagr": 0.07117581363226577
    }
   },
   {
-   "universe": "crypto",
-   "universeLabel": "Crypto (spot only)",
+   "universe": "stocks",
+   "universeLabel": "Halal stocks and funds",
    "symbols": [
-    "BTC-USD",
-    "ETH-USD",
-    "SOL-USD",
-    "XRP-USD",
-    "ADA-USD",
-    "LTC-USD",
-    "LINK-USD",
-    "AVAX-USD",
-    "DOT-USD",
-    "BCH-USD"
+    "SPUS",
+    "HLAL",
+    "UMMA",
+    "SPTE",
+    "AAPL",
+    "MSFT",
+    "NVDA",
+    "ADBE",
+    "ASML",
+    "TSM"
    ],
-   "benchmark": "BTC-USD",
-   "costBps": 10,
-   "family": "guard",
-   "name": "Trend Guard",
+   "benchmark": "SPUS",
+   "costBps": 5,
+   "family": "coredip",
+   "name": "Core + Dips",
+   "kind": "permutation",
    "start": {
-    "trendLen": 200,
+    "coreWeight": 60,
+    "coreTrend": 200,
     "band": 2,
-    "useDefensive": 0
+    "entryRsi": 15,
+    "trendLen": 200,
+    "exitLen": 5,
+    "maxHold": 10,
+    "stopPct": 10,
+    "maxPositions": 2
    },
    "tuned": {
-    "trendLen": 150,
-    "band": 1,
-    "useDefensive": 0
+    "coreWeight": 0,
+    "coreTrend": 150,
+    "band": 3,
+    "entryRsi": 20,
+    "trendLen": 100,
+    "exitLen": 5,
+    "maxHold": 5,
+    "stopPct": 10,
+    "maxPositions": 2
    },
-   "evaluations": 23,
+   "evaluations": 480,
    "climbPath": [
     {
      "params": {
-      "trendLen": 150,
-      "band": 2,
-      "useDefensive": 0
+      "coreWeight": 50,
+      "coreTrend": 150,
+      "band": 3,
+      "entryRsi": 15,
+      "trendLen": 200,
+      "exitLen": 7,
+      "maxHold": 5,
+      "stopPct": 5,
+      "maxPositions": 2
      },
-     "score": 0.5620607257199406
+     "score": 0.45999721166052016
     },
     {
      "params": {
+      "coreWeight": 50,
+      "coreTrend": 150,
+      "band": 3,
+      "entryRsi": 15,
       "trendLen": 150,
-      "band": 1,
-      "useDefensive": 0
+      "exitLen": 7,
+      "maxHold": 5,
+      "stopPct": 5,
+      "maxPositions": 2
      },
-     "score": 0.6922464674627266
+     "score": 0.7129357825458322
+    },
+    {
+     "params": {
+      "coreWeight": 50,
+      "coreTrend": 150,
+      "band": 3,
+      "entryRsi": 15,
+      "trendLen": 150,
+      "exitLen": 7,
+      "maxHold": 5,
+      "stopPct": 10,
+      "maxPositions": 2
+     },
+     "score": 0.8334001111463496
+    },
+    {
+     "params": {
+      "coreWeight": 50,
+      "coreTrend": 150,
+      "band": 3,
+      "entryRsi": 15,
+      "trendLen": 100,
+      "exitLen": 7,
+      "maxHold": 5,
+      "stopPct": 10,
+      "maxPositions": 2
+     },
+     "score": 1.2459450985775364
+    },
+    {
+     "params": {
+      "coreWeight": 40,
+      "coreTrend": 150,
+      "band": 3,
+      "entryRsi": 15,
+      "trendLen": 100,
+      "exitLen": 7,
+      "maxHold": 5,
+      "stopPct": 10,
+      "maxPositions": 2
+     },
+     "score": 1.3950483353809613
+    },
+    {
+     "params": {
+      "coreWeight": 20,
+      "coreTrend": 150,
+      "band": 3,
+      "entryRsi": 15,
+      "trendLen": 100,
+      "exitLen": 7,
+      "maxHold": 5,
+      "stopPct": 10,
+      "maxPositions": 2
+     },
+     "score": 1.6940857517989365
+    },
+    {
+     "params": {
+      "coreWeight": 0,
+      "coreTrend": 150,
+      "band": 3,
+      "entryRsi": 15,
+      "trendLen": 100,
+      "exitLen": 7,
+      "maxHold": 5,
+      "stopPct": 10,
+      "maxPositions": 2
+     },
+     "score": 1.9510419362875189
+    },
+    {
+     "params": {
+      "coreWeight": 0,
+      "coreTrend": 150,
+      "band": 3,
+      "entryRsi": 15,
+      "trendLen": 100,
+      "exitLen": 5,
+      "maxHold": 5,
+      "stopPct": 10,
+      "maxPositions": 2
+     },
+     "score": 1.955206090432979
+    },
+    {
+     "params": {
+      "coreWeight": 0,
+      "coreTrend": 150,
+      "band": 3,
+      "entryRsi": 20,
+      "trendLen": 100,
+      "exitLen": 5,
+      "maxHold": 5,
+      "stopPct": 10,
+      "maxPositions": 2
+     },
+     "score": 2.1874587594698003
     }
    ],
    "defaultTrain": {
-    "cagr": 0.1660219926335158,
-    "maxDrawdown": -0.29538088152460595,
-    "sharpe": 0.49533380197219606,
-    "trades": 3,
-    "winRate": 0.6666666666666666,
-    "avgTrade": 0.20963258699635198,
-    "exposure": 0.5310077519379846,
-    "score": 0.5620607257199406,
-    "pYearUp": 0.654,
+    "cagr": 0.11033935207240697,
+    "maxDrawdown": -0.12685964506708125,
+    "sharpe": 1.010603408795378,
+    "trades": 126,
+    "winRate": 0.6507936507936508,
+    "avgTrade": 0.004851364977538852,
+    "exposure": 0.4728141918661047,
+    "score": 0.8697750337710733,
+    "pYearUp": 0.8345,
     "bench": {
-     "cagr": -0.024715613655438617,
-     "maxDrawdown": -0.7663456366986094,
-     "sharpe": 0.19660680164674701
+     "cagr": 0.08934672032794233,
+     "maxDrawdown": -0.28081910461773163,
+     "sharpe": 0.5325496238717892
     }
    },
    "defaultTest": {
-    "cagr": 0.038283145648686956,
-    "maxDrawdown": -0.32146980491769794,
-    "sharpe": 0.22906845694562328,
-    "trades": 2,
-    "winRate": 0.5,
-    "avgTrade": 0.0654090554758588,
-    "exposure": 0.5414572864321608,
-    "score": 0.11908784297327125,
-    "pYearUp": 0.547,
+    "cagr": 0.13939590221040365,
+    "maxDrawdown": -0.11271025515121846,
+    "sharpe": 1.0117575525400913,
+    "trades": 127,
+    "winRate": 0.6692913385826772,
+    "avgTrade": 0.006435456487515345,
+    "exposure": 0.6668502663771162,
+    "score": 1.2367632565766284,
+    "pYearUp": 0.8965,
     "bench": {
-     "cagr": 0.12271831655203203,
-     "maxDrawdown": -0.5305998300012049,
-     "sharpe": 0.425773810916874
+     "cagr": 0.17031034976557247,
+     "maxDrawdown": -0.22743432084963677,
+     "sharpe": 0.9817333799379574
     }
    },
    "train": {
-    "cagr": 0.20447637179143463,
-    "maxDrawdown": -0.29538088152460595,
-    "sharpe": 0.5827240969786088,
-    "trades": 3,
-    "winRate": 0.6666666666666666,
-    "avgTrade": 0.2639236267407656,
-    "exposure": 0.500968992248062,
-    "score": 0.6922464674627266,
-    "pYearUp": 0.6755,
+    "cagr": 0.21874587594698003,
+    "maxDrawdown": -0.09746750862966103,
+    "sharpe": 1.3180216218313219,
+    "trades": 143,
+    "winRate": 0.6643356643356644,
+    "avgTrade": 0.008255460018859491,
+    "exposure": 0.32703667159807004,
+    "score": 2.1874587594698003,
+    "pYearUp": 0.9395,
     "bench": {
-     "cagr": -0.024715613655438617,
-     "maxDrawdown": -0.7663456366986094,
-     "sharpe": 0.19660680164674701
+     "cagr": 0.08934672032794233,
+     "maxDrawdown": -0.28081910461773163,
+     "sharpe": 0.5325496238717892
     }
    },
    "test": {
-    "cagr": 0.14564040769909226,
-    "maxDrawdown": -0.20591183442632588,
-    "sharpe": 0.527008635568883,
-    "trades": 2,
-    "winRate": 1,
-    "avgTrade": 0.17988869557966403,
-    "exposure": 0.4648241206030151,
-    "score": 0.7072949843065072,
-    "pYearUp": 0.6795,
+    "cagr": 0.1800059523949935,
+    "maxDrawdown": -0.1921215446909379,
+    "sharpe": 1.0124437468081764,
+    "trades": 145,
+    "winRate": 0.6413793103448275,
+    "avgTrade": 0.005411880445317224,
+    "exposure": 0.4406689775104504,
+    "score": 0.9369378779697275,
+    "pYearUp": 0.8095,
     "bench": {
-     "cagr": 0.12271831655203203,
-     "maxDrawdown": -0.5305998300012049,
-     "sharpe": 0.425773810916874
+     "cagr": 0.17031034976557247,
+     "maxDrawdown": -0.22743432084963677,
+     "sharpe": 0.9817333799379574
     }
    },
    "testHighCost": {
-    "cagr": 0.14170096940481303,
-    "maxDrawdown": -0.20821578472660762,
-    "sharpe": 0.516464173267162,
-    "trades": 2,
-    "winRate": 1,
-    "avgTrade": 0.17635432221703545,
-    "exposure": 0.4648241206030151,
-    "score": 0.6805486413571855,
-    "pYearUp": 0.6755,
+    "cagr": 0.12320741047431127,
+    "maxDrawdown": -0.2023197164084103,
+    "sharpe": 0.7378497661686932,
+    "trades": 145,
+    "winRate": 0.6275862068965518,
+    "avgTrade": 0.0039235140646715445,
+    "exposure": 0.44063908661170786,
+    "score": 0.6089738195638832,
+    "pYearUp": 0.7145,
     "bench": {
-     "cagr": 0.12194621128375616,
-     "maxDrawdown": -0.5305998300012049,
-     "sharpe": 0.4257738109168714
+     "cagr": 0.16990649558709103,
+     "maxDrawdown": -0.22743432084963677,
+     "sharpe": 0.9817333799379591
     }
+   },
+   "neighbours": {
+    "n": 14,
+    "beatHold": 13,
+    "medianScore": 1.0141502405985032,
+    "worstScore": -0.021835037109297673,
+    "medianCagr": 0.1800059523949935,
+    "worstCagr": -0.007151706641234878
+   }
+  },
+  {
+   "universe": "stocks",
+   "universeLabel": "Halal stocks and funds",
+   "symbols": [
+    "SPUS",
+    "HLAL",
+    "UMMA",
+    "SPTE",
+    "AAPL",
+    "MSFT",
+    "NVDA",
+    "ADBE",
+    "ASML",
+    "TSM"
+   ],
+   "benchmark": "SPUS",
+   "costBps": 5,
+   "family": "dualmom",
+   "name": "Dual Momentum",
+   "kind": "permutation",
+   "start": {
+    "lookback": 252,
+    "top": 1,
+    "useDefensive": 1
+   },
+   "tuned": {
+    "lookback": 63,
+    "top": 3,
+    "useDefensive": 1
+   },
+   "evaluations": 24,
+   "climbPath": [
+    {
+     "params": {
+      "lookback": 126,
+      "top": 3,
+      "useDefensive": 1
+     },
+     "score": 1.0454439881517228
+    },
+    {
+     "params": {
+      "lookback": 63,
+      "top": 3,
+      "useDefensive": 1
+     },
+     "score": 1.4965650100113856
+    }
+   ],
+   "defaultTrain": {
+    "cagr": 0.2220807672925682,
+    "maxDrawdown": -0.6180921681768332,
+    "sharpe": 0.6525933974748117,
+    "trades": 7,
+    "winRate": 0.2857142857142857,
+    "avgTrade": -0.10666096320329373,
+    "exposure": 0.8881328331458345,
+    "score": 0.3593004065196826,
+    "pYearUp": 0.654,
+    "bench": {
+     "cagr": 0.08934672032794233,
+     "maxDrawdown": -0.28081910461773163,
+     "sharpe": 0.5325496238717892
+    }
+   },
+   "defaultTest": {
+    "cagr": 0.14391766572194475,
+    "maxDrawdown": -0.43084717165775654,
+    "sharpe": 0.526331836306513,
+    "trades": 7,
+    "winRate": 0.5714285714285714,
+    "avgTrade": 0.07312028067824539,
+    "exposure": 0.9627397835800843,
+    "score": 0.33403414293796446,
+    "pYearUp": 0.7625,
+    "bench": {
+     "cagr": 0.17031034976557247,
+     "maxDrawdown": -0.22743432084963677,
+     "sharpe": 0.9817333799379574
+    }
+   },
+   "train": {
+    "cagr": 0.40865692544718657,
+    "maxDrawdown": -0.27306326334869846,
+    "sharpe": 1.355314019240016,
+    "trades": 19,
+    "winRate": 0.5789473684210527,
+    "avgTrade": 0.1028670537269839,
+    "exposure": 0.7112671536737427,
+    "score": 1.4965650100113856,
+    "pYearUp": 0.887,
+    "bench": {
+     "cagr": 0.08934672032794233,
+     "maxDrawdown": -0.28081910461773163,
+     "sharpe": 0.5325496238717892
+    }
+   },
+   "test": {
+    "cagr": 0.16006362517652684,
+    "maxDrawdown": -0.23152261028393895,
+    "sharpe": 0.6936818139998351,
+    "trades": 27,
+    "winRate": 0.4074074074074074,
+    "avgTrade": 0.053415716510090486,
+    "exposure": 0.9576324994189925,
+    "score": 0.6913520238054722,
+    "pYearUp": 0.752,
+    "bench": {
+     "cagr": 0.17031034976557247,
+     "maxDrawdown": -0.22743432084963677,
+     "sharpe": 0.9817333799379574
+    }
+   },
+   "testHighCost": {
+    "cagr": 0.1521900856464118,
+    "maxDrawdown": -0.23367190194546472,
+    "sharpe": 0.6676949324265882,
+    "trades": 27,
+    "winRate": 0.4074074074074074,
+    "avgTrade": 0.051838088899942354,
+    "exposure": 0.9576636195263384,
+    "score": 0.6512981851019919,
+    "pYearUp": 0.741,
+    "bench": {
+     "cagr": 0.16990649558709103,
+     "maxDrawdown": -0.22743432084963677,
+     "sharpe": 0.9817333799379591
+    }
+   },
+   "neighbours": {
+    "n": 5,
+    "beatHold": 1,
+    "medianScore": 0.6791166507672413,
+    "worstScore": 0.2318733147884183,
+    "medianCagr": 0.15723085967291794,
+    "worstCagr": 0.05450573399923786
+   }
+  },
+  {
+   "universe": "stocks",
+   "universeLabel": "Halal stocks and funds",
+   "symbols": [
+    "SPUS",
+    "HLAL",
+    "UMMA",
+    "SPTE",
+    "AAPL",
+    "MSFT",
+    "NVDA",
+    "ADBE",
+    "ASML",
+    "TSM"
+   ],
+   "benchmark": "SPUS",
+   "costBps": 5,
+   "family": "voldip",
+   "name": "Calm-Sized Dips",
+   "kind": "permutation",
+   "start": {
+    "targetVol": 20,
+    "entryRsi": 15,
+    "trendLen": 200,
+    "exitLen": 5,
+    "maxHold": 10,
+    "stopPct": 10,
+    "maxPositions": 2
+   },
+   "tuned": {
+    "targetVol": 40,
+    "entryRsi": 15,
+    "trendLen": 250,
+    "exitLen": 5,
+    "maxHold": 7,
+    "stopPct": 15,
+    "maxPositions": 2
+   },
+   "evaluations": 287,
+   "climbPath": [
+    {
+     "params": {
+      "targetVol": 20,
+      "entryRsi": 15,
+      "trendLen": 200,
+      "exitLen": 5,
+      "maxHold": 10,
+      "stopPct": 10,
+      "maxPositions": 2
+     },
+     "score": 0.842756858042768
+    },
+    {
+     "params": {
+      "targetVol": 30,
+      "entryRsi": 15,
+      "trendLen": 200,
+      "exitLen": 5,
+      "maxHold": 10,
+      "stopPct": 10,
+      "maxPositions": 2
+     },
+     "score": 1.078485574478003
+    },
+    {
+     "params": {
+      "targetVol": 30,
+      "entryRsi": 15,
+      "trendLen": 250,
+      "exitLen": 5,
+      "maxHold": 10,
+      "stopPct": 10,
+      "maxPositions": 2
+     },
+     "score": 1.3047844237530115
+    },
+    {
+     "params": {
+      "targetVol": 30,
+      "entryRsi": 15,
+      "trendLen": 250,
+      "exitLen": 5,
+      "maxHold": 10,
+      "stopPct": 15,
+      "maxPositions": 2
+     },
+     "score": 1.4623927013784677
+    },
+    {
+     "params": {
+      "targetVol": 40,
+      "entryRsi": 15,
+      "trendLen": 250,
+      "exitLen": 5,
+      "maxHold": 10,
+      "stopPct": 15,
+      "maxPositions": 2
+     },
+     "score": 1.689189886618745
+    },
+    {
+     "params": {
+      "targetVol": 40,
+      "entryRsi": 15,
+      "trendLen": 250,
+      "exitLen": 5,
+      "maxHold": 7,
+      "stopPct": 15,
+      "maxPositions": 2
+     },
+     "score": 1.8206287852609804
+    }
+   ],
+   "defaultTrain": {
+    "cagr": 0.0842756858042768,
+    "maxDrawdown": -0.06951156268430414,
+    "sharpe": 0.8925454108732347,
+    "trades": 125,
+    "winRate": 0.656,
+    "avgTrade": 0.005592606999714088,
+    "exposure": 0.24075976065699015,
+    "score": 0.842756858042768,
+    "pYearUp": 0.829,
+    "bench": {
+     "cagr": 0.08934672032794233,
+     "maxDrawdown": -0.28081910461773163,
+     "sharpe": 0.5325496238717892
+    }
+   },
+   "defaultTest": {
+    "cagr": 0.14313704038153796,
+    "maxDrawdown": -0.07166823644294995,
+    "sharpe": 1.2122726381729916,
+    "trades": 125,
+    "winRate": 0.672,
+    "avgTrade": 0.0069273549496381235,
+    "exposure": 0.3074487249945831,
+    "score": 1.4313704038153796,
+    "pYearUp": 0.9225,
+    "bench": {
+     "cagr": 0.17031034976557247,
+     "maxDrawdown": -0.22743432084963677,
+     "sharpe": 0.9817333799379574
+    }
+   },
+   "train": {
+    "cagr": 0.18206287852609804,
+    "maxDrawdown": -0.08270305052730764,
+    "sharpe": 1.3289771395784122,
+    "trades": 125,
+    "winRate": 0.664,
+    "avgTrade": 0.007678943854894749,
+    "exposure": 0.3086868006437356,
+    "score": 1.8206287852609804,
+    "pYearUp": 0.948,
+    "bench": {
+     "cagr": 0.08934672032794233,
+     "maxDrawdown": -0.28081910461773163,
+     "sharpe": 0.5325496238717892
+    }
+   },
+   "test": {
+    "cagr": 0.22625855652120097,
+    "maxDrawdown": -0.09456003946266867,
+    "sharpe": 1.3615936324743372,
+    "trades": 123,
+    "winRate": 0.6666666666666666,
+    "avgTrade": 0.009222882992951927,
+    "exposure": 0.390381023652358,
+    "score": 2.2625855652120097,
+    "pYearUp": 0.9535,
+    "bench": {
+     "cagr": 0.17031034976557247,
+     "maxDrawdown": -0.22743432084963677,
+     "sharpe": 0.9817333799379574
+    }
+   },
+   "testHighCost": {
+    "cagr": 0.17688659447926236,
+    "maxDrawdown": -0.09814527678960616,
+    "sharpe": 1.1019853556015142,
+    "trades": 123,
+    "winRate": 0.6260162601626016,
+    "avgTrade": 0.007710227129261628,
+    "exposure": 0.3903522022035911,
+    "score": 1.7688659447926236,
+    "pYearUp": 0.9185,
+    "bench": {
+     "cagr": 0.16990649558709103,
+     "maxDrawdown": -0.22743432084963677,
+     "sharpe": 0.9817333799379591
+    }
+   },
+   "neighbours": {
+    "n": 13,
+    "beatHold": 13,
+    "medianScore": 2.006429292755303,
+    "worstScore": 1.3535743135196006,
+    "medianCagr": 0.209768601610548,
+    "worstCagr": 0.15841972494719925
    }
   }
  ]

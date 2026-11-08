@@ -247,11 +247,15 @@
   <!-- Hill-climb tuning results -->
   <section id="tune" class="tune" hidden>
     <div class="tune__intro">
-      <p class="mono label">Hill climbing · tuned on the past, tested on the future</p>
+      <p class="mono label">Hill climbing · 14 strategies · tuned on the past, tested on the future</p>
       <p class="lede">Each strategy's settings were tuned by hill climbing: change one setting a step at a time, keep any change that scores better, and repeat until nothing improves (with three random restarts). The score is yearly return divided by the worst drop, with drops under 10% counted as 10%, and at least 20 trades.</p>
-      <p class="lede">Tuning used only <b id="tune-train"></b>. The chosen settings were then run on <b id="tune-test"></b>, which the search never saw. <em>Only the test column tells you what to expect.</em> Settings that shine in tuning and fade in testing were overfit.</p>
+      <p class="lede">Tuning used only <b id="tune-train"></b>. The chosen settings were then run on <b id="tune-test"></b>, which the search never saw. <em>Only the test column tells you what to expect.</em> Settings that shine in tuning and fade in testing were overfit. As a fragility check, each tuned setting was also nudged one step either way: if most of those nearby settings did worse than simply holding, the result was probably a lucky spike.</p>
     </div>
     <div id="tune-findings" class="verdict-box"></div>
+    <section class="card">
+      <header class="card__head"><h2 class="mono">Leaderboard: all 14 strategies × 3 markets</h2><span class="mono muted">ranked by the weaker of the tuning and test years · click a row to chart it</span></header>
+      <div class="table-wrap"><table class="table" id="tune-board"></table></div>
+    </section>
     <div id="tune-tables"></div>
     <section class="card" id="tune-detail" hidden>
       <header class="card__head">

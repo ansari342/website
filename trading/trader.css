@@ -268,6 +268,8 @@ input:focus-visible, select:focus-visible, button:focus-visible, .chip:focus-wit
 .tag--good { color: var(--good); }
 .tag--warn { color: var(--warn); }
 .tag--bad { color: var(--accent); }
+#tune-findings p + p { margin-top: 8px; }
+#tune-board td small { display: block; color: var(--muted); font-size: 11px; }
 .tune__params { margin-top: 12px; display: flex; flex-wrap: wrap; gap: 6px; align-items: center; }
 .tune__params .chip { cursor: default; }
 

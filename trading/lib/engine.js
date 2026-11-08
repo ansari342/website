@@ -145,8 +145,12 @@ export function runBacktest({
       held: (s) => positions.has(s),
       firstOfMonth: !prevDate || prevDate.slice(0, 7) !== date.slice(0, 7),
       lastOfMonth: nextDate !== null && nextDate.slice(0, 7) !== date.slice(0, 7),
+      lastOfWeek: nextDate !== null && mondayOf(nextDate) !== mondayOf(date),
       isLastDay: nextDate === null,
       daysHeld: (s) => (positions.has(s) ? t - positions.get(s).entryT : 0),
+      // Account value and one holding's value at the latest known closes.
+      equity: () => markValue((s) => lastClose[s] ?? 0),
+      holdingValue: (s) => (positions.has(s) ? positions.get(s).qty * (lastClose[s] ?? 0) : 0),
     };
 
     // 1. Orders queued at yesterday's close fill at today's open.
@@ -240,6 +244,12 @@ export function buyAndHold(s, cal, capital, slip = 0) {
     out.push(bought ? cash + qty * last : capital);
   }
   return out;
+}
+
+function mondayOf(d) {
+  const t = Date.parse(d + "T00:00:00Z");
+  const wd = new Date(t).getUTCDay() || 7;
+  return t - (wd - 1) * 864e5;
 }
 
 export function defaultsOf(strategy) {

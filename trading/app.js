@@ -1,5 +1,8 @@
 import { runBacktest, defaultsOf } from "./lib/engine.js";
-import { STRATEGIES } from "./lib/strategies.js";
+import { STRATEGIES as BASE_STRATEGIES } from "./lib/strategies.js";
+import { MORE_STRATEGIES } from "./lib/strategies2.js";
+
+const STRATEGIES = [...BASE_STRATEGIES, ...MORE_STRATEGIES];
 import { summarize, summarizeSeries, bootstrapYears, splitHalves, drawdowns } from "./lib/stats.js";
 import { loadSeries, UNIVERSE } from "./lib/data.js";
 import { LineChart, Histogram } from "./lib/chart.js";
@@ -11,12 +14,32 @@ const DEFAULT_UNIVERSE = {
   guard: ["SPUS"],
   rotation: ["SPUS", "HLAL", "UMMA", "SPWO", "SPTE", "SPRE"],
   gap: ["SPUS", "HLAL"],
+  breakout: ["SPUS", "HLAL", "UMMA", "SPTE", "SPWO", "SPRE"],
+  golden: ["SPUS", "HLAL", "UMMA", "SPTE", "SPWO", "SPRE"],
+  voltarget: ["SPUS"],
+  lowvol: ["SPUS", "HLAL", "UMMA", "SPTE", "SPWO", "SPRE"],
+  reversal: ["SPUS", "HLAL", "UMMA", "SPTE", "SPWO", "SPRE"],
+  bands: ["SPUS", "HLAL", "UMMA", "SPTE", "SPWO", "SPRE"],
+  momdip: ["SPUS", "HLAL", "UMMA", "SPTE", "SPWO", "SPRE"],
+  coredip: ["SPUS", "HLAL", "UMMA", "SPTE", "SPWO", "SPRE"],
+  dualmom: ["SPUS", "HLAL", "UMMA", "SPTE", "SPWO", "SPRE"],
+  voldip: ["SPUS", "HLAL", "UMMA", "SPTE", "SPWO", "SPRE"],
 };
 const UNIVERSE_HINT = {
   dip: "Each selected fund is watched for sharp dips. More funds means more chances to trade.",
   guard: "The first fund you select (marked 1) is the core holding. SPSK sukuk is added automatically as the defensive asset.",
   rotation: "The funds that compete for a spot each month. SPSK sukuk is added automatically as the defensive asset.",
   gap: "Each selected fund is watched for gap-down opens.",
+  breakout: "Each selected fund is watched for breakouts to new highs.",
+  golden: "Each selected fund is held while its fast average is above its slow average.",
+  voltarget: "The first fund you select (marked 1) is the one held and resized.",
+  lowvol: "The funds that compete each month; the calmest ones in uptrends are held.",
+  reversal: "The funds that compete each week; last week's biggest losers in uptrends are held.",
+  bands: "Each selected fund is watched for drops below its lower band.",
+  momdip: "Dips are only bought in the strongest of these by momentum.",
+  coredip: "The first fund you select (marked 1) is the core holding; dips are bought in the others.",
+  dualmom: "The funds that compete each month. SPSK sukuk is added automatically as the defensive asset when switched on.",
+  voldip: "Each selected fund is watched for sharp dips; calmer funds get bigger positions.",
 };
 
 /* ---------- Formatting ---------- */
@@ -53,20 +76,21 @@ function renderStrategies() {
   $("#strategies").innerHTML = STRATEGIES.map(
     (s) => `<label class="strategy ${s.id === state.strategy ? "is-on" : ""}">
       <input type="radio" name="strategy" value="${s.id}" ${s.id === state.strategy ? "checked" : ""} />
-      <span class="strategy__name">${s.name}${s.experimental ? '<span class="badge badge--warn">Failed test</span>' : ""}</span>
+      <span class="strategy__name">${s.name}${s.experimental ? '<span class="badge badge--warn">Failed test</span>' : s.kind === "new" ? '<span class="badge">New</span>' : s.kind === "permutation" ? '<span class="badge">Variation</span>' : ""}</span>
       <span class="strategy__tag">${s.tagline}</span>
     </label>`
   ).join("");
 }
 
 function renderUniverse() {
+  if (!state.universe[state.strategy]) state.universe[state.strategy] = [...(DEFAULT_UNIVERSE[state.strategy] || [])];
   const sel = state.universe[state.strategy] || [];
   $("#universe").innerHTML = UNIVERSE.filter((u) => !(u.sym === "SPSK" && state.strategy !== "dip" && state.strategy !== "gap"))
     .map((u) => {
       const at = sel.indexOf(u.sym);
       return `<label class="chip ${at >= 0 ? "is-on" : ""}" title="${u.name}: ${u.note}">
         <input type="checkbox" value="${u.sym}" ${at >= 0 ? "checked" : ""} />
-        ${state.strategy === "guard" ? `<span class="chip__order">${at + 1}</span>` : ""}
+        ${["guard", "voltarget", "coredip"].includes(state.strategy) ? `<span class="chip__order">${at + 1}</span>` : ""}
         ${u.sym}<span class="chip__kind">${u.kind}</span>
       </label>`;
     })
