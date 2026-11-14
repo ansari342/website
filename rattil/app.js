@@ -212,7 +212,7 @@ async function designScenes(r) {
   const call = async (body) => {
     const res = await fetch("/api/rattil-scenes", { method: "POST", headers: { "content-type": "application/json" }, body: JSON.stringify({ surah: r.surah, from: r.from, to: r.to, ...body }) });
     const data = await res.json().catch(() => ({}));
-    if (!res.ok) throw new Error(data.error || `HTTP ${res.status}`);
+    if (!res.ok) throw Object.assign(new Error(data.error || `HTTP ${res.status}`), { status: res.status, data });
     return data;
   };
   try {
@@ -221,22 +221,28 @@ async function designScenes(r) {
     const chunks = [];
     for (let i = 0; i < ns.length; i += 3) chunks.push(ns.slice(i, i + 3));
     const found = {};
-    let done = 0;
+    let done = 0, limitHit = false;
     // At most 4 requests at a time.
     const queue = [...chunks];
     await Promise.all(Array.from({ length: Math.min(4, chunks.length) }, async () => {
       while (queue.length) {
         const part = queue.shift();
-        try { for (const s of (await call({ plan, ayahs: part })).scenes || []) found[s.ayah] = s; } catch {}
+        try { for (const s of (await call({ plan, ayahs: part })).scenes || []) found[s.ayah] = s; } catch (err) { if (err.status === 429) limitHit = true; }
         done += part.length;
         note(`Designing an animation for each ayah… ${done} of ${ns.length}`);
       }
     }));
     const result = { theme: plan.theme, scenes: found };
-    if (Object.keys(found).length) { try { localStorage.setItem(key, JSON.stringify(result)); } catch {} }
+    // Save only a complete set, so missing ayahs are retried next time.
+    if (Object.keys(found).length === ns.length) { try { localStorage.setItem(key, JSON.stringify(result)); } catch {} }
     applyScenes(key, result, note);
+    if (limitHit) note(`${$("scene-note").textContent} Today's AI budget ran out partway; the rest use built-in animations.`);
   } catch (err) {
-    note(err.message === "not configured" ? "Using built-in animations (AI scenes aren't set up on this site yet)." : `Using built-in animations (couldn't design scenes: ${err.message}).`);
+    const why = err.status === 401 ? "your sign-in has expired; reload to sign in again"
+      : err.status === 429 ? `today's $${err.data?.limit ?? 1} AI budget is used up; it resets at midnight Pacific`
+      : err.message === "not configured" ? "AI scenes aren't set up on this site yet"
+      : `couldn't design scenes: ${err.message}`;
+    note(`Using built-in animations (${why}).`);
   }
 }
 
