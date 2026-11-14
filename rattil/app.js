@@ -284,18 +284,22 @@ async function designScenes(r) {
     return data;
   };
   try {
-    const { plan } = await call({});
+    let plan;
+    try { plan = (await call({})).plan; } catch (err) { if (err.status === 429) throw err; plan = (await call({})).plan; } // one retry
     const ns = Array.from({ length: r.to - r.from + 1 }, (_, i) => r.from + i);
     const chunks = [];
-    for (let i = 0; i < ns.length; i += 3) chunks.push(ns.slice(i, i + 3));
+    for (let i = 0; i < ns.length; i += 2) chunks.push(ns.slice(i, i + 2));
     const found = {};
-    let done = 0, limitHit = false;
-    // At most 4 requests at a time.
+    let done = 0, limitHit = false, firstError = "";
+    // Two ayahs per request, at most 5 requests at a time; a failed request is retried once.
     const queue = [...chunks];
-    await Promise.all(Array.from({ length: Math.min(4, chunks.length) }, async () => {
+    await Promise.all(Array.from({ length: Math.min(5, chunks.length) }, async () => {
       while (queue.length) {
         const part = queue.shift();
-        try { for (const s of (await call({ plan, ayahs: part })).scenes || []) found[s.ayah] = s; } catch (err) { if (err.status === 429) limitHit = true; }
+        for (let attempt = 0; attempt < 2; attempt++) {
+          try { for (const s of (await call({ plan, ayahs: part })).scenes || []) found[s.ayah] = s; break; }
+          catch (err) { if (err.status === 429) { limitHit = true; break; } firstError ||= err.message; }
+        }
         done += part.length;
         note(`Designing an animation for each ayah… ${done} of ${ns.length}`);
       }
@@ -305,12 +309,22 @@ async function designScenes(r) {
     if (Object.keys(found).length === ns.length) { try { localStorage.setItem(key, JSON.stringify(result)); } catch {} }
     applyScenes(key, result, note);
     if (limitHit) note(`${$("scene-note").textContent} Today's AI budget ran out partway; the rest use built-in animations.`);
+    else if (Object.keys(found).length < ns.length && firstError) retryNote(`${$("scene-note").textContent} (${firstError})`, r);
   } catch (err) {
     const why = err.status === 429 ? `today's $${err.data?.limit ?? 1} AI budget is used up; it resets at midnight Pacific`
       : err.message === "not configured" ? "AI scenes aren't set up on this site yet"
       : `couldn't design scenes: ${err.message}`;
-    note(`Using built-in animations (${why}).`);
+    if (state.sceneKey === key) retryNote(`Using built-in animations (${why}).`, r);
   }
+}
+
+// A note with a "Try again" link that asks Claude again for this passage.
+function retryNote(text, r) {
+  const el = $("scene-note");
+  el.textContent = text + " ";
+  const a = Object.assign(document.createElement("a"), { href: "#", textContent: "Try again" });
+  a.onclick = (e) => { e.preventDefault(); state.sceneKey = ""; state.scenes = null; designScenes(r); };
+  el.append(a);
 }
 
 function applyScenes(key, result, note) {

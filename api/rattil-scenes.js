@@ -31,6 +31,7 @@ function ask({ system, user }, maxTokens) {
     });
     if (!res.ok) throw new Error(`Claude API ${res.status}: ${(await res.text()).slice(0, 300)}`);
     const data = await res.json();
+    if (data.stop_reason === "max_tokens") throw new Error("reply was cut off (too long)");
     return { result: parseJson(data.content.filter((c) => c.type === "text").map((c) => c.text).join("")), usage: data.usage };
   });
 }
@@ -64,11 +65,12 @@ export async function POST(request) {
     const plan = cleanPlan(body.plan, from, to);
     const ns = [...new Set((body.ayahs || []).map(Number))].filter((n) => n >= from && n <= to).slice(0, 4);
     if (!ns.length) return json({ error: "no ayahs" }, 400);
-    const out = await ask(scenesPrompt(passage, plan, ns), 8000);
+    const out = await ask(scenesPrompt(passage, plan, ns), 3500 + 2500 * ns.length);
     const scenes = (out.scenes || []).filter((s) => ns.includes(Number(s?.ayah)));
     return json({ scenes });
   } catch (err) {
     if (err instanceof OverLimit) return json({ error: "daily limit", limit: dailyLimitUsd() }, 429);
+    console.error("rattil-scenes failed:", body.kind || (body.plan ? `scenes ${body.ayahs}` : "plan"), `${surah}:${from}-${to}`, err);
     return json({ error: String(err.message || err).slice(0, 300) }, 502);
   }
 }
