@@ -264,7 +264,7 @@ async function buildVideo() {
   const r = state.result, su = state.quran.surahs[r.surah - 1];
   const overlay = state.style === "overlay" && state.hasVideo;
   if (overlay && state.video.readyState < 2) await new Promise((ok) => { state.video.addEventListener("loadeddata", ok, { once: true }); setTimeout(ok, 3000); });
-  state.renderer = createRenderer({ surah: su, units: r.units, duration: state.buffer.duration, style: overlay ? "overlay" : "animation", video: state.video, scenes: state.scenes });
+  state.renderer = createRenderer({ surah: su, units: r.units, duration: state.buffer.duration, style: overlay ? "overlay" : state.style === "sky" ? "sky" : "animation", video: state.video, scenes: state.scenes });
   updateStyles();
   $("step-video").hidden = false;
   $("download").hidden = $("share").hidden = true;
@@ -321,7 +321,7 @@ $("make").addEventListener("click", async () => {
     const overlay = state.style === "overlay" && state.hasVideo;
     const blob = await encode({ renderer: state.renderer, buffer: state.buffer, aac: state.aac, video: overlay ? state.video : null, duration: state.buffer.duration, audioContext }, progress);
     const r = state.result, ext = blob.type.includes("mp4") ? "mp4" : "webm";
-    const name = `rattil-${state.quran.surahs[r.surah - 1].name.toLowerCase()}-${r.from}-${r.to}${state.style === "overlay" ? "-overlay" : ""}.${ext}`;
+    const name = `rattil-${state.quran.surahs[r.surah - 1].name.toLowerCase()}-${r.from}-${r.to}${state.style === "overlay" ? "-overlay" : state.style === "sky" ? "-sky" : ""}.${ext}`;
     const a = $("download");
     if (a.href) URL.revokeObjectURL(a.href);
     a.href = URL.createObjectURL(blob); a.download = name; a.hidden = false;
