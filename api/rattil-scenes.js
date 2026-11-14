@@ -3,6 +3,7 @@
 //
 //   { surah, from, to }                    -> { plan }    passage theme, recurring thread, one idea per ayah
 //   { surah, from, to, plan, ayahs: [n] }  -> { scenes }  full scenes for those ayahs (up to 4)
+//   { surah, from, to, kind: "sky", avoid } -> { world }   one sky/landscape moment per ayah for the Sky style
 //
 // The ayah text is read from the bundled Quran data, never taken from the
 // request, so this can't be used as a general-purpose AI endpoint. Needs
@@ -11,7 +12,8 @@
 // spending is capped per day (lib/spend.js).
 
 import { readFileSync } from "node:fs";
-import { MODEL, planPrompt, scenesPrompt, parseJson, cleanPlan } from "../lib/rattil-prompt.js";
+import { MODEL, planPrompt, scenesPrompt, worldPrompt, parseJson, cleanPlan } from "../lib/rattil-prompt.js";
+import { MOMENT_FIELDS, presetExample } from "../rattil/lib/world.js";
 import { requestEmail } from "../lib/google-auth.js";
 import { withinDailyLimit, estimateUsd, redisFromEnv, OverLimit, spentTodayUsd, dailyLimitUsd } from "../lib/spend.js";
 
@@ -52,6 +54,12 @@ export async function POST(request) {
   for (let n = from; n <= to; n++) passage.ayahs.push({ n, ar: su.ar[n - 1], en: su.en[n - 1] });
 
   try {
+    if (body.kind === "sky") {
+      const ex = presetExample();
+      const world = await ask(worldPrompt(passage, MOMENT_FIELDS, ex, typeof body.avoid === "string" ? body.avoid : ""), Math.min(16000, 1500 + 320 * (to - from + 1)));
+      if (!world || !Array.isArray(world.frames)) throw new Error("no frames in reply");
+      return json({ world: { theme: String(world.theme || "").slice(0, 500), frames: world.frames.slice(0, 60) } });
+    }
     if (!body.plan) {
       const plan = cleanPlan(await ask(planPrompt(passage), 4000), from, to);
       return json({ plan });

@@ -7,6 +7,7 @@ import { createRenderer, W, H } from "./lib/render.js";
 import { encode } from "./lib/encode.js";
 import { readAac, extractAac } from "./lib/extract.js";
 import { cleanScene } from "./lib/scenes.js";
+import { cleanWorld } from "./lib/world.js";
 import { arabicDigits } from "./lib/arabic.js";
 
 const $ = (id) => document.getElementById(id);
@@ -21,7 +22,7 @@ window.addEventListener("error", (e) => showError(e.message || "unknown error"))
 window.addEventListener("unhandledrejection", (e) => showError(e.reason?.message || String(e.reason)));
 const fmt = (t) => `${Math.floor(t / 60)}:${String(Math.floor(t % 60)).padStart(2, "0")}`;
 
-const state = { quran: null, index: null, buffer: null, groups: [], segments: [], result: null, renderer: null, file: null, video: null, hasVideo: false, style: "animation", aac: null, scenes: null, sceneKey: "" };
+const state = { quran: null, index: null, buffer: null, groups: [], segments: [], result: null, renderer: null, file: null, video: null, hasVideo: false, style: "animation", aac: null, scenes: null, sceneKey: "", sky: { key: "", designs: [], pick: -1 } };
 
 const quranReady = fetch("data/quran.json").then((r) => r.json()).then((q) => { state.quran = q; fillSurahs(); return q; });
 const fontsReady = Promise.all([document.fonts.load('96px "Rattil Arabic"', "بِسۡمِ"), document.fonts.load('38px "DM Sans"', "In")]);
@@ -89,6 +90,7 @@ function updateStyles() {
   overlay.disabled = !state.hasVideo;
   $("overlay-note").textContent = state.hasVideo ? "Your footage behind the text" : "Needs a video file, not audio";
   if (!state.hasVideo && state.style === "overlay") setStyle("animation");
+  $("sky-opts").hidden = state.style !== "sky";
 }
 function setStyle(style) {
   state.style = style;
@@ -193,8 +195,65 @@ function showReview(r, failed = false, manual = false) {
   const sure = manual ? "" : r.coverage > 0.6 ? " Recognised with good confidence." : " Some words were unclear, so check the range.";
   $("verdict").innerHTML = `${manual ? "Using" : "This sounds like"} <strong>Surah ${su.name}, ${range}</strong>.${sure} If it's wrong, change it below.`;
   $("screens").innerHTML = r.units.map((u) => `<li><span class="t mono">${fmt(u.start)}</span><span class="ar">${u.ayahs.map((a) => su.ar[a] + " \u06DD" + arabicDigits(a + 1)).join(" ")}</span><span class="en">${u.ayahs.map((a) => `${a + 1}. ${su.en[a]}`).join("<br>")}</span></li>`).join("");
+  loadSky(r);
   buildVideo();
   designScenes(r);
+}
+
+// ---------- Sky style: designs kept per passage in this browser ----------
+// The default is the built-in night -> dawn -> blue hour journey; each
+// "Design a sky" asks Claude for a new set of moments for these ayahs.
+function loadSky(r) {
+  const key = `rattil-sky:v1:${r.surah}:${r.from}-${r.to}`;
+  if (state.sky.key === key) return;
+  let designs = [];
+  try { designs = JSON.parse(localStorage.getItem(key) || "[]"); } catch {}
+  state.sky = { key, designs: Array.isArray(designs) ? designs : [], pick: -1 };
+  fillSkyPick();
+}
+function fillSkyPick() {
+  const short = (s) => (s.length > 70 ? s.slice(0, 68) + "…" : s);
+  $("sky-pick").innerHTML = `<option value="-1">Default · night to dawn to mist</option>` +
+    state.sky.designs.map((d, i) => `<option value="${i}">Design ${i + 1} · ${short(d.theme || "for these ayahs").replace(/</g, "&lt;")}</option>`).join("");
+  $("sky-pick").value = String(state.sky.pick);
+  $("sky-design").textContent = state.sky.designs.length ? "Design another" : "Design a sky for these ayahs";
+}
+$("sky-pick").addEventListener("change", (e) => { state.sky.pick = Number(e.target.value); buildVideo(); });
+$("sky-design").addEventListener("click", async () => {
+  const r = state.result, key = state.sky.key, btn = $("sky-design");
+  btn.disabled = true; $("scene-note").textContent = "Designing a sky for these ayahs…";
+  try {
+    const last = state.sky.designs[state.sky.designs.length - 1];
+    const res = await fetch("/api/rattil-scenes", { method: "POST", headers: { "content-type": "application/json" }, body: JSON.stringify({ surah: r.surah, from: r.from, to: r.to, kind: "sky", avoid: last?.theme || "" }) });
+    const data = await res.json().catch(() => ({}));
+    if (!res.ok) throw Object.assign(new Error(data.error || `HTTP ${res.status}`), { status: res.status, data });
+    if (!cleanWorld(data.world, r.from, r.to)) throw new Error("the design came back empty");
+    if (state.sky.key !== key) return;
+    state.sky.designs.push(data.world);
+    try { localStorage.setItem(key, JSON.stringify(state.sky.designs.slice(-8))); } catch {}
+    state.sky.pick = state.sky.designs.length - 1;
+    fillSkyPick();
+    $("scene-note").textContent = data.world.theme || "";
+    buildVideo();
+  } catch (err) {
+    $("scene-note").textContent = err.status === 401 ? "Your sign-in has expired; reload to sign in again."
+      : err.status === 429 ? `Today's $${err.data?.limit ?? 1} AI budget is used up; it resets at midnight Pacific.`
+      : err.message === "not configured" ? "AI design isn't set up on this site yet."
+      : `Couldn't design a sky: ${err.message}`;
+  } finally { btn.disabled = false; }
+});
+
+// One moment per screen from the chosen design (its first ayah's moment;
+// an ayah the design missed borrows the nearest one), or null for the default.
+function skyMoments(r) {
+  const d = state.sky.designs[state.sky.pick];
+  const byAyah = d && cleanWorld(d, r.from, r.to);
+  if (!byAyah) return null;
+  const have = Object.keys(byAyah).map(Number);
+  return r.units.map((u) => {
+    const n = u.ayahs[0] + 1;
+    return byAyah[n] || byAyah[have.reduce((b, k) => (Math.abs(k - n) < Math.abs(b - n) ? k : b), have[0])];
+  });
 }
 
 // ---------- per-ayah animations designed by Claude ----------
@@ -264,7 +323,7 @@ async function buildVideo() {
   const r = state.result, su = state.quran.surahs[r.surah - 1];
   const overlay = state.style === "overlay" && state.hasVideo;
   if (overlay && state.video.readyState < 2) await new Promise((ok) => { state.video.addEventListener("loadeddata", ok, { once: true }); setTimeout(ok, 3000); });
-  state.renderer = createRenderer({ surah: su, units: r.units, duration: state.buffer.duration, style: overlay ? "overlay" : state.style === "sky" ? "sky" : "animation", video: state.video, scenes: state.scenes });
+  state.renderer = createRenderer({ surah: su, units: r.units, duration: state.buffer.duration, style: overlay ? "overlay" : state.style === "sky" ? "sky" : "animation", video: state.video, scenes: state.scenes, world: state.style === "sky" ? skyMoments(r) : null });
   updateStyles();
   $("step-video").hidden = false;
   $("download").hidden = $("share").hidden = true;
@@ -321,7 +380,7 @@ $("make").addEventListener("click", async () => {
     const overlay = state.style === "overlay" && state.hasVideo;
     const blob = await encode({ renderer: state.renderer, buffer: state.buffer, aac: state.aac, video: overlay ? state.video : null, duration: state.buffer.duration, audioContext }, progress);
     const r = state.result, ext = blob.type.includes("mp4") ? "mp4" : "webm";
-    const name = `rattil-${state.quran.surahs[r.surah - 1].name.toLowerCase()}-${r.from}-${r.to}${state.style === "overlay" ? "-overlay" : state.style === "sky" ? "-sky" : ""}.${ext}`;
+    const name = `rattil-${state.quran.surahs[r.surah - 1].name.toLowerCase()}-${r.from}-${r.to}${state.style === "overlay" ? "-overlay" : state.style === "sky" ? `-sky${state.sky.pick >= 0 ? state.sky.pick + 1 : ""}` : ""}.${ext}`;
     const a = $("download");
     if (a.href) URL.revokeObjectURL(a.href);
     a.href = URL.createObjectURL(blob); a.download = name; a.hidden = false;

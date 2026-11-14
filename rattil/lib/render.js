@@ -324,10 +324,11 @@ export function drawCover(ctx, video) {
 // In the overlay style the person's footage is the background, darkened so
 // the text stays readable, and the line animations are left out.
 // In the sky style one continuous drawn world (stars, then mountains through
-// dawn to blue hour; see world.js) runs behind the text instead.
+// dawn to blue hour, or moments designed for the verses: plan.world, one per
+// unit; see world.js) runs behind the text instead.
 export function createRenderer(plan) {
   const overlay = plan.style === "overlay" && plan.video;
-  const sky = plan.style === "sky" ? createWorld(plan.units, plan.duration, LEAD) : null;
+  const sky = plan.style === "sky" ? createWorld(plan.units, plan.duration, LEAD, plan.world) : null;
   const backdrop = overlay || sky;
   const blocks = plan.units.map((u) => textBlock(plan.surah, u.ayahs));
   const scenes = chooseScenes(plan.units.map((u) => u.ayahs.map((a) => plan.surah.en[a]).join(" "))).map((n) => SCENES[n]);
