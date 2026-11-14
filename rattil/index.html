@@ -1,0 +1,84 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Rattil · Quran recitation videos</title>
+  <meta name="description" content="Turn a Quran recitation clip into a vertical video with the Arabic timed to the reciter and an English translation. Runs in your browser." />
+  <meta name="theme-color" content="#0e0c0b" />
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><rect width='100' height='100' fill='%23ff4d2e'/><text x='50' y='72' font-family='Arial Black,Arial' font-weight='900' font-size='58' text-anchor='middle' fill='%230e0c0b'>A</text></svg>" />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Anton&family=Newsreader:ital,opsz,wght@0,6..72,400;1,6..72,400&family=JetBrains+Mono:wght@400&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="rattil.css" />
+</head>
+<body>
+  <header class="head">
+    <a href="/" class="head__logo" aria-label="Back to the main site">AA</a>
+    <span class="head__console mono">Rattil</span>
+    <a href="/" class="head__back mono">← Main site</a>
+  </header>
+
+  <main class="page">
+    <p class="mono label">(Side project)</p>
+    <h1>Rat<span>til</span></h1>
+    <p class="lede">Upload a Quran recitation and get a vertical video for Shorts, Reels or TikTok: each ayah's Arabic appears as it is recited, with its English translation and a simple line animation. You don't need to know which ayahs it is.</p>
+
+    <!-- 1. Upload -->
+    <section class="step" id="step-upload">
+      <h2 class="mono">01 · Recording</h2>
+      <label class="drop" id="drop">
+        <input type="file" id="file" accept="video/*,audio/*" />
+        <span class="drop__main">Choose a video or audio file</span>
+        <span class="mono muted">or drop it here · stays on your device</span>
+      </label>
+      <p class="mono muted" id="file-info"></p>
+    </section>
+
+    <!-- 2. Recognition -->
+    <section class="step" id="step-listen" hidden>
+      <h2 class="mono">02 · Finding the ayahs</h2>
+      <ol class="progress" id="progress"></ol>
+      <div class="bar"><div id="bar"></div></div>
+      <p class="mono muted" id="listen-note"></p>
+    </section>
+
+    <!-- 3. Review -->
+    <section class="step" id="step-review" hidden>
+      <h2 class="mono">03 · Check the ayahs</h2>
+      <p id="verdict"></p>
+      <div class="pick">
+        <label class="mono">Surah <select id="surah"></select></label>
+        <label class="mono">From <select id="from"></select></label>
+        <label class="mono">To <select id="to"></select></label>
+        <button class="btn btn--ghost" id="apply">Use these ayahs</button>
+      </div>
+      <ol class="screens" id="screens"></ol>
+    </section>
+
+    <!-- 4. Preview + export -->
+    <section class="step" id="step-video" hidden>
+      <h2 class="mono">04 · Video</h2>
+      <div class="preview">
+        <canvas id="preview" width="1080" height="1920"></canvas>
+        <button class="play" id="play" aria-label="Play preview">▶</button>
+      </div>
+      <div class="actions">
+        <button class="btn" id="make">Make video</button>
+        <a class="btn btn--ghost" id="download" hidden>Download</a>
+        <button class="btn btn--ghost" id="share" hidden>Share</button>
+      </div>
+      <div class="bar" id="make-bar" hidden><div></div></div>
+      <p class="mono muted" id="make-note"></p>
+    </section>
+
+    <footer class="notes mono muted">
+      <p>Arabic: Hafs, Uthmani script, checked against a second copy. English: Saheeh International. Ayah recognition: Tarteel AI's whisper-base-ar-quran, running in your browser (about 100 MB, downloaded the first time only). Your recording is never uploaded.</p>
+      <p>Clean audio gives the best timing. A phone recording of a speaker works, but sounds roomier.</p>
+    </footer>
+  </main>
+
+  <audio id="audio" preload="auto" hidden></audio>
+  <script type="module" src="app.js"></script>
+</body>
+</html>

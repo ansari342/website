@@ -85,3 +85,32 @@ Refresh the saved prices by downloading Yahoo chart JSON files into a folder and
 running `node scripts/build-snapshot.mjs <folder>`. Run the tests with `npm test`.
 
 The simulation is educational. It is not financial advice or a religious ruling.
+
+## Rattil (Quran recitation videos)
+
+`/rattil/` turns a recitation clip into a 1080×1920 video: each ayah's Arabic
+appears as it is recited, with the English under it and a thin white line
+animation that echoes its meaning. Everything runs in the visitor's browser and
+the recording is never uploaded.
+
+1. **Pauses.** The audio is decoded, resampled to 16 kHz and split into breath
+   groups at the reciter's pauses (`rattil/lib/audio.js`).
+2. **Recognition.** Each breath goes through Tarteel AI's
+   `whisper-base-ar-quran` (8-bit browser build
+   `nael239/tasme3-whisper-base-ar-quran-web`, about 100 MB, cached after the
+   first visit) in a Web Worker via transformers.js (`rattil/worker.js`).
+3. **Matching.** The model's words are lined up with the verified text to find
+   the surah and ayahs and when each starts (`rattil/lib/match.js`). Only the
+   verified text is shown. Ayahs joined in one breath share a screen, because the
+   pause is the only boundary that can be trusted. The visitor can correct the
+   surah and range, and if the model can't load they pick the range by hand.
+4. **Video.** `rattil/lib/render.js` draws the frames, and `rattil/lib/encode.js`
+   makes an MP4 with WebCodecs (H.264 + AAC). Browsers without an AAC encoder
+   (Chrome on Linux, for example) record in real time instead, which gives WebM.
+
+The Quran text is bundled in `rattil/data/quran.json`: Hafs in Uthmani script
+and the Saheeh International translation, from fawazahmed0/quran-api. Rebuild it
+with `node scripts/build-quran-data.mjs <folder>`, which checks the text letter
+by letter against a second Hafs copy (see the script for the files it needs).
+Fonts (Amiri Quran, DM Sans; SIL Open Font License) are self-hosted in
+`rattil/fonts/`.
