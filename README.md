@@ -65,6 +65,22 @@ Calm-Sized Dips), defined in `trading/lib/strategies.js` and
 those), then `node scripts/robustness.mjs` for the fragility check. Both update
 `trading/data/hillclimb.json`.
 
+The **100 lab** tab shows a larger experiment: 100 strategies (rule families
+across 5-minute crypto, hourly crypto, hourly halal ETFs and daily markets,
+including rules driven by the VIX, rates, the dollar, credit, breadth, GDELT
+news tone and the crypto Fear & Greed index). Each is hill-climbed on return
+over the tuning years, ranked on a separate picking period, and scored on a
+final test period nothing was tuned or picked on. To reproduce it:
+
+```sh
+bash scripts/lab100-fetch.sh /some/folder        # free data, about 200 MB
+for m in c5 c1h e1h ed cd; do node scripts/lab100.mjs /some/folder $m; done
+node scripts/lab100.mjs /some/folder merge       # writes trading/data/lab100.json
+```
+
+The strategies are defined in `trading/lib/lab100.js` and run on the fast
+bar backtester in `trading/lib/fast.js`.
+
 Refresh the saved prices by downloading Yahoo chart JSON files into a folder and
 running `node scripts/build-snapshot.mjs <folder>`. Run the tests with `npm test`.
 

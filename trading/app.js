@@ -444,7 +444,7 @@ document.querySelectorAll(".tab[data-mode]").forEach((tab) =>
       t.classList.toggle("is-active", t === tab);
       t.setAttribute("aria-pressed", String(t === tab));
     });
-    for (const id of ["sim", "day", "tune", "live"]) $(`#${id}`).hidden = mode !== id;
+    for (const id of ["sim", "day", "tune", "lab", "live"]) $(`#${id}`).hidden = mode !== id;
     document.dispatchEvent(new CustomEvent("mode", { detail: mode }));
   })
 );

@@ -20,6 +20,7 @@
       <button class="tab is-active" data-mode="sim" aria-pressed="true">Simulation</button>
       <button class="tab" data-mode="day" aria-pressed="false">Quick trades</button>
       <button class="tab" data-mode="tune" aria-pressed="false">Tuning</button>
+      <button class="tab" data-mode="lab" aria-pressed="false">100 lab</button>
       <button class="tab" data-mode="live" aria-pressed="false">Live <span class="lock">🔒</span></button>
       <button class="tab" id="signout">Lock</button>
     </nav>
@@ -268,6 +269,39 @@
     </section>
   </section>
 
+  <!-- 100-strategy lab -->
+  <section id="lab" class="tune" hidden>
+    <div class="tune__intro">
+      <p class="mono label">100 strategies · free data · hill-climbed on return</p>
+      <p class="lede">One hundred strategies, from 5-minute crypto trades to daily rules driven by fear gauges, rates, the dollar, market breadth, news tone and the crypto Fear &amp; Greed index. Each was tuned by hill climbing to maximize its return.</p>
+      <p class="lede">When you try 100 things, the best one always looks brilliant by luck. So the data is split in three: settings are <b>tuned</b> on the early years, the winner is <b>picked</b> on a middle period, and the honest score comes from a <b>final test</b> period that nothing was tuned or picked on. <em>Only the final-test column tells you what to expect.</em></p>
+    </div>
+    <div id="lab-findings" class="verdict-box"></div>
+    <section class="card">
+      <header class="card__head">
+        <h2 class="mono">All 100, ranked by the picking period</h2>
+        <label class="lab-filter mono">Market
+          <select id="lab-market"><option value="">All markets</option></select>
+        </label>
+      </header>
+      <div class="table-wrap"><table class="table" id="lab-board"></table></div>
+    </section>
+    <section class="card" id="lab-detail" hidden>
+      <header class="card__head">
+        <h2 class="mono" id="lab-detail-title"></h2>
+        <div class="legend mono" id="lab-legend"></div>
+      </header>
+      <p class="status mono" id="lab-detail-status"></p>
+      <div id="lab-chart"></div>
+      <div class="tune__params" id="lab-params"></div>
+    </section>
+    <section class="card">
+      <header class="card__head"><h2 class="mono">The markets and data</h2></header>
+      <div class="table-wrap"><table class="table" id="lab-markets"></table></div>
+      <p class="hint">Free data used: Binance's public archive (5-minute crypto bars), Yahoo Finance (hourly and daily prices, the VIX fear gauge, the 10-year yield, the dollar index, high-yield bond and gold prices), alternative.me (crypto Fear &amp; Greed), GDELT (tone of US news mentioning the stock market), and market breadth computed from the halal universe. Rates and bond prices are used only as gauges; nothing interest-bearing is traded. Twitter and Reddit history isn't free, so it isn't included. Scholars differ on whether crypto is permissible.</p>
+    </section>
+  </section>
+
   <!-- Mode 2: Live (not built yet) -->
   <section id="live" class="live" hidden>
     <div class="card">
@@ -291,5 +325,6 @@
   <script type="module" src="app.js"></script>
   <script type="module" src="day.js"></script>
   <script type="module" src="tune.js"></script>
+  <script type="module" src="lab.js"></script>
 </body>
 </html>

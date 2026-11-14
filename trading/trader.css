@@ -273,6 +273,11 @@ input:focus-visible, select:focus-visible, button:focus-visible, .chip:focus-wit
 .tune__params { margin-top: 12px; display: flex; flex-wrap: wrap; gap: 6px; align-items: center; }
 .tune__params .chip { cursor: default; }
 
+.lab-filter { display: flex; align-items: center; gap: 8px; }
+.lab-filter select { width: auto; height: 32px; }
+#lab-findings p + p { margin-top: 8px; }
+#lab-board td small { display: block; color: var(--muted); font-size: 11px; white-space: normal; max-width: 300px; }
+
 /* ---------- Live ---------- */
 .live { padding: 32px var(--pad) 64px; }
 .live .card { max-width: 820px; }
