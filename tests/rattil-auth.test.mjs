@@ -41,17 +41,14 @@ test("return paths stay on this site", () => {
   assert.equal(safeNext("https://evil.com"), "/rattil/");
 });
 
-test("middleware sends signed-out visitors to sign in and lets the owner through", async () => {
+test("middleware guards only the AI animations API, for the owner", async () => {
   process.env.AUTH_SECRET = "s3cret"; delete process.env.ALLOWED_EMAILS;
-  const page = await middleware(new Request("https://site.test/rattil/"));
-  assert.equal(page.status, 302);
-  assert.match(page.headers.get("location"), /\/rattil\/login\.html$/);
-  assert.equal((await middleware(new Request("https://site.test/api/rattil-scenes", { method: "POST" }))).status, 401);
-  assert.equal((await middleware(new Request("https://site.test/rattil/login.html"))).headers.get("x-middleware-next"), "1");
-  const cookie = `rattil_session=${await createSession("ansari342@gmail.com", "s3cret")}`;
-  assert.equal((await middleware(new Request("https://site.test/rattil/app.js", { headers: { cookie } }))).headers.get("x-middleware-next"), "1");
-  const other = `rattil_session=${await createSession("someone@gmail.com", "s3cret")}`;
-  assert.equal((await middleware(new Request("https://site.test/rattil/", { headers: { cookie: other } }))).status, 302);
+  const api = (cookie = "") => middleware(new Request("https://site.test/api/rattil-scenes", { method: "POST", headers: { cookie } }));
+  assert.equal((await api()).status, 401);
+  assert.equal((await api(`rattil_session=${await createSession("ansari342@gmail.com", "s3cret")}`)).headers.get("x-middleware-next"), "1");
+  assert.equal((await api(`rattil_session=${await createSession("someone@gmail.com", "s3cret")}`)).status, 401);
+  const { config } = await import("../middleware.js");
+  assert.ok(!config.matcher.some((m) => m.startsWith("/rattil"))); // the page itself is public
 });
 
 // An in-memory stand-in for Redis.

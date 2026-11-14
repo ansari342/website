@@ -120,8 +120,9 @@ the recording is never uploaded.
 
 ### Rattil access and spending
 
-Rattil (the page and its API) is private: visitors sign in with Google, and
-only emails in `ALLOWED_EMAILS` (default `ansari342@gmail.com`) get in. The AI
+Anyone can use Rattil. Only its AI animations, which spend tokens, need
+Google sign-in, and only emails in `ALLOWED_EMAILS` (default
+`ansari342@gmail.com`) are let in. Others get the built-in animations. The AI
 animations are capped at `DAILY_LIMIT_USD` (default $1) per Pacific day; each
 call reserves its worst-case cost first, then records the real cost from the
 API's token counts. Vercel environment variables:

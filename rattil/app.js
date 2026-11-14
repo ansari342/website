@@ -23,6 +23,14 @@ const fmt = (t) => `${Math.floor(t / 60)}:${String(Math.floor(t % 60)).padStart(
 
 const state = { quran: null, index: null, buffer: null, groups: [], segments: [], result: null, renderer: null, file: null, video: null, hasVideo: false, style: "animation", aac: null, scenes: null, sceneKey: "" };
 
+// Signed in (allowlisted) visitors get AI-designed animations; everyone else
+// gets the built-in ones. Making videos needs no account.
+const signedIn = fetch("/api/google/me").then((r) => r.json()).then((d) => d.email || null).catch(() => null);
+signedIn.then((email) => {
+  const a = $("account");
+  if (email) { a.textContent = "Sign out"; a.href = "/api/google/logout"; a.title = email; }
+});
+
 const quranReady = fetch("data/quran.json").then((r) => r.json()).then((q) => { state.quran = q; fillSurahs(); return q; });
 const fontsReady = Promise.all([document.fonts.load('96px "Rattil Arabic"', "بِسۡمِ"), document.fonts.load('38px "DM Sans"', "In")]);
 
@@ -208,6 +216,10 @@ async function designScenes(r) {
   let saved = null;
   try { saved = JSON.parse(localStorage.getItem(key) || "null"); } catch {}
   if (saved) return applyScenes(key, saved, note);
+  if (!(await signedIn)) {
+    $("scene-note").innerHTML = 'Built-in animations. <a href="/rattil/login.html">Sign in</a> for a unique AI-designed animation for every ayah.';
+    return;
+  }
   note("Designing an animation for each ayah…");
   const call = async (body) => {
     const res = await fetch("/api/rattil-scenes", { method: "POST", headers: { "content-type": "application/json" }, body: JSON.stringify({ surah: r.surah, from: r.from, to: r.to, ...body }) });
