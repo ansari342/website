@@ -1,13 +1,10 @@
 import { test } from "node:test";
 import assert from "node:assert/strict";
 import { readFileSync } from "node:fs";
-import { createSession } from "../lib/google-auth.js";
 
 const fixture = JSON.parse(readFileSync(new URL("./fixtures/scenes-kawthar.json", import.meta.url), "utf8"));
 const { POST } = await import("../api/rattil-scenes.js");
-process.env.AUTH_SECRET = "s3cret";
-const owner = `rattil_session=${await createSession("ansari342@gmail.com", "s3cret")}`;
-const req = (body, origin = "https://site.test", cookie = owner) => new Request("https://site.test/api/rattil-scenes", { method: "POST", headers: { host: "site.test", origin, cookie, "content-type": "application/json" }, body: JSON.stringify(body) });
+const req = (body, origin = "https://site.test") => new Request("https://site.test/api/rattil-scenes", { method: "POST", headers: { host: "site.test", origin, "content-type": "application/json" }, body: JSON.stringify(body) });
 
 // Stand-in for the Upstash REST API, keeping totals in memory.
 const store = new Map();
@@ -49,13 +46,6 @@ test("plan, then scenes for the asked ayahs only, with text from the bundled dat
     // Two calls of 3000 in + 2000 out tokens = $0.052, recorded in micro-dollars.
     assert.equal([...store.values()][0], 52000);
   } finally { globalThis.fetch = real; }
-});
-
-test("only the signed-in owner can call it", async () => {
-  process.env.ANTHROPIC_API_KEY = "test";
-  assert.equal((await POST(req({ surah: 108, from: 1, to: 3 }, "https://site.test", ""))).status, 401);
-  const other = `rattil_session=${await createSession("someone@gmail.com", "s3cret")}`;
-  assert.equal((await POST(req({ surah: 108, from: 1, to: 3 }, "https://site.test", other))).status, 401);
 });
 
 test("bad ranges and other sites are refused", async () => {

@@ -118,20 +118,15 @@ the recording is never uploaded.
    makes an MP4 with WebCodecs (H.264 + AAC). Browsers without an AAC encoder
    (Chrome on Linux, for example) record in real time instead, which gives WebM.
 
-### Rattil access and spending
+### Rattil spending
 
-Anyone can use Rattil. Only its AI animations, which spend tokens, need
-Google sign-in, and only emails in `ALLOWED_EMAILS` (default
-`ansari342@gmail.com`) are let in. Others get the built-in animations. The AI
-animations are capped at `DAILY_LIMIT_USD` (default $1) per Pacific day; each
-call reserves its worst-case cost first, then records the real cost from the
-API's token counts. Vercel environment variables:
+Rattil is open to everyone. Its AI animations are capped at `DAILY_LIMIT_USD`
+(default $1) per Pacific day, in total across all visitors; each call reserves
+its worst-case cost first, then records the real cost from the API's token
+counts. Vercel environment variables:
 
 | Variable | What it's for |
 |---|---|
-| `GOOGLE_CLIENT_ID`, `GOOGLE_CLIENT_SECRET` | OAuth client (Google Cloud → APIs & Services → Credentials → OAuth client ID, type "Web application"; authorized redirect URI `https://<your domain>/api/google/callback`) |
-| `AUTH_SECRET` | Any long random string; signs the session cookie. Without it nobody can sign in. |
-| `ALLOWED_EMAILS` | Optional; comma-separated. Defaults to `ansari342@gmail.com`. |
 | `ANTHROPIC_API_KEY` | For the AI animations. |
 | `KV_REST_API_URL`, `KV_REST_API_TOKEN` | Upstash Redis (Vercel → Storage → Upstash for Redis), which keeps the daily total. Without it, no AI calls are made. |
 | `DAILY_LIMIT_USD` | Optional; defaults to 1. |

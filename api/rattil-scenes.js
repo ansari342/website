@@ -8,13 +8,11 @@
 // The ayah text is read from the bundled Quran data, never taken from the
 // request, so this can't be used as a general-purpose AI endpoint. Needs
 // ANTHROPIC_API_KEY in Vercel; without it the page uses its built-in motifs.
-// Only the allowlisted Google account may call it (lib/google-auth.js), and
-// spending is capped per day (lib/spend.js).
+// Spending is capped at $1 a day in total, across all visitors (lib/spend.js).
 
 import { readFileSync } from "node:fs";
 import { MODEL, planPrompt, scenesPrompt, worldPrompt, parseJson, cleanPlan } from "../lib/rattil-prompt.js";
 import { MOMENT_FIELDS, presetExample } from "../rattil/lib/world.js";
-import { requestEmail } from "../lib/google-auth.js";
 import { withinDailyLimit, estimateUsd, redisFromEnv, OverLimit, spentTodayUsd, dailyLimitUsd } from "../lib/spend.js";
 
 
@@ -38,7 +36,6 @@ function ask({ system, user }, maxTokens) {
 }
 
 export async function POST(request) {
-  if (!(await requestEmail(request))) return json({ error: "sign in required" }, 401);
   if (!process.env.ANTHROPIC_API_KEY) return json({ error: "not configured" }, 503);
   // Only this site's pages may call it.
   const origin = request.headers.get("origin");
@@ -76,9 +73,8 @@ export async function POST(request) {
   }
 }
 
-// GET /api/rattil-scenes: today's spending, for the signed-in owner.
-export async function GET(request) {
-  if (!(await requestEmail(request))) return json({ error: "sign in required" }, 401);
+// GET /api/rattil-scenes: today's spending and whether everything is set up.
+export async function GET() {
   const redis = redisFromEnv();
   return json({ spentUsd: redis ? await spentTodayUsd(redis) : null, limitUsd: dailyLimitUsd(), storage: !!redis, key: !!process.env.ANTHROPIC_API_KEY });
 }
