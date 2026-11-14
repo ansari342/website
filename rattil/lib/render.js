@@ -4,6 +4,7 @@
 // No faces, people or animals: symbolic line motifs only.
 
 import { arabicDigits } from "./arabic.js";
+import { drawScene } from "./scenes.js";
 
 export const W = 1080, H = 1920, FPS = 30;
 const AR_FONT = '"Rattil Arabic"', EN_FONT = '"DM Sans"';
@@ -316,7 +317,9 @@ export function drawCover(ctx, video) {
 }
 
 // plan: { surah: {name, ar, en}, units: [{ start, ayahs }], duration,
-//         style: "animation" | "overlay", video: <video> for the overlay style }
+//         style: "animation" | "overlay", video: <video> for the overlay style,
+//         scenes: { [0-based ayah]: scene } designed per ayah (see scenes.js) }
+// Ayahs without a designed scene use the built-in motifs.
 // In the overlay style the person's footage is the background, darkened so
 // the text stays readable, and the line animations are left out.
 export function createRenderer(plan) {
@@ -359,7 +362,12 @@ export function createRenderer(plan) {
         const sceneTop = Math.max(AY, top + b.h + 30);
         if (sceneTop > H - 420) continue;
         lg.setTransform(1, 0, 0, 1, 0, 0); lg.globalAlpha = 1; lg.clearRect(0, 0, W, 560);
-        scenes[i](lg, t - (plan.units[i].start - LEAD));
+        const designed = plan.scenes?.[plan.units[i].ayahs[0]];
+        const since = t - (plan.units[i].start - LEAD);
+        if (designed) {
+          const len = (i + 1 < plan.units.length ? plan.units[i + 1].start : plan.duration) - plan.units[i].start;
+          drawScene(lg, designed, since, len);
+        } else scenes[i](lg, since);
         ctx.drawImage(layer, 0, sceneTop);
       }
       ctx.globalAlpha = 1;
