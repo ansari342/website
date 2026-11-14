@@ -118,6 +118,23 @@ the recording is never uploaded.
    makes an MP4 with WebCodecs (H.264 + AAC). Browsers without an AAC encoder
    (Chrome on Linux, for example) record in real time instead, which gives WebM.
 
+### Rattil access and spending
+
+Rattil (the page and its API) is private: visitors sign in with Google, and
+only emails in `ALLOWED_EMAILS` (default `ansari342@gmail.com`) get in. The AI
+animations are capped at `DAILY_LIMIT_USD` (default $1) per Pacific day; each
+call reserves its worst-case cost first, then records the real cost from the
+API's token counts. Vercel environment variables:
+
+| Variable | What it's for |
+|---|---|
+| `GOOGLE_CLIENT_ID`, `GOOGLE_CLIENT_SECRET` | OAuth client (Google Cloud → APIs & Services → Credentials → OAuth client ID, type "Web application"; authorized redirect URI `https://<your domain>/api/google/callback`) |
+| `AUTH_SECRET` | Any long random string; signs the session cookie. Without it nobody can sign in. |
+| `ALLOWED_EMAILS` | Optional; comma-separated. Defaults to `ansari342@gmail.com`. |
+| `ANTHROPIC_API_KEY` | For the AI animations. |
+| `KV_REST_API_URL`, `KV_REST_API_TOKEN` | Upstash Redis (Vercel → Storage → Upstash for Redis), which keeps the daily total. Without it, no AI calls are made. |
+| `DAILY_LIMIT_USD` | Optional; defaults to 1. |
+
 The Quran text is bundled in `rattil/data/quran.json`: Hafs in Uthmani script
 and the Saheeh International translation, from fawazahmed0/quran-api. Rebuild it
 with `node scripts/build-quran-data.mjs <folder>`, which checks the text letter

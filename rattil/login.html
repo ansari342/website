@@ -1,0 +1,41 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Rattil · Sign in</title>
+  <meta name="robots" content="noindex" />
+  <meta name="theme-color" content="#0e0c0b" />
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><rect width='100' height='100' fill='%23ff4d2e'/><text x='50' y='72' font-family='Arial Black,Arial' font-weight='900' font-size='58' text-anchor='middle' fill='%230e0c0b'>A</text></svg>" />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Anton&family=Newsreader:ital,opsz,wght@0,6..72,400;1,6..72,400&family=JetBrains+Mono:wght@400&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="rattil.css" />
+</head>
+<body>
+  <header class="head">
+    <a href="/" class="head__logo" aria-label="Back to the main site">AA</a>
+    <span class="head__console mono">Rattil</span>
+    <a href="/" class="head__back mono">← Main site</a>
+  </header>
+  <main class="page">
+    <p class="mono label">(Private)</p>
+    <h1>Rat<span>til</span></h1>
+    <p class="lede">Rattil turns Quran recitation clips into videos. It's private for now: sign in with an approved Google account to use it.</p>
+    <p class="alert" id="msg" hidden></p>
+    <div class="actions" style="justify-content: flex-start; margin-top: 28px;">
+      <a class="btn" href="/api/google/login?next=/rattil/">Sign in with Google</a>
+    </div>
+  </main>
+  <script>
+    var p = new URLSearchParams(location.search), m = document.getElementById("msg");
+    var text = {
+      notallowed: "That Google account isn't approved for Rattil.",
+      expired: "The sign-in took too long or was interrupted. Please try again.",
+      google: "Google sign-in didn't complete. Please try again.",
+      setup: "Sign-in isn't set up on this site yet.",
+    }[p.get("error")] || (p.get("signedout") ? "You're signed out." : "");
+    if (text) { m.textContent = text; m.hidden = false; }
+  </script>
+</body>
+</html>

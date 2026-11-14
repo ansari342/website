@@ -7,9 +7,13 @@
 // The ayah text is read from the bundled Quran data, never taken from the
 // request, so this can't be used as a general-purpose AI endpoint. Needs
 // ANTHROPIC_API_KEY in Vercel; without it the page uses its built-in motifs.
+// Only the allowlisted Google account may call it (lib/google-auth.js), and
+// spending is capped per day (lib/spend.js).
 
 import { readFileSync } from "node:fs";
 import { MODEL, planPrompt, scenesPrompt, parseJson, cleanPlan } from "../lib/rattil-prompt.js";
+import { requestEmail } from "../lib/google-auth.js";
+import { withinDailyLimit, estimateUsd, redisFromEnv, OverLimit, spentTodayUsd, dailyLimitUsd } from "../lib/spend.js";
 
 
 let quran = null;
@@ -17,18 +21,22 @@ const loadQuran = () => (quran ||= JSON.parse(readFileSync(new URL("../rattil/da
 
 const json = (body, status = 200) => new Response(JSON.stringify(body), { status, headers: { "content-type": "application/json", "cache-control": "no-store" } });
 
-async function ask({ system, user }, maxTokens) {
-  const res = await fetch("https://api.anthropic.com/v1/messages", {
-    method: "POST",
-    headers: { "x-api-key": process.env.ANTHROPIC_API_KEY, "anthropic-version": "2023-06-01", "content-type": "application/json" },
-    body: JSON.stringify({ model: MODEL, max_tokens: maxTokens, system, messages: [{ role: "user", content: user }] }),
+// One Claude call, inside the daily spending cap.
+function ask({ system, user }, maxTokens) {
+  return withinDailyLimit(redisFromEnv(), estimateUsd(system.length + user.length, maxTokens), async () => {
+    const res = await fetch("https://api.anthropic.com/v1/messages", {
+      method: "POST",
+      headers: { "x-api-key": process.env.ANTHROPIC_API_KEY, "anthropic-version": "2023-06-01", "content-type": "application/json" },
+      body: JSON.stringify({ model: MODEL, max_tokens: maxTokens, system, messages: [{ role: "user", content: user }] }),
+    });
+    if (!res.ok) throw new Error(`Claude API ${res.status}: ${(await res.text()).slice(0, 300)}`);
+    const data = await res.json();
+    return { result: parseJson(data.content.filter((c) => c.type === "text").map((c) => c.text).join("")), usage: data.usage };
   });
-  if (!res.ok) throw new Error(`Claude API ${res.status}: ${(await res.text()).slice(0, 300)}`);
-  const data = await res.json();
-  return parseJson(data.content.filter((c) => c.type === "text").map((c) => c.text).join(""));
 }
 
 export async function POST(request) {
+  if (!(await requestEmail(request))) return json({ error: "sign in required" }, 401);
   if (!process.env.ANTHROPIC_API_KEY) return json({ error: "not configured" }, 503);
   // Only this site's pages may call it.
   const origin = request.headers.get("origin");
@@ -51,10 +59,18 @@ export async function POST(request) {
     const plan = cleanPlan(body.plan, from, to);
     const ns = [...new Set((body.ayahs || []).map(Number))].filter((n) => n >= from && n <= to).slice(0, 4);
     if (!ns.length) return json({ error: "no ayahs" }, 400);
-    const out = await ask(scenesPrompt(passage, plan, ns), 12000);
+    const out = await ask(scenesPrompt(passage, plan, ns), 8000);
     const scenes = (out.scenes || []).filter((s) => ns.includes(Number(s?.ayah)));
     return json({ scenes });
   } catch (err) {
+    if (err instanceof OverLimit) return json({ error: "daily limit", limit: dailyLimitUsd() }, 429);
     return json({ error: String(err.message || err).slice(0, 300) }, 502);
   }
+}
+
+// GET /api/rattil-scenes: today's spending, for the signed-in owner.
+export async function GET(request) {
+  if (!(await requestEmail(request))) return json({ error: "sign in required" }, 401);
+  const redis = redisFromEnv();
+  return json({ spentUsd: redis ? await spentTodayUsd(redis) : null, limitUsd: dailyLimitUsd(), storage: !!redis, key: !!process.env.ANTHROPIC_API_KEY });
 }
