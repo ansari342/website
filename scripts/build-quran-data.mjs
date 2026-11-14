@@ -5,7 +5,7 @@
 // <folder> holds these files from github.com/fawazahmed0/quran-api (branch 1):
 //   editions/ara-quranuthmanihaf.json  (Hafs, Uthmani script)  -> ara-quranuthmanihaf.json
 //   editions/ara-quranuthmanienc.json  (second Hafs copy)      -> ara-quranuthmanienc.json
-//   editions/eng-ummmuhammad.json      (Saheeh International)  -> eng-ummmuhammad.json
+//   editions/eng-mustafakhattaba.json  (The Clear Quran, Dr. Mustafa Khattab) -> eng-mustafakhattaba.json
 //   info.json                          (surah names)           -> info.json
 //
 // The Hafs text is checked letter for letter against the second copy, so a
@@ -21,7 +21,9 @@ const load = (f) => JSON.parse(readFileSync(join(dir, f), "utf8"));
 
 const hafs = load("ara-quranuthmanihaf.json").quran;
 const check = load("ara-quranuthmanienc.json").quran;
-const english = load("eng-ummmuhammad.json").quran;
+// The Clear Quran marks words added for clarity with half brackets ˹ ˺;
+// the video font has no such glyphs, so they become ordinary [ ].
+const english = load("eng-mustafakhattaba.json").quran.map((v) => ({ ...v, text: v.text.replace(/˹/g, "[").replace(/˺/g, "]") }));
 const chapters = load("info.json").chapters;
 
 // In this edition a space wrongly splits a word before the alef that follows
@@ -53,5 +55,5 @@ hafs.forEach((v, i) => {
 if (mismatches) { console.error(`${mismatches} ayahs differ between the two copies; not writing.`); process.exit(1); }
 surahs.forEach((s, i) => { if (s.ar.length !== chapters[i].verses.length) throw new Error(`surah ${s.n} has ${s.ar.length} ayahs`); });
 
-writeFileSync(new URL("../rattil/data/quran.json", import.meta.url), JSON.stringify({ source: "fawazahmed0/quran-api: ara-quranuthmanihaf, eng-ummmuhammad", surahs }));
+writeFileSync(new URL("../rattil/data/quran.json", import.meta.url), JSON.stringify({ source: "fawazahmed0/quran-api: ara-quranuthmanihaf, eng-mustafakhattaba (The Clear Quran)", surahs }));
 console.log(`wrote ${hafs.length} ayahs in ${surahs.length} surahs`);
