@@ -132,7 +132,7 @@ counts. Vercel environment variables:
 | `DAILY_LIMIT_USD` | Optional; defaults to 1. |
 
 The Quran text is bundled in `rattil/data/quran.json`: Hafs in Uthmani script
-and the Saheeh International translation, from fawazahmed0/quran-api. Rebuild it
+and The Clear Quran translation (Dr. Mustafa Khattab), from fawazahmed0/quran-api. Rebuild it
 with `node scripts/build-quran-data.mjs <folder>`, which checks the text letter
 by letter against a second Hafs copy (see the script for the files it needs).
 Fonts (Noto Sans Arabic at regular weight, DM Sans; SIL Open Font License) are self-hosted in
