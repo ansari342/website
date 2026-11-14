@@ -163,16 +163,15 @@ export function matchRecitation(quran, index, segments, force = null) {
   }
   starts.forEach((s, k) => { if (s.t === null) s.t = k ? starts[k - 1].t + 0.01 : segments[0].start; });
 
-  // Ayahs that begin at a breath start their own screen. One that begins
-  // in the middle of a breath shares the screen with the ayah before it:
-  // the pause is the only boundary we trust.
+  // One screen per ayah. An ayah that begins at a breath starts with that
+  // breath; one that begins mid-breath starts at its first word's estimated
+  // time (letters spread evenly over the breath).
   const units = [];
   for (const s of starts) {
     const atBreath = s.ti !== null && tw[s.ti].first;
-    const cur = units[units.length - 1];
-    if (!cur || (atBreath && s.t > cur.start + 0.5) || cur.ayahs.length >= 3) {
-      units.push({ start: atBreath ? segments[tw[s.ti].g].start : s.t, ayahs: [s.a] });
-    } else cur.ayahs.push(s.a);
+    const start = atBreath ? segments[tw[s.ti].g].start : s.t;
+    const prev = units[units.length - 1];
+    units.push({ start: prev ? Math.max(start, prev.start + 0.4) : start, ayahs: [s.a] });
   }
   if (units.length) units[0].start = Math.min(units[0].start, segments[0].start);
 
@@ -182,14 +181,20 @@ export function matchRecitation(quran, index, segments, force = null) {
 }
 
 // When the person picked the range but the model's words could not be lined
-// up: one screen per breath group, in order, extra ayahs on the last screen.
+// up: ayahs follow the breaths in order. Breaths that must hold several ayahs
+// (the last one, if there are more ayahs than breaths) are shared out by the
+// ayahs' lengths.
 function fallbackUnits(quran, segments, surah, lo, hi) {
-  hi = Math.min(hi, quran.surahs[surah - 1].ar.length - 1);
+  const ar = quran.surahs[surah - 1].ar;
+  hi = Math.min(hi, ar.length - 1);
+  const byGroup = segments.map(() => []);
+  for (let a = lo; a <= hi; a++) byGroup[Math.min(a - lo, segments.length - 1)].push(a);
   const units = [];
-  for (let a = lo; a <= hi; a++) {
-    const g = segments[Math.min(a - lo, segments.length - 1)];
-    const cur = units[units.length - 1];
-    if (cur && cur.start === g.start) cur.ayahs.push(a); else units.push({ start: g.start, ayahs: [a] });
-  }
+  byGroup.forEach((ayahs, g) => {
+    const { start, end } = segments[g];
+    const total = ayahs.reduce((n, a) => n + ar[a].length, 0) || 1;
+    let pos = 0;
+    for (const a of ayahs) { units.push({ start: start + (end - start) * (pos / total), ayahs: [a] }); pos += ar[a].length; }
+  });
   return { surah, from: lo + 1, to: hi + 1, units, coverage: 0, ayahCount: hi - lo + 1 };
 }

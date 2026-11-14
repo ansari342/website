@@ -4,7 +4,8 @@
 import { breathGroups, toMono16k } from "./lib/audio.js";
 import { buildIndex, matchRecitation } from "./lib/match.js";
 import { createRenderer, W, H } from "./lib/render.js";
-import { encode, encodeOverVideo } from "./lib/encode.js";
+import { encode } from "./lib/encode.js";
+import { readAac, extractAac } from "./lib/extract.js";
 import { arabicDigits } from "./lib/arabic.js";
 
 const $ = (id) => document.getElementById(id);
@@ -19,10 +20,10 @@ window.addEventListener("error", (e) => showError(e.message || "unknown error"))
 window.addEventListener("unhandledrejection", (e) => showError(e.reason?.message || String(e.reason)));
 const fmt = (t) => `${Math.floor(t / 60)}:${String(Math.floor(t % 60)).padStart(2, "0")}`;
 
-const state = { quran: null, index: null, buffer: null, groups: [], segments: [], result: null, renderer: null, file: null, video: null, hasVideo: false, style: "animation" };
+const state = { quran: null, index: null, buffer: null, groups: [], segments: [], result: null, renderer: null, file: null, video: null, hasVideo: false, style: "animation", aac: null };
 
 const quranReady = fetch("data/quran.json").then((r) => r.json()).then((q) => { state.quran = q; fillSurahs(); return q; });
-const fontsReady = Promise.all([document.fonts.load('112px "Amiri Quran"', "بِسۡمِ"), document.fonts.load('38px "DM Sans"', "In")]);
+const fontsReady = Promise.all([document.fonts.load('96px "Rattil Arabic"', "بِسۡمِ"), document.fonts.load('38px "DM Sans"', "In")]);
 
 // ---------- upload ----------
 const drop = $("drop");
@@ -50,6 +51,8 @@ async function start(file) {
   try {
     const bytes = await file.arrayBuffer();
     state.buffer = await decodeAudio(bytes);
+    // The recording's own AAC frames, copied into the video unchanged (MP4/MOV/M4A).
+    state.aac = await readAac(bytes).catch(() => null);
   } catch (err) {
     setStep(0, "This file's audio could not be read. Try an MP4, MOV, M4A, MP3 or WAV file.");
     showError(`couldn't read the audio (${err?.message || err || "unsupported format"})`);
@@ -103,7 +106,6 @@ async function decodeAudio(bytes) {
   try {
     return await decode(bytes.slice(0)); // decoding detaches the buffer, so pass a copy
   } catch (first) {
-    const { extractAac } = await import("./lib/extract.js");
     let m4a;
     try { m4a = await extractAac(bytes); } catch { throw first; }
     return await decode(m4a);
@@ -212,7 +214,7 @@ async function buildVideo() {
     await new Promise((ok) => { state.video.addEventListener("seeked", ok, { once: true }); setTimeout(ok, 2000); });
   }
   state.renderer.draw($("preview").getContext("2d"), firstText);
-  $("make-note").textContent += overlay ? " · records in real time" : "";
+
 }
 
 function stopPreview() {
@@ -247,14 +249,16 @@ $("play").addEventListener("click", () => {
 
 $("make").addEventListener("click", async () => {
   stopPreview();
+  // Created during the tap: Safari only lets an audio context play after one.
+  const audioContext = new (window.AudioContext || window.webkitAudioContext)();
+  audioContext.resume();
   const bar = $("make-bar"), make = $("make");
   make.disabled = true; bar.hidden = false;
   $("make-note").textContent = "Making the video…";
   try {
     const progress = (f) => (bar.firstElementChild.style.width = `${Math.round(f * 100)}%`);
-    const blob = state.style === "overlay" && state.hasVideo
-      ? await encodeOverVideo(state.renderer, state.video, state.buffer, state.buffer.duration, progress)
-      : await encode(state.renderer, state.buffer, state.buffer.duration, progress);
+    const overlay = state.style === "overlay" && state.hasVideo;
+    const blob = await encode({ renderer: state.renderer, buffer: state.buffer, aac: state.aac, video: overlay ? state.video : null, duration: state.buffer.duration, audioContext }, progress);
     const r = state.result, ext = blob.type.includes("mp4") ? "mp4" : "webm";
     const name = `rattil-${state.quran.surahs[r.surah - 1].name.toLowerCase()}-${r.from}-${r.to}${state.style === "overlay" ? "-overlay" : ""}.${ext}`;
     const a = $("download");
@@ -269,6 +273,7 @@ $("make").addEventListener("click", async () => {
   } catch (err) {
     $("make-note").textContent = `The video couldn't be made in this browser: ${err.message}`;
   } finally {
+    if (audioContext.state !== "closed") audioContext.close().catch(() => {});
     make.disabled = false; bar.hidden = true;
   }
 });
