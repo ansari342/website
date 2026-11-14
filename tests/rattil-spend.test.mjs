@@ -1,6 +1,6 @@
 import { test } from "node:test";
 import assert from "node:assert/strict";
-import { withinDailyLimit, OverLimit, dayKey, costUsd, estimateUsd } from "../lib/spend.js";
+import { withinDailyLimit, OverLimit, dayKey, costUsd, estimateUsd, spendStore, memoryStore } from "../lib/spend.js";
 
 // An in-memory stand-in for Redis.
 function fakeRedis() {
@@ -26,12 +26,14 @@ test("real cost is recorded, and calls that could pass $1 a day are refused", as
   assert.equal(await withinDailyLimit(redis, 0.1, async () => ({ result: "next day", usage }), { now: new Date("2026-11-15T09:00:00Z") }), "next day");
 });
 
-test("parallel calls can't overshoot, and no storage means no calls", async () => {
+test("parallel calls can't overshoot; without Redis the cap is kept in memory", async () => {
   const redis = fakeRedis(), now = new Date();
   const slow = () => new Promise((r) => setTimeout(() => r({ result: 1, usage: { input_tokens: 0, output_tokens: 30000 } }), 10)); // $0.30 each
   const results = await Promise.allSettled(Array.from({ length: 6 }, () => withinDailyLimit(redis, 0.3, slow, { now })));
   assert.equal(results.filter((x) => x.status === "fulfilled").length, 3);
   assert.ok(redis.m.get(dayKey(now)) <= 1e6);
-  await assert.rejects(withinDailyLimit(null, 0.1, slow), /storage/);
+  assert.equal(spendStore({}), memoryStore);
+  const inMemory = await Promise.allSettled(Array.from({ length: 6 }, () => withinDailyLimit(memoryStore, 0.3, slow, { now })));
+  assert.equal(inMemory.filter((x) => x.status === "fulfilled").length, 3);
   assert.ok(estimateUsd(4000, 8000) > 0.08);
 });
