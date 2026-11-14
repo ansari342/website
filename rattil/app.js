@@ -4,7 +4,7 @@
 import { breathGroups, toMono16k } from "./lib/audio.js";
 import { buildIndex, matchRecitation } from "./lib/match.js";
 import { createRenderer, W, H } from "./lib/render.js";
-import { encode } from "./lib/encode.js";
+import { encode, encodeOverVideo } from "./lib/encode.js";
 import { arabicDigits } from "./lib/arabic.js";
 
 const $ = (id) => document.getElementById(id);
@@ -19,7 +19,7 @@ window.addEventListener("error", (e) => showError(e.message || "unknown error"))
 window.addEventListener("unhandledrejection", (e) => showError(e.reason?.message || String(e.reason)));
 const fmt = (t) => `${Math.floor(t / 60)}:${String(Math.floor(t % 60)).padStart(2, "0")}`;
 
-const state = { quran: null, index: null, buffer: null, groups: [], segments: [], result: null, renderer: null, file: null };
+const state = { quran: null, index: null, buffer: null, groups: [], segments: [], result: null, renderer: null, file: null, video: null, hasVideo: false, style: "animation" };
 
 const quranReady = fetch("data/quran.json").then((r) => r.json()).then((q) => { state.quran = q; fillSurahs(); return q; });
 const fontsReady = Promise.all([document.fonts.load('112px "Amiri Quran"', "بِسۡمِ"), document.fonts.load('38px "DM Sans"', "In")]);
@@ -45,6 +45,7 @@ async function start(file) {
   $("download").hidden = $("share").hidden = true;
   $("file-info").textContent = `${file.name} · ${(file.size / 1e6).toFixed(1)} MB`;
   $("step-listen").hidden = false;
+  loadVideo(file);
   setStep(0); setBar(0);
   try {
     const bytes = await file.arrayBuffer();
@@ -64,6 +65,33 @@ async function start(file) {
   await quranReady;
   listen(mono);
 }
+
+// Keep the upload as a <video> too, for the over-my-video style.
+function loadVideo(file) {
+  if (state.video) { URL.revokeObjectURL(state.video.src); state.video.remove(); }
+  const v = Object.assign(document.createElement("video"), { muted: true, playsInline: true, preload: "auto" });
+  v.setAttribute("playsinline", ""); v.setAttribute("muted", "");
+  v.hidden = true; document.body.append(v);
+  state.video = v; state.hasVideo = false;
+  v.addEventListener("loadedmetadata", () => { state.hasVideo = v.videoWidth > 0; updateStyles(); });
+  v.addEventListener("error", () => { state.hasVideo = false; updateStyles(); });
+  v.src = URL.createObjectURL(file);
+  v.load();
+}
+
+// ---------- style ----------
+function updateStyles() {
+  const overlay = $("style-overlay");
+  overlay.disabled = !state.hasVideo;
+  $("overlay-note").textContent = state.hasVideo ? "Your footage behind the text" : "Needs a video file, not audio";
+  if (!state.hasVideo && state.style === "overlay") setStyle("animation");
+}
+function setStyle(style) {
+  state.style = style;
+  document.querySelectorAll(".style").forEach((b) => b.setAttribute("aria-checked", String(b.dataset.style === style)));
+  if (state.result) buildVideo();
+}
+document.querySelectorAll(".style").forEach((b) => b.addEventListener("click", () => !b.disabled && setStyle(b.dataset.style)));
 
 // Decode the file's sound. If the browser refuses the file as a whole (iPhone
 // videos with a spatial-audio track, in Safari), copy out just the AAC track
@@ -171,29 +199,49 @@ async function buildVideo() {
   await fontsReady;
   stopPreview();
   const r = state.result, su = state.quran.surahs[r.surah - 1];
-  state.renderer = createRenderer({ surah: su, units: r.units, duration: state.buffer.duration });
+  const overlay = state.style === "overlay" && state.hasVideo;
+  if (overlay && state.video.readyState < 2) await new Promise((ok) => { state.video.addEventListener("loadeddata", ok, { once: true }); setTimeout(ok, 3000); });
+  state.renderer = createRenderer({ surah: su, units: r.units, duration: state.buffer.duration, style: overlay ? "overlay" : "animation", video: state.video });
+  updateStyles();
   $("step-video").hidden = false;
   $("download").hidden = $("share").hidden = true;
   $("make-note").textContent = `${fmt(state.buffer.duration)} · 1080×1920`;
   const firstText = r.units[0].start + 0.6;
+  if (overlay) {
+    state.video.currentTime = firstText;
+    await new Promise((ok) => { state.video.addEventListener("seeked", ok, { once: true }); setTimeout(ok, 2000); });
+  }
   state.renderer.draw($("preview").getContext("2d"), firstText);
+  $("make-note").textContent += overlay ? " · records in real time" : "";
 }
 
 function stopPreview() {
   if (!playing) return;
-  playing.src.stop(); playing.ac.close(); cancelAnimationFrame(playing.raf); playing = null;
+  try { playing.src.stop(); } catch {}
+  playing.ac.close(); cancelAnimationFrame(playing.raf); playing = null;
+  state.video?.pause();
   $("play").textContent = "▶";
 }
 $("play").addEventListener("click", () => {
   if (playing) return stopPreview();
-  const ac = new AudioContext(), src = ac.createBufferSource();
+  const ac = new (window.AudioContext || window.webkitAudioContext)(), src = ac.createBufferSource();
   src.buffer = state.buffer; src.connect(ac.destination);
-  const t0 = ac.currentTime + 0.05; src.start(t0);
   const ctx = $("preview").getContext("2d");
   playing = { ac, src, raf: 0 };
   src.onended = stopPreview;
-  const tick = () => { if (!playing) return; state.renderer.draw(ctx, Math.max(0, ac.currentTime - t0)); playing.raf = requestAnimationFrame(tick); };
-  tick();
+  const overlay = state.style === "overlay" && state.hasVideo;
+  if (overlay) {
+    // The muted video is the clock; the decoded sound starts with it.
+    const v = state.video;
+    v.currentTime = 0;
+    v.play().then(() => { if (playing) src.start(0, v.currentTime); }).catch(stopPreview);
+    const tick = () => { if (!playing) return; state.renderer.draw(ctx, v.currentTime); playing.raf = requestAnimationFrame(tick); };
+    tick();
+  } else {
+    const t0 = ac.currentTime + 0.05; src.start(t0);
+    const tick = () => { if (!playing) return; state.renderer.draw(ctx, Math.max(0, ac.currentTime - t0)); playing.raf = requestAnimationFrame(tick); };
+    tick();
+  }
   $("play").textContent = "❚❚";
 });
 
@@ -203,9 +251,12 @@ $("make").addEventListener("click", async () => {
   make.disabled = true; bar.hidden = false;
   $("make-note").textContent = "Making the video…";
   try {
-    const blob = await encode(state.renderer, state.buffer, state.buffer.duration, (f) => (bar.firstElementChild.style.width = `${Math.round(f * 100)}%`));
+    const progress = (f) => (bar.firstElementChild.style.width = `${Math.round(f * 100)}%`);
+    const blob = state.style === "overlay" && state.hasVideo
+      ? await encodeOverVideo(state.renderer, state.video, state.buffer, state.buffer.duration, progress)
+      : await encode(state.renderer, state.buffer, state.buffer.duration, progress);
     const r = state.result, ext = blob.type.includes("mp4") ? "mp4" : "webm";
-    const name = `rattil-${state.quran.surahs[r.surah - 1].name.toLowerCase()}-${r.from}-${r.to}.${ext}`;
+    const name = `rattil-${state.quran.surahs[r.surah - 1].name.toLowerCase()}-${r.from}-${r.to}${state.style === "overlay" ? "-overlay" : ""}.${ext}`;
     const a = $("download");
     if (a.href) URL.revokeObjectURL(a.href);
     a.href = URL.createObjectURL(blob); a.download = name; a.hidden = false;

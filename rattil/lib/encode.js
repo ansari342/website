@@ -6,6 +6,8 @@
 import { Muxer, ArrayBufferTarget } from "../vendor/mp4-muxer.mjs";
 import { W, H, FPS } from "./render.js";
 
+// H.264 + AAC in MP4 plays everywhere; a bare "video/mp4" can mean VP9 + Opus, so WebM is preferred over it.
+const RECORDER_TYPES = ["video/mp4;codecs=avc1.640028,mp4a.40.2", "video/mp4;codecs=avc1,mp4a.40.2", "video/mp4;codecs=avc1.42E01E,mp4a.40.2", "video/webm;codecs=vp9,opus", "video/webm"];
 const VIDEO_CODECS = ["avc1.640028", "avc1.4d0028", "avc1.42003e", "avc1.640033"];
 
 async function pickVideo() {
@@ -97,8 +99,7 @@ async function encodeRealtime(renderer, buffer, duration, onProgress) {
   const dest = ac.createMediaStreamDestination();
   const src = ac.createBufferSource(); src.buffer = buffer; src.connect(dest);
   const stream = new MediaStream([...cv.captureStream(FPS).getVideoTracks(), ...dest.stream.getAudioTracks()]);
-  // H.264 + AAC in MP4 plays everywhere; a bare "video/mp4" can mean VP9 + Opus, so WebM is preferred over it.
-  const type = ["video/mp4;codecs=avc1.640028,mp4a.40.2", "video/mp4;codecs=avc1,mp4a.40.2", "video/mp4;codecs=avc1.42E01E,mp4a.40.2", "video/webm;codecs=vp9,opus", "video/webm"].find((t) => MediaRecorder.isTypeSupported(t));
+  const type = RECORDER_TYPES.find((t) => MediaRecorder.isTypeSupported(t));
   const rec = new MediaRecorder(stream, { mimeType: type, videoBitsPerSecond: 8_000_000 });
   const parts = [];
   rec.ondataavailable = (e) => e.data.size && parts.push(e.data);
@@ -117,5 +118,48 @@ async function encodeRealtime(renderer, buffer, duration, onProgress) {
     requestAnimationFrame(tick);
   });
   rec.stop(); await stopped; src.stop(); ac.close();
+  return new Blob(parts, { type: type.split(";")[0] });
+}
+
+// Over-the-video style: play the person's video (muted) and record the
+// canvas as each frame is drawn with the text on top. The sound comes from
+// the decoded audio, started together with the video. Takes as long as the
+// clip.
+export async function encodeOverVideo(renderer, video, buffer, duration, onProgress = () => {}) {
+  const cv = Object.assign(document.createElement("canvas"), { width: W, height: H });
+  const ctx = cv.getContext("2d");
+  const ac = new (window.AudioContext || window.webkitAudioContext)();
+  await ac.resume();
+  const dest = ac.createMediaStreamDestination();
+  const src = ac.createBufferSource(); src.buffer = buffer; src.connect(dest);
+  const stream = new MediaStream([...cv.captureStream(FPS).getVideoTracks(), ...dest.stream.getAudioTracks()]);
+  const type = RECORDER_TYPES.find((t) => MediaRecorder.isTypeSupported(t));
+  const rec = new MediaRecorder(stream, { mimeType: type, videoBitsPerSecond: 10_000_000 });
+  const parts = [];
+  rec.ondataavailable = (e) => e.data.size && parts.push(e.data);
+  const stopped = new Promise((r) => (rec.onstop = r));
+
+  video.pause(); video.muted = true; video.currentTime = 0;
+  if (video.seeking || video.readyState < 2) await new Promise((r) => { video.addEventListener("seeked", r, { once: true }); video.addEventListener("canplay", r, { once: true }); });
+  renderer.draw(ctx, 0);
+  rec.start(500);
+  await video.play();
+  const t0 = ac.currentTime - video.currentTime;
+  src.start(0, Math.max(0, video.currentTime));
+  await new Promise((resolve) => {
+    const tick = () => {
+      const t = video.currentTime;
+      renderer.draw(ctx, t);
+      onProgress(Math.min(1, t / duration));
+      if (video.ended || ac.currentTime - t0 >= duration) resolve(); else requestAnimationFrame(tick);
+    };
+    video.addEventListener("ended", resolve, { once: true });
+    requestAnimationFrame(tick);
+  });
+  renderer.draw(ctx, duration);
+  await new Promise((r) => setTimeout(r, 200));
+  rec.stop(); await stopped;
+  video.pause(); try { src.stop(); } catch {}
+  ac.close?.();
   return new Blob(parts, { type: type.split(";")[0] });
 }

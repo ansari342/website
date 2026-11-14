@@ -60,6 +60,16 @@
     <!-- 4. Preview + export -->
     <section class="step" id="step-video" hidden>
       <h2 class="mono">04 · Video</h2>
+      <div class="styles" role="radiogroup" aria-label="Video style">
+        <button class="style" role="radio" aria-checked="true" data-style="animation">
+          <span class="style__name">Line animations</span>
+          <span class="mono muted">New video, black background</span>
+        </button>
+        <button class="style" role="radio" aria-checked="false" data-style="overlay" id="style-overlay">
+          <span class="style__name">Over my video</span>
+          <span class="mono muted" id="overlay-note">Your footage behind the text</span>
+        </button>
+      </div>
       <div class="preview">
         <canvas id="preview" width="1080" height="1920"></canvas>
         <button class="play" id="play" aria-label="Play preview">▶</button>

@@ -68,7 +68,14 @@ function textBlock(su, ayahs) {
   g.direction = "ltr"; g.fillStyle = "#A6A6A6"; g.font = `400 ${enSize}px ${EN_FONT}`;
   y = arH + 50 + enStep / 2;
   for (const l of enLines.flat()) { g.fillText(l, W / 2, y); y += enStep; }
-  return { img: c, arH, h: c.height };
+  // Same block with brighter English, for drawing over footage.
+  const light = canvas(c.width, c.height), lg2 = light.getContext("2d");
+  lg2.drawImage(c, 0, 0, c.width, Math.ceil(arH + 50), 0, 0, c.width, Math.ceil(arH + 50));
+  lg2.textAlign = "center"; lg2.textBaseline = "middle"; lg2.direction = "ltr";
+  lg2.fillStyle = "#E6E6E6"; lg2.font = `400 ${enSize}px ${EN_FONT}`;
+  y = arH + 50 + enStep / 2;
+  for (const l of enLines.flat()) { lg2.fillText(l, W / 2, y); y += enStep; }
+  return { img: c, light, arH, h: c.height };
 }
 
 // ---------------- scenes: each draws in a 1080x560 box, t = seconds on screen ----------------
@@ -300,12 +307,30 @@ export function chooseScenes(texts) {
   return out;
 }
 
-// plan: { surah: {name, ar, en}, units: [{ start, ayahs }], duration }
+// Draw a video frame to fill the 9:16 canvas (cropping the sides or top).
+export function drawCover(ctx, video) {
+  const vw = video.videoWidth, vh = video.videoHeight;
+  if (!vw || !vh) return;
+  const s = Math.max(W / vw, H / vh), w = vw * s, h = vh * s;
+  ctx.drawImage(video, (W - w) / 2, (H - h) / 2, w, h);
+}
+
+// plan: { surah: {name, ar, en}, units: [{ start, ayahs }], duration,
+//         style: "animation" | "overlay", video: <video> for the overlay style }
+// In the overlay style the person's footage is the background, darkened so
+// the text stays readable, and the line animations are left out.
 export function createRenderer(plan) {
+  const overlay = plan.style === "overlay" && plan.video;
   const blocks = plan.units.map((u) => textBlock(plan.surah, u.ayahs));
   const scenes = chooseScenes(plan.units.map((u) => u.ayahs.map((a) => plan.surah.en[a]).join(" "))).map((n) => SCENES[n]);
   const label = headerLabel(plan.surah.name);
   const layer = canvas(W, 560), lg = layer.getContext("2d");
+  // Darkening for the overlay style: an even layer, stronger behind the text.
+  const scrim = canvas(W, H), sg = scrim.getContext("2d");
+  sg.fillStyle = "rgba(0,0,0,0.38)"; sg.fillRect(0, 0, W, H);
+  const grad = sg.createLinearGradient(0, 180, 0, 1400);
+  grad.addColorStop(0, "rgba(0,0,0,0)"); grad.addColorStop(0.2, "rgba(0,0,0,0.42)"); grad.addColorStop(0.75, "rgba(0,0,0,0.42)"); grad.addColorStop(1, "rgba(0,0,0,0)");
+  sg.fillStyle = grad; sg.fillRect(0, 0, W, H);
 
   function weight(i, t) {
     const start = plan.units[i].start - LEAD;
@@ -317,8 +342,9 @@ export function createRenderer(plan) {
     scenes: scenes.map((f) => Object.keys(SCENES).find((k) => SCENES[k] === f)),
     draw(ctx, t) {
       ctx.globalAlpha = 1; ctx.fillStyle = "#000"; ctx.fillRect(0, 0, W, H);
+      if (overlay) { drawCover(ctx, plan.video); ctx.drawImage(scrim, 0, 0); }
       ctx.globalAlpha = ease(t / 0.8);
-      ctx.fillStyle = "#6E6E6E"; ctx.font = `400 28px ${EN_FONT}`; ctx.textAlign = "center"; ctx.textBaseline = "middle"; ctx.direction = "ltr";
+      ctx.fillStyle = overlay ? "#C8C8C8" : "#6E6E6E"; ctx.font = `400 28px ${EN_FONT}`; ctx.textAlign = "center"; ctx.textBaseline = "middle"; ctx.direction = "ltr";
       ctx.fillText(label, W / 2, 300);
       for (let i = 0; i < blocks.length; i++) {
         const a = weight(i, t);
@@ -327,7 +353,8 @@ export function createRenderer(plan) {
         // Arabic centred on y=640 when it fits; taller blocks stay between the header and the animation.
         let top = 640 - b.arH / 2;
         top = Math.max(370, Math.min(top, 1120 - b.h));
-        ctx.globalAlpha = a; ctx.drawImage(b.img, 0, top + dy);
+        ctx.globalAlpha = a; ctx.drawImage(overlay ? b.light : b.img, 0, top + dy);
+        if (overlay) continue;
         // The animation sits under the text; the longest ayahs fill the screen and go without one.
         const sceneTop = Math.max(AY, top + b.h + 30);
         if (sceneTop > H - 420) continue;
