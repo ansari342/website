@@ -5,6 +5,7 @@
 
 import { arabicDigits } from "./arabic.js";
 import { drawScene } from "./scenes.js";
+import { createWorld } from "./world.js";
 
 export const W = 1080, H = 1920, FPS = 30;
 const AR_FONT = '"Rattil Arabic"', EN_FONT = '"DM Sans"';
@@ -317,13 +318,18 @@ export function drawCover(ctx, video) {
 }
 
 // plan: { surah: {name, ar, en}, units: [{ start, ayahs }], duration,
-//         style: "animation" | "overlay", video: <video> for the overlay style,
+//         style: "animation" | "overlay" | "sky", video: <video> for the overlay style,
 //         scenes: { [0-based ayah]: scene } designed per ayah (see scenes.js) }
 // Ayahs without a designed scene use the built-in motifs.
 // In the overlay style the person's footage is the background, darkened so
 // the text stays readable, and the line animations are left out.
+// In the sky style one continuous drawn world (stars, then mountains through
+// dawn to blue hour, or moments designed for the verses: plan.world, one per
+// unit; see world.js) runs behind the text instead.
 export function createRenderer(plan) {
   const overlay = plan.style === "overlay" && plan.video;
+  const sky = plan.style === "sky" ? createWorld(plan.units, plan.duration, LEAD, plan.world) : null;
+  const backdrop = overlay || sky;
   const blocks = plan.units.map((u) => textBlock(plan.surah, u.ayahs));
   const scenes = chooseScenes(plan.units.map((u) => u.ayahs.map((a) => plan.surah.en[a]).join(" "))).map((n) => SCENES[n]);
   const label = headerLabel(plan.surah.name);
@@ -334,6 +340,11 @@ export function createRenderer(plan) {
   const grad = sg.createLinearGradient(0, 180, 0, 1400);
   grad.addColorStop(0, "rgba(0,0,0,0)"); grad.addColorStop(0.2, "rgba(0,0,0,0.42)"); grad.addColorStop(0.75, "rgba(0,0,0,0.42)"); grad.addColorStop(1, "rgba(0,0,0,0)");
   sg.fillStyle = grad; sg.fillRect(0, 0, W, H);
+  // Lighter darkening for the sky style: only a soft band behind the text.
+  const skyScrim = canvas(W, H), kg = skyScrim.getContext("2d");
+  const kgrad = kg.createLinearGradient(0, 150, 0, 1450);
+  kgrad.addColorStop(0, "rgba(0,0,0,0)"); kgrad.addColorStop(0.3, "rgba(0,0,0,0.38)"); kgrad.addColorStop(0.7, "rgba(0,0,0,0.38)"); kgrad.addColorStop(1, "rgba(0,0,0,0)");
+  kg.fillStyle = kgrad; kg.fillRect(0, 0, W, H);
 
   function weight(i, t) {
     const start = plan.units[i].start - LEAD;
@@ -346,8 +357,9 @@ export function createRenderer(plan) {
     draw(ctx, t) {
       ctx.globalAlpha = 1; ctx.fillStyle = "#000"; ctx.fillRect(0, 0, W, H);
       if (overlay) { drawCover(ctx, plan.video); ctx.drawImage(scrim, 0, 0); }
+      if (sky) { sky(ctx, t); ctx.globalAlpha = 1; ctx.drawImage(skyScrim, 0, 0); if (t < 0.6) { ctx.fillStyle = `rgba(0,0,0,${1 - t / 0.6})`; ctx.fillRect(0, 0, W, H); } }
       ctx.globalAlpha = ease(t / 0.8);
-      ctx.fillStyle = overlay ? "#C8C8C8" : "#6E6E6E"; ctx.font = `400 28px ${EN_FONT}`; ctx.textAlign = "center"; ctx.textBaseline = "middle"; ctx.direction = "ltr";
+      ctx.fillStyle = backdrop ? "#C8C8C8" : "#6E6E6E"; ctx.font = `400 28px ${EN_FONT}`; ctx.textAlign = "center"; ctx.textBaseline = "middle"; ctx.direction = "ltr";
       ctx.fillText(label, W / 2, 300);
       for (let i = 0; i < blocks.length; i++) {
         const a = weight(i, t);
@@ -356,8 +368,8 @@ export function createRenderer(plan) {
         // Arabic centred on y=640 when it fits; taller blocks stay between the header and the animation.
         let top = 640 - b.arH / 2;
         top = Math.max(370, Math.min(top, 1120 - b.h));
-        ctx.globalAlpha = a; ctx.drawImage(overlay ? b.light : b.img, 0, top + dy);
-        if (overlay) continue;
+        ctx.globalAlpha = a; ctx.drawImage(backdrop ? b.light : b.img, 0, top + dy);
+        if (backdrop) continue;
         // The animation sits under the text; the longest ayahs fill the screen and go without one.
         const sceneTop = Math.max(AY, top + b.h + 30);
         if (sceneTop > H - 420) continue;

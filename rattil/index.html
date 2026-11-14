@@ -71,6 +71,18 @@
           <span class="style__name">Over my video</span>
           <span class="mono muted" id="overlay-note">Your footage behind the text</span>
         </button>
+        <button class="style" role="radio" aria-checked="false" data-style="sky">
+          <span class="style__name">Sky</span>
+          <span class="mono muted">Stars to dawn to mist, one continuous shot</span>
+        </button>
+        <button class="style" role="radio" aria-checked="false" data-style="nature">
+          <span class="style__name">Nature (AI)</span>
+          <span class="mono muted">Sky and landscape shaped by what each ayah says</span>
+        </button>
+      </div>
+      <div class="skyopts" id="sky-opts" hidden>
+        <select class="skyopts__pick mono" id="sky-pick" aria-label="Nature design" hidden></select>
+        <button class="btn btn--ghost" id="sky-design">Design another</button>
       </div>
       <p class="mono muted" id="scene-note"></p>
       <div class="preview">
