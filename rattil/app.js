@@ -48,10 +48,7 @@ async function start(file) {
   setStep(0); setBar(0);
   try {
     const bytes = await file.arrayBuffer();
-    const ac = new (window.AudioContext || window.webkitAudioContext)();
-    // Callback form as well as the promise, for older Safari.
-    state.buffer = await new Promise((ok, fail) => { const p = ac.decodeAudioData(bytes, ok, fail); if (p && p.then) p.then(ok, fail); });
-    ac.close?.();
+    state.buffer = await decodeAudio(bytes);
   } catch (err) {
     setStep(0, "This file's audio could not be read. Try an MP4, MOV, M4A, MP3 or WAV file.");
     showError(`couldn't read the audio (${err?.message || err || "unsupported format"})`);
@@ -66,6 +63,25 @@ async function start(file) {
   if (!state.groups.length) { setStep(1, "No recitation was heard in this file."); return; }
   await quranReady;
   listen(mono);
+}
+
+// Decode the file's sound. If the browser refuses the file as a whole (iPhone
+// videos with a spatial-audio track, in Safari), copy out just the AAC track
+// and decode that.
+async function decodeAudio(bytes) {
+  const ac = new (window.AudioContext || window.webkitAudioContext)();
+  // Callback form as well as the promise, for older Safari.
+  const decode = (b) => new Promise((ok, fail) => { const p = ac.decodeAudioData(b, ok, fail); if (p && p.then) p.then(ok, fail); });
+  try {
+    return await decode(bytes.slice(0)); // decoding detaches the buffer, so pass a copy
+  } catch (first) {
+    const { extractAac } = await import("./lib/extract.js");
+    let m4a;
+    try { m4a = await extractAac(bytes); } catch { throw first; }
+    return await decode(m4a);
+  } finally {
+    ac.close?.();
+  }
 }
 
 // Down-mix and resample with the browser's own filter.
