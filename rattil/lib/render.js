@@ -39,7 +39,7 @@ function wrapLines(ctx, text, maxW) {
 // sized so the English reads larger than the Arabic. Each ayah
 // gets a line of its own at the largest size that fits; longer ayahs wrap,
 // and very long ones shrink until the block fits.
-const EN_RATIO = 0.8;    // English px per Arabic px: Amiri's letters are small for their size
+const EN_RATIO = 0.85;   // English px per Arabic px: Amiri's letters are small for their size
 function textBlock(su, ayahs) {
   const meas = canvas(10, 10).getContext("2d");
   // A no-break space keeps the end-of-ayah ornament with the last word.
@@ -49,10 +49,10 @@ function textBlock(su, ayahs) {
   const AR_LH = 1.75, EN_LH = 1.25, GAP = 34;
   const height = (ar, size, en, enSize) => ar.flat().length * size * AR_LH + GAP + en.flat().length * enSize * EN_LH;
 
-  let size = 84, arLines, enLines, enSize;
+  let size = 72, arLines, enLines, enSize;
   // First choice: every ayah on one line.
-  for (; size >= 60; size -= 4) { arLines = arWrap(size); if (arLines.every((l) => l.length === 1)) break; }
-  if (size < 60) size = 60;
+  for (; size >= 52; size -= 4) { arLines = arWrap(size); if (arLines.every((l) => l.length === 1)) break; }
+  if (size < 52) size = 52;
   // Otherwise wrap, shrinking until it fits above the animation (760px) or,
   // for the longest ayahs, the whole screen below the header (1450px).
   for (;;) {
