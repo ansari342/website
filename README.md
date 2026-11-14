@@ -128,7 +128,7 @@ counts. Vercel environment variables:
 | Variable | What it's for |
 |---|---|
 | `ANTHROPIC_API_KEY` | For the AI animations. |
-| `KV_REST_API_URL`, `KV_REST_API_TOKEN` | Upstash Redis (Vercel → Storage → Upstash for Redis), which keeps the daily total. Without it, no AI calls are made. |
+| `KV_REST_API_URL`, `KV_REST_API_TOKEN` | Optional: Upstash Redis (Vercel → Storage → Upstash for Redis) makes the daily cap exact across servers. Without it, each server instance keeps a rough total in memory. |
 | `DAILY_LIMIT_USD` | Optional; defaults to 1. |
 
 The Quran text is bundled in `rattil/data/quran.json`: Hafs in Uthmani script

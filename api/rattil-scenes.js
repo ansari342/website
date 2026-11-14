@@ -13,7 +13,7 @@
 import { readFileSync } from "node:fs";
 import { MODEL, planPrompt, scenesPrompt, worldPrompt, parseJson, cleanPlan } from "../lib/rattil-prompt.js";
 import { MOMENT_FIELDS, presetExample } from "../rattil/lib/world.js";
-import { withinDailyLimit, estimateUsd, redisFromEnv, OverLimit, spentTodayUsd, dailyLimitUsd } from "../lib/spend.js";
+import { withinDailyLimit, estimateUsd, redisFromEnv, spendStore, OverLimit, spentTodayUsd, dailyLimitUsd } from "../lib/spend.js";
 
 
 let quran = null;
@@ -23,7 +23,7 @@ const json = (body, status = 200) => new Response(JSON.stringify(body), { status
 
 // One Claude call, inside the daily spending cap.
 function ask({ system, user }, maxTokens) {
-  return withinDailyLimit(redisFromEnv(), estimateUsd(system.length + user.length, maxTokens), async () => {
+  return withinDailyLimit(spendStore(), estimateUsd(system.length + user.length, maxTokens), async () => {
     const res = await fetch("https://api.anthropic.com/v1/messages", {
       method: "POST",
       headers: { "x-api-key": process.env.ANTHROPIC_API_KEY, "anthropic-version": "2023-06-01", "content-type": "application/json" },
@@ -75,6 +75,6 @@ export async function POST(request) {
 
 // GET /api/rattil-scenes: today's spending and whether everything is set up.
 export async function GET() {
-  const redis = redisFromEnv();
-  return json({ spentUsd: redis ? await spentTodayUsd(redis) : null, limitUsd: dailyLimitUsd(), storage: !!redis, key: !!process.env.ANTHROPIC_API_KEY });
+  const shared = !!redisFromEnv();
+  return json({ spentUsd: await spentTodayUsd(spendStore()), limitUsd: dailyLimitUsd(), storage: shared ? "redis" : "memory (rough: per server instance)", key: !!process.env.ANTHROPIC_API_KEY });
 }
