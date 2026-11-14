@@ -6,6 +6,7 @@ import { buildIndex, matchRecitation } from "./lib/match.js";
 import { createRenderer, W, H } from "./lib/render.js";
 import { encode } from "./lib/encode.js";
 import { readAac, extractAac } from "./lib/extract.js";
+import { cleanScene } from "./lib/scenes.js";
 import { arabicDigits } from "./lib/arabic.js";
 
 const $ = (id) => document.getElementById(id);
@@ -20,7 +21,7 @@ window.addEventListener("error", (e) => showError(e.message || "unknown error"))
 window.addEventListener("unhandledrejection", (e) => showError(e.reason?.message || String(e.reason)));
 const fmt = (t) => `${Math.floor(t / 60)}:${String(Math.floor(t % 60)).padStart(2, "0")}`;
 
-const state = { quran: null, index: null, buffer: null, groups: [], segments: [], result: null, renderer: null, file: null, video: null, hasVideo: false, style: "animation", aac: null };
+const state = { quran: null, index: null, buffer: null, groups: [], segments: [], result: null, renderer: null, file: null, video: null, hasVideo: false, style: "animation", aac: null, scenes: null, sceneKey: "" };
 
 const quranReady = fetch("data/quran.json").then((r) => r.json()).then((q) => { state.quran = q; fillSurahs(); return q; });
 const fontsReady = Promise.all([document.fonts.load('96px "Rattil Arabic"', "بِسۡمِ"), document.fonts.load('38px "DM Sans"', "In")]);
@@ -193,6 +194,60 @@ function showReview(r, failed = false, manual = false) {
   $("verdict").innerHTML = `${manual ? "Using" : "This sounds like"} <strong>Surah ${su.name}, ${range}</strong>.${sure} If it's wrong, change it below.`;
   $("screens").innerHTML = r.units.map((u) => `<li><span class="t mono">${fmt(u.start)}</span><span class="ar">${u.ayahs.map((a) => su.ar[a] + " \u06DD" + arabicDigits(a + 1)).join(" ")}</span><span class="en">${u.ayahs.map((a) => `${a + 1}. ${su.en[a]}`).join("<br>")}</span></li>`).join("");
   buildVideo();
+  designScenes(r);
+}
+
+// ---------- per-ayah animations designed by Claude ----------
+// A plan for the whole passage, then scenes a few ayahs at a time in
+// parallel. Kept in this browser so the same passage is free next time.
+async function designScenes(r) {
+  const key = `rattil-scenes:v1:${r.surah}:${r.from}-${r.to}`;
+  if (state.sceneKey === key && state.scenes) return;
+  state.sceneKey = key; state.scenes = null;
+  const note = (s) => { if (state.sceneKey === key) $("scene-note").textContent = s; };
+  let saved = null;
+  try { saved = JSON.parse(localStorage.getItem(key) || "null"); } catch {}
+  if (saved) return applyScenes(key, saved, note);
+  note("Designing an animation for each ayah…");
+  const call = async (body) => {
+    const res = await fetch("/api/rattil-scenes", { method: "POST", headers: { "content-type": "application/json" }, body: JSON.stringify({ surah: r.surah, from: r.from, to: r.to, ...body }) });
+    const data = await res.json().catch(() => ({}));
+    if (!res.ok) throw new Error(data.error || `HTTP ${res.status}`);
+    return data;
+  };
+  try {
+    const { plan } = await call({});
+    const ns = Array.from({ length: r.to - r.from + 1 }, (_, i) => r.from + i);
+    const chunks = [];
+    for (let i = 0; i < ns.length; i += 3) chunks.push(ns.slice(i, i + 3));
+    const found = {};
+    let done = 0;
+    // At most 4 requests at a time.
+    const queue = [...chunks];
+    await Promise.all(Array.from({ length: Math.min(4, chunks.length) }, async () => {
+      while (queue.length) {
+        const part = queue.shift();
+        try { for (const s of (await call({ plan, ayahs: part })).scenes || []) found[s.ayah] = s; } catch {}
+        done += part.length;
+        note(`Designing an animation for each ayah… ${done} of ${ns.length}`);
+      }
+    }));
+    const result = { theme: plan.theme, scenes: found };
+    if (Object.keys(found).length) { try { localStorage.setItem(key, JSON.stringify(result)); } catch {} }
+    applyScenes(key, result, note);
+  } catch (err) {
+    note(err.message === "not configured" ? "Using built-in animations (AI scenes aren't set up on this site yet)." : `Using built-in animations (couldn't design scenes: ${err.message}).`);
+  }
+}
+
+function applyScenes(key, result, note) {
+  if (state.sceneKey !== key) return;
+  const map = {};
+  for (const [n, s] of Object.entries(result.scenes || {})) { const c = cleanScene(s); if (c) map[Number(n) - 1] = c; }
+  const count = Object.keys(map).length, total = state.result.to - state.result.from + 1;
+  state.scenes = map;
+  note(count === total ? "Each ayah has its own animation." : `${count} of ${total} ayahs have their own animation; the rest use built-in ones.`);
+  buildVideo();
 }
 
 // ---------- preview + export ----------
@@ -203,7 +258,7 @@ async function buildVideo() {
   const r = state.result, su = state.quran.surahs[r.surah - 1];
   const overlay = state.style === "overlay" && state.hasVideo;
   if (overlay && state.video.readyState < 2) await new Promise((ok) => { state.video.addEventListener("loadeddata", ok, { once: true }); setTimeout(ok, 3000); });
-  state.renderer = createRenderer({ surah: su, units: r.units, duration: state.buffer.duration, style: overlay ? "overlay" : "animation", video: state.video });
+  state.renderer = createRenderer({ surah: su, units: r.units, duration: state.buffer.duration, style: overlay ? "overlay" : "animation", video: state.video, scenes: state.scenes });
   updateStyles();
   $("step-video").hidden = false;
   $("download").hidden = $("share").hidden = true;

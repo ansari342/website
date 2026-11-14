@@ -104,7 +104,17 @@ the recording is never uploaded.
    verified text is shown. Ayahs joined in one breath share a screen, because the
    pause is the only boundary that can be trusted. The visitor can correct the
    surah and range, and if the model can't load they pick the range by hand.
-4. **Video.** `rattil/lib/render.js` draws the frames, and `rattil/lib/encode.js`
+4. **Animations.** For the line-animation style, `api/rattil-scenes.js` asks
+   Claude (`claude-sonnet-5-5`) to design a scene for every ayah: first a plan
+   for the whole passage (its theme, one recurring visual thread, an image per
+   ayah), then the full scenes a few ayahs at a time, in parallel. Scenes are
+   JSON in a small drawing format (named line-art shapes, paths, waves, rays,
+   particles, branching, with timing and motion) that `rattil/lib/scenes.js`
+   checks and draws. The rules forbid depicting people, prophets, angels,
+   faces or animals. Designed scenes are saved in the browser per passage.
+   **Needs `ANTHROPIC_API_KEY` in Vercel**; without it, or if a call fails,
+   the built-in motifs are used.
+5. **Video.** `rattil/lib/render.js` draws the frames, and `rattil/lib/encode.js`
    makes an MP4 with WebCodecs (H.264 + AAC). Browsers without an AAC encoder
    (Chrome on Linux, for example) record in real time instead, which gives WebM.
 

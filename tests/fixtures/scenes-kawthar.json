@@ -1,0 +1,40 @@
+{
+  "plan": {
+    "theme": "A consolation to the Prophet when his enemies mocked him as cut off: he has been given abundance, so he should turn wholly to his Lord, while the one who hates him is the one truly cut off.",
+    "thread": "A river of abundance that flows from the top left across the scenes; it feeds prayer in the second and is absent from the cut-off tree in the third.",
+    "ayahs": [
+      { "n": 1, "meaning": "Allah has granted the Prophet al-Kawthar, a river and abundant good.", "image": "A river descends from a source of light and widens into many streams that fill the frame." },
+      { "n": 2, "meaning": "So pray to your Lord and sacrifice for Him alone, in gratitude.", "image": "The river settles into a still pool before a prayer niche; light falls into the niche and ripples outward." },
+      { "n": 3, "meaning": "The one who hates you is the one cut off, without legacy.", "image": "A tree away from the river withers and is severed; its crown scatters while the river keeps flowing at the edge." }
+    ]
+  },
+  "scenes": [
+    { "ayah": 1, "idea": "Abundance: a river flows from light and branches into many streams", "elements": [
+      { "type": "rays", "x": 160, "y": 70, "count": 9, "inner": 18, "outer": 70, "spread": 360, "dir": 0, "at": 0, "dur": 0.15, "width": 1.5, "alpha": 0.7, "motion": { "kind": "pulse", "amount": 0.6, "speed": 1 } },
+      { "type": "path", "points": [[160, 90], [240, 200], [420, 260], [620, 250], [820, 300], [1000, 330]], "smooth": true, "at": 0.08, "dur": 0.3, "width": 3.5 },
+      { "type": "wave", "x0": 120, "x1": 1000, "y": 380, "amp": 16, "waves": 4, "speed": 1.2, "at": 0.3, "dur": 0.25, "width": 2, "alpha": 0.8 },
+      { "type": "wave", "x0": 160, "x1": 960, "y": 430, "amp": 12, "waves": 5, "speed": 1.5, "at": 0.4, "dur": 0.25, "width": 1.5, "alpha": 0.6 },
+      { "type": "wave", "x0": 220, "x1": 900, "y": 475, "amp": 9, "waves": 6, "speed": 1.8, "at": 0.5, "dur": 0.25, "width": 1.2, "alpha": 0.45 },
+      { "type": "particles", "mode": "drift", "count": 40, "region": [120, 340, 1000, 500], "size": 2.2, "speed": 1, "at": 0.55, "dur": 0.3, "alpha": 0.7 },
+      { "type": "dots", "points": [[300, 225], [480, 262], [660, 252], [840, 305]], "size": 5, "at": 0.65, "dur": 0.2, "motion": { "kind": "pulse", "amount": 0.8, "speed": 1.2 } }
+    ]},
+    { "ayah": 2, "idea": "Gratitude: the river stills into a pool before a niche, light falls and ripples out", "elements": [
+      { "type": "path", "points": [[60, 470], [1020, 470]], "at": 0, "dur": 0.12, "width": 1.5, "alpha": 0.6 },
+      { "type": "glyph", "name": "niche", "x": 540, "y": 270, "size": 380, "at": 0.05, "dur": 0.35, "width": 3 },
+      { "type": "wave", "x0": 60, "x1": 360, "y": 500, "amp": 6, "waves": 3, "speed": 0.6, "at": 0.15, "dur": 0.2, "width": 1.5, "alpha": 0.6 },
+      { "type": "wave", "x0": 720, "x1": 1020, "y": 500, "amp": 6, "waves": 3, "speed": 0.6, "at": 0.15, "dur": 0.2, "width": 1.5, "alpha": 0.6 },
+      { "type": "path", "points": [[540, 40], [540, 430]], "at": 0.4, "dur": 0.2, "width": 2, "alpha": 0.85 },
+      { "type": "ripples", "x": 540, "y": 440, "count": 4, "maxR": 260, "at": 0.55, "dur": 0.2, "width": 1.5, "alpha": 0.7 },
+      { "type": "particles", "mode": "rise", "count": 18, "region": [440, 200, 640, 440], "size": 2, "speed": 0.6, "at": 0.6, "dur": 0.25, "alpha": 0.7 }
+    ]},
+    { "ayah": 3, "idea": "Cut off: a tree far from the river withers, is severed, and its crown scatters", "elements": [
+      { "type": "path", "points": [[200, 480], [760, 480]], "at": 0, "dur": 0.1, "width": 1.5, "alpha": 0.6 },
+      { "type": "branch", "x": 470, "y": 480, "len": 120, "depth": 5, "dir": -90, "spread": 26, "at": 0.05, "dur": 0.3, "width": 2.5, "end": 0.6 },
+      { "type": "path", "points": [[420, 400], [520, 370]], "at": 0.45, "dur": 0.06, "width": 4 },
+      { "type": "particles", "mode": "scatter", "count": 50, "region": [300, 80, 640, 360], "size": 2.4, "speed": 0.8, "at": 0.55, "dur": 0.25, "alpha": 0.8, "end": 0.95 },
+      { "type": "path", "points": [[470, 480], [470, 395]], "at": 0.6, "dur": 0.08, "width": 3 },
+      { "type": "wave", "x0": 820, "x1": 1020, "y": 120, "amp": 10, "waves": 2, "speed": 1.4, "at": 0.1, "dur": 0.2, "width": 2, "alpha": 0.8 },
+      { "type": "wave", "x0": 840, "x1": 1020, "y": 160, "amp": 8, "waves": 2, "speed": 1.6, "at": 0.15, "dur": 0.2, "width": 1.5, "alpha": 0.6 }
+    ]}
+  ]
+}

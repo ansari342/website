@@ -1,0 +1,5 @@
+{
+  "functions": {
+    "api/rattil-scenes.js": { "maxDuration": 120, "includeFiles": "rattil/data/quran.json" }
+  }
+}
