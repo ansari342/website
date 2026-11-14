@@ -54,6 +54,7 @@ test("plans are reshaped to one entry per ayah and size-limited", () => {
 test("JSON is found inside a wordy reply", () => {
   assert.deepEqual(parseJson('Here you go:\n```json\n{"a": [1, {"b": 2}]}\n```'), { a: [1, { b: 2 }] });
   assert.throws(() => parseJson("no json"));
+  assert.deepEqual(parseJson('{"a": [1, 2,],\n  // a note\n "b": {"c": 3,},}'), { a: [1, 2], b: { c: 3 } });
 });
 
 test("prompts carry the passage, the rules and the glyph list", () => {
