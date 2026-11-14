@@ -112,5 +112,5 @@ The Quran text is bundled in `rattil/data/quran.json`: Hafs in Uthmani script
 and the Saheeh International translation, from fawazahmed0/quran-api. Rebuild it
 with `node scripts/build-quran-data.mjs <folder>`, which checks the text letter
 by letter against a second Hafs copy (see the script for the files it needs).
-Fonts (Amiri Quran, DM Sans; SIL Open Font License) are self-hosted in
+Fonts (Noto Sans Arabic at regular weight, DM Sans; SIL Open Font License) are self-hosted in
 `rattil/fonts/`.

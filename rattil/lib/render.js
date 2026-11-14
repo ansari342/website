@@ -6,7 +6,7 @@
 import { arabicDigits } from "./arabic.js";
 
 export const W = 1080, H = 1920, FPS = 30;
-const AR_FONT = '"Amiri Quran"', EN_FONT = '"DM Sans"';
+const AR_FONT = '"Rattil Arabic"', EN_FONT = '"DM Sans"';
 const LEAD = 0.35, XF = 0.45, AY = 1150; // text leads the voice; crossfade; animation top
 
 const clamp = (x, a = 0, b = 1) => Math.max(a, Math.min(b, x));
@@ -34,7 +34,7 @@ function wrapLines(ctx, text, maxW) {
 
 // One image per screen: the Arabic of its ayahs, then their English.
 // Each ayah gets a line of its own at the largest size that fits (down to
-// 72px); longer ayahs wrap, and very long ones shrink until the block fits.
+// 64px); longer ayahs wrap, and very long ones shrink until the block fits.
 function textBlock(su, ayahs) {
   const meas = canvas(10, 10).getContext("2d");
   // A no-break space keeps the end-of-ayah ornament with the last word.
@@ -43,10 +43,10 @@ function textBlock(su, ayahs) {
   const enWrap = (size) => { meas.direction = "ltr"; meas.font = `400 ${size}px ${EN_FONT}`; return ayahs.map((a) => wrapLines(meas, su.en[a], 860)); };
   const height = (ar, size, en, enSize) => ar.flat().length * size * 1.7 + 50 + en.flat().length * enSize * 1.4;
 
-  let size = ayahs.length === 1 ? 112 : 92, enSize = 38, arLines, enLines;
+  let size = 96, enSize = 38, arLines, enLines;
   // First choice: every ayah on one line.
-  for (; size >= 72; size -= 4) { arLines = arWrap(size); if (arLines.every((l) => l.length === 1)) break; }
-  if (size < 72) size = 72;
+  for (; size >= 64; size -= 4) { arLines = arWrap(size); if (arLines.every((l) => l.length === 1)) break; }
+  if (size < 64) size = 64;
   // Otherwise wrap, shrinking until it fits above the animation (760px) or,
   // for the longest ayahs, the whole screen below the header (1450px).
   for (;;) {

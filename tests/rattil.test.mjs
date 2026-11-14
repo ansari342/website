@@ -25,7 +25,7 @@ test("data has every surah and ayah, and no broken tanween spaces", () => {
   for (const s of quran.surahs) for (const t of s.ar) assert.ok(!/[ࣰ-ࣲ] [اى][ۖ-ۭ]?( |$)/.test(t));
 });
 
-test("finds Al-Qalam 1-6 with joined ayahs, ignoring the isti'adha", () => {
+test("finds Al-Qalam 1-6, one screen per ayah even when joined, ignoring the isti'adha", () => {
   const segs = [
     { start: 0.5, end: 3, text: "اعوذ بالله من الشيطن الرجيم" },
     { start: 3.5, end: 8, text: garble(ayah(68, 1)) },
@@ -37,8 +37,11 @@ test("finds Al-Qalam 1-6 with joined ayahs, ignoring the isti'adha", () => {
   assert.equal(r.surah, 68);
   assert.equal(r.from, 1);
   assert.equal(r.to, 6);
-  assert.deepEqual(r.units.map((u) => u.ayahs), [[0], [1], [2, 3], [4, 5]]);
-  assert.deepEqual(r.units.slice(1).map((u) => u.start), [9, 15, 25]);
+  assert.deepEqual(r.units.map((u) => u.ayahs), [[0], [1], [2], [3], [4], [5]]);
+  // Ayahs 1, 2, 3 and 5 open a breath; 4 and 6 start inside one.
+  assert.deepEqual([r.units[1].start, r.units[2].start, r.units[4].start], [9, 15, 25]);
+  assert.ok(r.units[3].start > 15 && r.units[3].start < 24);
+  assert.ok(r.units[5].start > 25 && r.units[5].start < 31);
 });
 
 test("a pause in the middle of an ayah keeps it on one screen", () => {
@@ -70,7 +73,9 @@ test("a range picked by hand is used even if the words do not line up", () => {
   const segs = [{ start: 1, end: 5, text: "لا شيء" }, { start: 6, end: 9, text: "كلام" }];
   const r = matchRecitation(quran, index, segs, { surah: 112, from: 1, to: 4 });
   assert.deepEqual([r.surah, r.from, r.to], [112, 1, 4]);
-  assert.deepEqual(r.units.map((u) => u.ayahs), [[0], [1, 2, 3]]);
+  assert.deepEqual(r.units.map((u) => u.ayahs), [[0], [1], [2], [3]]);
+  assert.equal(r.units[1].start, 6);
+  assert.ok(r.units[3].start > r.units[2].start && r.units[3].start < 9);
 });
 
 test("noise returns no match", () => {
