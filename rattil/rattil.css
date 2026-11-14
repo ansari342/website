@@ -1,4 +1,4 @@
-@font-face { font-family: "Rattil Arabic"; src: url("fonts/NotoSansArabic-Regular.ttf") format("truetype"); font-display: block; }
+@font-face { font-family: "Rattil Arabic"; src: url("fonts/AmiriQuran-Regular.ttf") format("truetype"); font-display: block; }
 @font-face { font-family: "DM Sans"; src: url("fonts/DMSans.ttf") format("truetype"); font-weight: 100 1000; font-display: block; }
 
 :root {
@@ -65,7 +65,7 @@ select { height: 44px; padding: 0 10px; border: 1px solid var(--rule); border-ra
 .screens { list-style: none; margin: 24px 0 0; padding: 0; border-top: 1px solid var(--rule); }
 .screens li { display: grid; grid-template-columns: 64px 1fr; gap: 4px 16px; padding: 14px 0; border-bottom: 1px solid var(--rule); }
 .screens .t { color: var(--muted); }
-.screens .ar { font: 24px/1.9 "Rattil Arabic", sans-serif; direction: rtl; text-align: right; }
+.screens .ar { font: 26px/2  "Rattil Arabic", sans-serif; direction: rtl; text-align: right; }
 .screens .en { grid-column: 2; color: var(--muted); font-size: 15px; }
 
 .styles { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-bottom: 20px; }

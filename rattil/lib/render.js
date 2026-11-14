@@ -35,48 +35,49 @@ function wrapLines(ctx, text, maxW) {
 }
 
 // One image per screen: the Arabic of its ayahs, then their English.
-// Each ayah gets a line of its own at the largest size that fits (down to
-// 64px); longer ayahs wrap, and very long ones shrink until the block fits.
+// Arabic in Amiri Quran (classic Naskh), English below it in white DM Sans,
+// sized so the English reads larger than the Arabic. Each ayah
+// gets a line of its own at the largest size that fits; longer ayahs wrap,
+// and very long ones shrink until the block fits.
+const EN_RATIO = 0.8;    // English px per Arabic px: Amiri's letters are small for their size
 function textBlock(su, ayahs) {
   const meas = canvas(10, 10).getContext("2d");
   // A no-break space keeps the end-of-ayah ornament with the last word.
   const texts = ayahs.map((a) => su.ar[a] + "\u00A0\u06DD" + arabicDigits(a + 1));
   const arWrap = (size) => { meas.direction = "rtl"; meas.font = `${size}px ${AR_FONT}`; return texts.map((t) => wrapLines(meas, t, 920)); };
-  const enWrap = (size) => { meas.direction = "ltr"; meas.font = `400 ${size}px ${EN_FONT}`; return ayahs.map((a) => wrapLines(meas, su.en[a], 860)); };
-  const height = (ar, size, en, enSize) => ar.flat().length * size * 1.7 + 50 + en.flat().length * enSize * 1.4;
+  const enWrap = (size) => { meas.direction = "ltr"; meas.font = `400 ${size}px ${EN_FONT}`; return ayahs.map((a) => wrapLines(meas, su.en[a], 900)); };
+  const AR_LH = 1.75, EN_LH = 1.25, GAP = 34;
+  const height = (ar, size, en, enSize) => ar.flat().length * size * AR_LH + GAP + en.flat().length * enSize * EN_LH;
 
-  let size = 96, enSize = 38, arLines, enLines;
+  let size = 84, arLines, enLines, enSize;
   // First choice: every ayah on one line.
-  for (; size >= 64; size -= 4) { arLines = arWrap(size); if (arLines.every((l) => l.length === 1)) break; }
-  if (size < 64) size = 64;
+  for (; size >= 60; size -= 4) { arLines = arWrap(size); if (arLines.every((l) => l.length === 1)) break; }
+  if (size < 60) size = 60;
   // Otherwise wrap, shrinking until it fits above the animation (760px) or,
   // for the longest ayahs, the whole screen below the header (1450px).
   for (;;) {
+    enSize = Math.round(size * EN_RATIO);
     arLines = arWrap(size); enLines = enWrap(enSize);
     const h = height(arLines, size, enLines, enSize);
-    if (h <= 760 || (size <= 56 && h <= 1450) || (size <= 36 && enSize <= 26)) break;
-    if (size > 56 || h > 1450) size -= 4;
-    if (size < 64 && enSize > 26) enSize -= 2;
-    if (size < 36) size = 36;
+    if (h <= 760 || (size <= 52 && h <= 1450) || size <= 34) break;
+    size -= 4;
   }
-  const arStep = size * 1.7, enStep = enSize * 1.4;
+  const arStep = size * AR_LH, enStep = enSize * EN_LH;
   const arH = arLines.flat().length * arStep, enH = enLines.flat().length * enStep;
-  const c = canvas(W, Math.ceil(arH + 50 + enH + 20));
-  const g = c.getContext("2d");
-  g.textAlign = "center"; g.textBaseline = "middle";
-  g.direction = "rtl"; g.fillStyle = "#FFFFFF"; g.font = `${size}px ${AR_FONT}`;
-  let y = arStep / 2;
-  for (const l of arLines.flat()) { g.fillText(l, W / 2, y); y += arStep; }
-  g.direction = "ltr"; g.fillStyle = "#A6A6A6"; g.font = `400 ${enSize}px ${EN_FONT}`;
-  y = arH + 50 + enStep / 2;
-  for (const l of enLines.flat()) { g.fillText(l, W / 2, y); y += enStep; }
-  // Same block with brighter English, for drawing over footage.
-  const light = canvas(c.width, c.height), lg2 = light.getContext("2d");
-  lg2.drawImage(c, 0, 0, c.width, Math.ceil(arH + 50), 0, 0, c.width, Math.ceil(arH + 50));
-  lg2.textAlign = "center"; lg2.textBaseline = "middle"; lg2.direction = "ltr";
-  lg2.fillStyle = "#E6E6E6"; lg2.font = `400 ${enSize}px ${EN_FONT}`;
-  y = arH + 50 + enStep / 2;
-  for (const l of enLines.flat()) { lg2.fillText(l, W / 2, y); y += enStep; }
+  const draw = (shadow) => {
+    const c = canvas(W, Math.ceil(arH + GAP + enH + 30)), g = c.getContext("2d");
+    if (shadow) { g.shadowColor = "rgba(0,0,0,0.55)"; g.shadowBlur = 14; g.shadowOffsetY = 2; }
+    g.textAlign = "center"; g.textBaseline = "middle"; g.fillStyle = "#FFFFFF";
+    g.direction = "rtl"; g.font = `${size}px ${AR_FONT}`;
+    let y = arStep / 2;
+    for (const l of arLines.flat()) { g.fillText(l, W / 2, y); y += arStep; }
+    g.direction = "ltr"; g.font = `400 ${enSize}px ${EN_FONT}`;
+    y = arH + GAP + enStep / 2;
+    for (const l of enLines.flat()) { g.fillText(l, W / 2, y); y += enStep; }
+    return c;
+  };
+  // Plain on black; with a soft shadow for drawing over footage or sky.
+  const c = draw(false), light = draw(true);
   return { img: c, light, arH, h: c.height };
 }
 
