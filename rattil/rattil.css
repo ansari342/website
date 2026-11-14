@@ -68,7 +68,7 @@ select { height: 44px; padding: 0 10px; border: 1px solid var(--rule); border-ra
 .screens .ar { font: 24px/1.9 "Rattil Arabic", sans-serif; direction: rtl; text-align: right; }
 .screens .en { grid-column: 2; color: var(--muted); font-size: 15px; }
 
-.styles { display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; margin-bottom: 20px; }
+.styles { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-bottom: 20px; }
 .style { display: grid; gap: 4px; text-align: left; padding: 14px 16px; border: 1px solid var(--rule); background: var(--bg-2); color: var(--fg); cursor: pointer; font: inherit; }
 .style__name { font-size: 18px; }
 .style[aria-checked="true"] { border-color: var(--accent); box-shadow: inset 0 0 0 1px var(--accent); }

@@ -90,12 +90,14 @@ function updateStyles() {
   overlay.disabled = !state.hasVideo;
   $("overlay-note").textContent = state.hasVideo ? "Your footage behind the text" : "Needs a video file, not audio";
   if (!state.hasVideo && state.style === "overlay") setStyle("animation");
-  $("sky-opts").hidden = state.style !== "sky";
+  $("sky-opts").hidden = state.style !== "nature";
 }
 function setStyle(style) {
   state.style = style;
   document.querySelectorAll(".style").forEach((b) => b.setAttribute("aria-checked", String(b.dataset.style === style)));
+  updateStyles();
   if (state.result) buildVideo();
+  if (style === "nature" && state.result && !state.sky.designs.length) designNature();
 }
 document.querySelectorAll(".style").forEach((b) => b.addEventListener("click", () => !b.disabled && setStyle(b.dataset.style)));
 
@@ -200,28 +202,35 @@ function showReview(r, failed = false, manual = false) {
   designScenes(r);
 }
 
-// ---------- Sky style: designs kept per passage in this browser ----------
-// The default is the built-in night -> dawn -> blue hour journey; each
-// "Design a sky" asks Claude for a new set of moments for these ayahs.
+// ---------- Nature (AI) style: designs kept per passage in this browser ----------
+// Sky is the fixed night -> dawn -> blue hour journey. Nature asks Claude
+// for sky-and-landscape moments that follow what each ayah says; "Design
+// another" asks for a different one. Until a design arrives, Sky is shown.
 function loadSky(r) {
   const key = `rattil-sky:v1:${r.surah}:${r.from}-${r.to}`;
   if (state.sky.key === key) return;
   let designs = [];
   try { designs = JSON.parse(localStorage.getItem(key) || "[]"); } catch {}
-  state.sky = { key, designs: Array.isArray(designs) ? designs : [], pick: -1 };
+  designs = Array.isArray(designs) ? designs : [];
+  state.sky = { key, designs, pick: designs.length - 1 };
   fillSkyPick();
+  if (state.style === "nature" && !designs.length) designNature();
 }
 function fillSkyPick() {
   const short = (s) => (s.length > 70 ? s.slice(0, 68) + "…" : s);
-  $("sky-pick").innerHTML = `<option value="-1">Default · night to dawn to mist</option>` +
-    state.sky.designs.map((d, i) => `<option value="${i}">Design ${i + 1} · ${short(d.theme || "for these ayahs").replace(/</g, "&lt;")}</option>`).join("");
+  $("sky-pick").innerHTML = state.sky.designs.map((d, i) => `<option value="${i}">Design ${i + 1} · ${short(d.theme || "for these ayahs").replace(/</g, "&lt;")}</option>`).join("");
   $("sky-pick").value = String(state.sky.pick);
-  $("sky-design").textContent = state.sky.designs.length ? "Design another" : "Design a sky for these ayahs";
+  $("sky-pick").hidden = !state.sky.designs.length;
+  $("sky-design").textContent = state.sky.designs.length ? "Design another" : "Design for these ayahs";
 }
 $("sky-pick").addEventListener("change", (e) => { state.sky.pick = Number(e.target.value); buildVideo(); });
-$("sky-design").addEventListener("click", async () => {
+$("sky-design").addEventListener("click", () => designNature());
+let designing = false;
+async function designNature() {
+  if (designing || !state.result) return;
+  designing = true;
   const r = state.result, key = state.sky.key, btn = $("sky-design");
-  btn.disabled = true; $("scene-note").textContent = "Designing a sky for these ayahs…";
+  btn.disabled = true; $("scene-note").textContent = "Designing a nature scene for each ayah… (showing Sky until it's ready)";
   try {
     const last = state.sky.designs[state.sky.designs.length - 1];
     const res = await fetch("/api/rattil-scenes", { method: "POST", headers: { "content-type": "application/json" }, body: JSON.stringify({ surah: r.surah, from: r.from, to: r.to, kind: "sky", avoid: last?.theme || "" }) });
@@ -239,12 +248,13 @@ $("sky-design").addEventListener("click", async () => {
     $("scene-note").textContent = err.status === 401 ? "Your sign-in has expired; reload to sign in again."
       : err.status === 429 ? `Today's $${err.data?.limit ?? 1} AI budget is used up; it resets at midnight Pacific.`
       : err.message === "not configured" ? "AI design isn't set up on this site yet."
-      : `Couldn't design a sky: ${err.message}`;
-  } finally { btn.disabled = false; }
-});
+      : `Couldn't design the scenes: ${err.message}`;
+    $("scene-note").textContent += " Showing Sky instead.";
+  } finally { btn.disabled = false; designing = false; }
+}
 
-// One moment per screen from the chosen design (its first ayah's moment;
-// an ayah the design missed borrows the nearest one), or null for the default.
+// One moment per screen from the chosen Nature design (its first ayah's
+// moment; an ayah the design missed borrows the nearest one), or null for Sky.
 function skyMoments(r) {
   const d = state.sky.designs[state.sky.pick];
   const byAyah = d && cleanWorld(d, r.from, r.to);
@@ -323,7 +333,7 @@ async function buildVideo() {
   const r = state.result, su = state.quran.surahs[r.surah - 1];
   const overlay = state.style === "overlay" && state.hasVideo;
   if (overlay && state.video.readyState < 2) await new Promise((ok) => { state.video.addEventListener("loadeddata", ok, { once: true }); setTimeout(ok, 3000); });
-  state.renderer = createRenderer({ surah: su, units: r.units, duration: state.buffer.duration, style: overlay ? "overlay" : state.style === "sky" ? "sky" : "animation", video: state.video, scenes: state.scenes, world: state.style === "sky" ? skyMoments(r) : null });
+  state.renderer = createRenderer({ surah: su, units: r.units, duration: state.buffer.duration, style: overlay ? "overlay" : state.style === "sky" || state.style === "nature" ? "sky" : "animation", video: state.video, scenes: state.scenes, world: state.style === "nature" ? skyMoments(r) : null });
   updateStyles();
   $("step-video").hidden = false;
   $("download").hidden = $("share").hidden = true;
@@ -380,7 +390,7 @@ $("make").addEventListener("click", async () => {
     const overlay = state.style === "overlay" && state.hasVideo;
     const blob = await encode({ renderer: state.renderer, buffer: state.buffer, aac: state.aac, video: overlay ? state.video : null, duration: state.buffer.duration, audioContext }, progress);
     const r = state.result, ext = blob.type.includes("mp4") ? "mp4" : "webm";
-    const name = `rattil-${state.quran.surahs[r.surah - 1].name.toLowerCase()}-${r.from}-${r.to}${state.style === "overlay" ? "-overlay" : state.style === "sky" ? `-sky${state.sky.pick >= 0 ? state.sky.pick + 1 : ""}` : ""}.${ext}`;
+    const name = `rattil-${state.quran.surahs[r.surah - 1].name.toLowerCase()}-${r.from}-${r.to}${state.style === "overlay" ? "-overlay" : state.style === "sky" ? "-sky" : state.style === "nature" ? (state.sky.pick >= 0 ? `-nature${state.sky.pick + 1}` : "-sky") : ""}.${ext}`;
     const a = $("download");
     if (a.href) URL.revokeObjectURL(a.href);
     a.href = URL.createObjectURL(blob); a.download = name; a.hidden = false;
