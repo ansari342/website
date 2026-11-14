@@ -28,7 +28,10 @@ const state = { quran: null, index: null, buffer: null, groups: [], segments: []
 const signedIn = fetch("/api/google/me").then((r) => r.json()).then((d) => d.email || null).catch(() => null);
 signedIn.then((email) => {
   const a = $("account");
-  if (email) { a.textContent = "Sign out"; a.href = "/api/google/logout"; a.title = email; }
+  if (email) {
+    a.textContent = "Sign out"; a.href = "/api/google/logout"; a.title = email;
+    $("signin-line").innerHTML = `<span class="mono muted">Signed in as ${email.replace(/[<>&]/g, "")} · AI animations on</span>`;
+  }
 });
 
 const quranReady = fetch("data/quran.json").then((r) => r.json()).then((q) => { state.quran = q; fillSurahs(); return q; });
