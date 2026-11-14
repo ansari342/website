@@ -33,6 +33,7 @@
         <span class="mono muted">or drop it here · stays on your device</span>
       </label>
       <p class="mono muted" id="file-info"></p>
+      <p class="alert" id="alert" hidden></p>
     </section>
 
     <!-- 2. Recognition -->
@@ -80,5 +81,14 @@
 
   <audio id="audio" preload="auto" hidden></audio>
   <script type="module" src="app.js"></script>
+  <script>
+    // If the app can't start in this browser, say so instead of failing silently.
+    setTimeout(function () {
+      if (window.rattil) return;
+      var a = document.getElementById("alert");
+      a.textContent = "Rattil couldn't start in this browser. Please update it, or try Safari or Chrome.";
+      a.hidden = false;
+    }, 4000);
+  </script>
 </body>
 </html>

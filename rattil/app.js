@@ -1,13 +1,22 @@
 // Rattil: recitation clip in, vertical video out. Everything runs on the
 // visitor's device: the speech model in a worker, the video via WebCodecs.
 
-import { breathGroups } from "./lib/audio.js";
+import { breathGroups, toMono16k } from "./lib/audio.js";
 import { buildIndex, matchRecitation } from "./lib/match.js";
 import { createRenderer, W, H } from "./lib/render.js";
 import { encode } from "./lib/encode.js";
 import { arabicDigits } from "./lib/arabic.js";
 
 const $ = (id) => document.getElementById(id);
+
+// Show any unexpected error on the page, so a failure is never silent.
+function showError(message) {
+  const a = $("alert");
+  a.textContent = `Something went wrong: ${message}`;
+  a.hidden = false;
+}
+window.addEventListener("error", (e) => showError(e.message || "unknown error"));
+window.addEventListener("unhandledrejection", (e) => showError(e.reason?.message || String(e.reason)));
 const fmt = (t) => `${Math.floor(t / 60)}:${String(Math.floor(t % 60)).padStart(2, "0")}`;
 
 const state = { quran: null, index: null, buffer: null, groups: [], segments: [], result: null, renderer: null, file: null };
@@ -31,6 +40,7 @@ const setBar = (f) => ($("bar").style.width = `${Math.round(f * 100)}%`);
 
 async function start(file) {
   state.file = file;
+  $("alert").hidden = true;
   for (const id of ["step-review", "step-video"]) $(id).hidden = true;
   $("download").hidden = $("share").hidden = true;
   $("file-info").textContent = `${file.name} · ${(file.size / 1e6).toFixed(1)} MB`;
@@ -39,10 +49,12 @@ async function start(file) {
   try {
     const bytes = await file.arrayBuffer();
     const ac = new (window.AudioContext || window.webkitAudioContext)();
-    state.buffer = await ac.decodeAudioData(bytes);
-    ac.close();
-  } catch {
+    // Callback form as well as the promise, for older Safari.
+    state.buffer = await new Promise((ok, fail) => { const p = ac.decodeAudioData(bytes, ok, fail); if (p && p.then) p.then(ok, fail); });
+    ac.close?.();
+  } catch (err) {
     setStep(0, "This file's audio could not be read. Try an MP4, MOV, M4A, MP3 or WAV file.");
+    showError(`couldn't read the audio (${err?.message || err || "unsupported format"})`);
     return;
   }
   if (state.buffer.duration > 600) { setStep(0, "Please use a clip under 10 minutes."); return; }
@@ -58,9 +70,15 @@ async function start(file) {
 
 // Down-mix and resample with the browser's own filter.
 async function to16k(buffer) {
-  const ctx = new OfflineAudioContext(1, Math.ceil(buffer.duration * 16000), 16000);
-  const src = ctx.createBufferSource(); src.buffer = buffer; src.connect(ctx.destination); src.start();
-  return (await ctx.startRendering()).getChannelData(0);
+  try {
+    const ctx = new OfflineAudioContext(1, Math.ceil(buffer.duration * 16000), 16000);
+    const src = ctx.createBufferSource(); src.buffer = buffer; src.connect(ctx.destination); src.start();
+    return (await ctx.startRendering()).getChannelData(0);
+  } catch {
+    // Some Safari versions only allow 44.1/48 kHz offline contexts.
+    const chans = Array.from({ length: buffer.numberOfChannels }, (_, c) => buffer.getChannelData(c));
+    return toMono16k(chans, buffer.sampleRate);
+  }
 }
 
 function listen(mono) {
